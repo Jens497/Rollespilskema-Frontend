@@ -9,6 +9,9 @@ export {}
 
 declare module 'vue-router' {
   interface RouteMeta {
-    title: LocalizationKey
+    appBar: {
+      title: LocalizationKey,
+      canNavigateBack?: boolean
+    }
   }
 }

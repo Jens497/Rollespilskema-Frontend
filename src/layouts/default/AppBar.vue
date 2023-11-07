@@ -1,7 +1,11 @@
 <template>
   <v-app-bar flat>
+    <v-app-bar-nav-icon
+      v-if="canNavigateBack"
+      icon="mdi-arrow-left"
+      @click="$router.back()"
+    />
     <v-app-bar-title>
-      <v-icon icon="mdi-circle-slice-6" />
       {{ $t(props.title) }}
     </v-app-bar-title>
   </v-app-bar>
@@ -9,7 +13,9 @@
 
 <script lang="ts" setup>
   import { LocalizationKey } from '@/plugins/vue-i18n';
-
-  const props = defineProps<{ title: LocalizationKey }>()
+  type Props = { title: LocalizationKey, canNavigateBack: boolean }
+  const props = withDefaults(defineProps<Props>(), {
+    canNavigateBack: true
+  })
 
 </script>

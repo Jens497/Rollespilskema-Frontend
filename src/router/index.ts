@@ -9,7 +9,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: '',
         name: 'Home',
-        meta: { title: 'view.home.title'},
+        meta: { appBar: { title: 'view.home.title', canNavigateBack: false } },
         // route level code-splitting
         // this generates a separate chunk (about.[hash].js) for this route
         // which is lazy-loaded when the route is visited.
@@ -18,7 +18,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'empty',
         name: 'Empty',
-        meta: { title: 'view.empty.title' },
+        meta: { appBar: { title: 'view.empty.title' } },
         component: () => import('@/views/Empty.vue')
       }
     ],
