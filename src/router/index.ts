@@ -1,7 +1,7 @@
 // Composables
-import { createRouter, createWebHistory } from 'vue-router'
+import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router'
 
-const routes = [
+const routes: RouteRecordRaw[] = [
   {
     path: '/',
     component: () => import('@/layouts/default/Default.vue'),
@@ -9,6 +9,7 @@ const routes = [
       {
         path: '',
         name: 'Home',
+        meta: { title: 'view.home.title'},
         // route level code-splitting
         // this generates a separate chunk (about.[hash].js) for this route
         // which is lazy-loaded when the route is visited.

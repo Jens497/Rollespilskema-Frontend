@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <default-bar />
+    <default-bar :title="$route.meta.title" />
 
     <default-view />
   </v-app>
