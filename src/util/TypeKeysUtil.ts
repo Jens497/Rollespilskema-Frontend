@@ -109,7 +109,7 @@ type LeafImpl<K extends string | number, V, TraversedTypes> = V extends
   // mutually required to avoid false positives of subtypes
   true extends AnyIsEqual<TraversedTypes, V>
   ? `${K}`
-  : `${K}.${PathInternal<V, TraversedTypes | V>}`;
+  : `${K}.${LeafInternal<V, TraversedTypes | V>}`;
 
 
 /**
