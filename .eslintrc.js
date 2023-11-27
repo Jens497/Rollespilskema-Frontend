@@ -25,7 +25,7 @@ module.exports = {
   settings: {
     'vue-i18n': {
       localeDir: './src/i18n/*.{json,json5,yaml,yml}',
-      messageSyntaxVersion: '^9.6.5',
+      messageSyntaxVersion: '^9.7.1',
     },
   }
 }
