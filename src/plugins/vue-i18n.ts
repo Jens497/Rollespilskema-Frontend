@@ -6,7 +6,7 @@ type LocaleSchema = typeof daDK
 export type Locale = 'da-DK'
 export type LocalizationKey = Leaf<LocaleSchema>
 
-export default createI18n<[LocaleSchema], Locale>({
+export default createI18n<{ message: LocaleSchema}, Locale>({
   legacy: false,
   locale: 'da-DK',
   messages: {
