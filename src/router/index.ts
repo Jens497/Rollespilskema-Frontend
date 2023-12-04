@@ -20,6 +20,12 @@ const routes: RouteRecordRaw[] = [
         name: 'Empty',
         meta: { appBar: { title: 'view.empty.title' } },
         component: () => import('@/views/Empty.vue')
+      },
+      {
+        path: 'templates/editor/:templateId?',
+        name: 'TemplateEditor',
+        meta: { appBar: {title: 'view.templateEditor.title'}},
+        component: () => import('@/views/TemplateEditor.vue')
       }
     ],
   },

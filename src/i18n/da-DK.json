@@ -5,6 +5,9 @@
         },
         "empty": {
             "title": "Tom test side"
+        },
+        "templateEditor": {
+            "title": "Skabelon"
         }
     }
 }

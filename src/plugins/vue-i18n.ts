@@ -1,5 +1,5 @@
 import { createI18n } from 'vue-i18n'
-import type { Leaf } from '@/util/TypeKeysUtil'
+import type { Leaf } from '@/util/typeKeysUtil'
 import daDK from '@/i18n/da-DK.json'
 
 type LocaleSchema = typeof daDK
