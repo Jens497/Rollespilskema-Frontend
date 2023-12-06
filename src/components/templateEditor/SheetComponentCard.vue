@@ -7,10 +7,10 @@
 </template>
 
 <script setup lang="ts">
-  import { SheetComponent } from '@/common/sheetComponent.js';
+  import { SheetComponentType } from '@/common/sheetComponent.js';
 
   type Props = {
-    component: SheetComponent
+    component: SheetComponentType
   }
   defineProps<Props>()
 </script>
