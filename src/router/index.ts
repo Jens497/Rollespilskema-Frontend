@@ -24,6 +24,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'templates/editor/:templateId?',
         name: 'TemplateEditor',
+        props: true,
         meta: { appBar: {title: 'view.templateEditor.title'}},
         component: () => import('@/views/TemplateEditor.vue')
       }

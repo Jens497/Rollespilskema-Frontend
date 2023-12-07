@@ -3,7 +3,7 @@
     <v-row dense class="fill-height w-100 ">
       <v-col cols="4"  :md="4" :lg="3">
         <VSheet class="editor-item" rounded :elevation="8">
-          <ComponentSelector :components="testComponents" :on-click-component="onAddComponentType"/>
+          <ComponentSelector :components="templateStore.componentTypes" :on-click-component="onAddComponentType"/>
         </VSheet>
       </v-col>
       <v-col cols="4"  :md="4" :lg="6">
@@ -21,43 +21,25 @@
 </template>
 
 <script lang="ts" setup>
-  import { SheetComponent, SheetComponentType } from '@/common/sheetComponent';
+  import { SheetComponentType } from '@/common/sheetComponent';
   import ComponentSelector from '@/components/templateEditor/ComponentSelector.vue';
-  import imgUrl from '@/assets/logo.png';
   import EditorSheet from '@/components/templateEditor/EditorSheet.vue';
-import { ref } from 'vue';
+  import { useTemplateStore } from '@/store/template'
+  import { reactive, ref } from 'vue';
 
-  const editorModel = ref<SheetComponent[]>([])
+  type Props = {
+    templateId?: string
+  }
+  const props = defineProps<Props>()
+
+  const templateStore = useTemplateStore()
+
+  const editorModel = props.templateId ? templateStore.templates[props.templateId] : reactive(templateStore.createDummyData())
+  const counter = ref(0)
 
   function onAddComponentType(component: SheetComponentType) {
-    editorModel.value.splice(0,0,{name: component.name, pos: {x: 0, y:0}})
+    editorModel.splice(0,0,{name: component.name, pos: {x: counter.value++ * 50, y: counter.value * 100}})
   }
-  const testComponents: SheetComponentType[] = [
-      {
-        name: "Box",
-        image: imgUrl
-      },
-      {
-        name: "Label",
-        image: imgUrl
-      },
-      {
-        name: "Text Input",
-        image: imgUrl
-      },
-      {
-        name: "Line",
-        image: imgUrl
-      },
-      {
-        name: "Image",
-        image: imgUrl
-      },
-      {
-        name: "Info Circle",
-        image: imgUrl
-      },
-  ]
 </script>
 
 
