@@ -46,7 +46,7 @@
 <style>
   .editor-item {
     flex: 1;
-    overflow-y: auto;
+    overflow-y: visible;
     margin: 2px;
     height: 100%;
   }

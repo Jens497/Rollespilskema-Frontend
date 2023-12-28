@@ -19,6 +19,9 @@
 <style>
   .sheet-container {
     position: relative;
+    overflow: auto;
+    height: 100%;
+    width: 100%;
   }
   .sheet-component {
     position: absolute;
