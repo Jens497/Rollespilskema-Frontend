@@ -13,7 +13,7 @@
       </v-col>
       <v-col cols="4"  :md="4" :lg="3">
         <VSheet class="editor-item" rounded :elevation="8">
-
+            {{ templateStore.selectedComponent }}
         </VSheet>
       </v-col>
     </v-row>

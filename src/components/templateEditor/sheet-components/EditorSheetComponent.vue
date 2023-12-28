@@ -2,7 +2,12 @@
   <VCard
     :title="component.name"
     class="sheet-component"
-    :style="{top: component.pos.y + 'px', left: component.pos.x + 'px'}"
+    :style="{
+      top: component.pos.y + 'px',
+      left: component.pos.x + 'px',
+      borderStyle: isSelected ? 'solid' : 'none',
+      borderWidth: '2px'
+    }"
     @click="onClick"
   />
 </template>
@@ -12,9 +17,13 @@
 
 
   type Props = {
-    component: SheetComponent
+    component: SheetComponent,
+    isSelected: boolean
   }
-  defineProps<Props>()
+  withDefaults(
+    defineProps<Props>(),
+    { isSelected: false }
+  )
   function onClick() {
   }
 </script>

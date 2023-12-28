@@ -5,7 +5,8 @@ import imgUrl from '@/assets/logo.png';
 export const useTemplateStore = defineStore('template', {
   state: () => ({
     componentTypes: [] as SheetComponentType[],
-    templates: {} as { [key: string ]: SheetComponent[] }
+    templates: {} as { [key: string ]: SheetComponent[] },
+    selectedComponent: undefined as SheetComponent | undefined,
   }),
   actions: {
     createDummyData(): SheetComponent[] {
