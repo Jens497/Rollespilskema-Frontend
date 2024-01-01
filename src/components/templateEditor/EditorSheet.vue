@@ -1,28 +1,20 @@
 <template>
   <VSheet class="sheet-container">
-    <EditorSheetComponent v-for="(component, index) in components"
+    <EditorSheetComponent v-for="(component, index) in templateEditorStore.template"
       :key="index"
       :component="component"
-      :isSelected="component == templateStore.selectedComponent"
+      :isSelected="component == templateEditorStore.selectedComponent"
       class="sheet-component"
-      @click="templateStore.selectedComponent != component ? templateStore.selectedComponent = component : templateStore.selectedComponent = undefined"
+      @click="templateEditorStore.selectedComponent != component ? templateEditorStore.selectComponentByIdentity(component) : templateEditorStore.unselectComponent()"
     />
   </VSheet>
 </template>
 
 <script lang=ts setup>
-  import { SheetComponent } from '@/common/sheetComponent';
   import EditorSheetComponent from '@/components/templateEditor/sheet-components/EditorSheetComponent.vue'
-  import { useTemplateStore } from '@/store/template';
+  import { useTemplateEditorStore } from '@/store/templateEditor';
 
-
-  type Props = {
-    components: SheetComponent[]
-  }
-
-  defineProps<Props>()
-  defineEmits(['update:components'])
-  const templateStore = useTemplateStore()
+  const templateEditorStore = useTemplateEditorStore()
 </script>
 
 <style>

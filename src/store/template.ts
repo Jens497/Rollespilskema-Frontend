@@ -6,7 +6,6 @@ export const useTemplateStore = defineStore('template', {
   state: () => ({
     componentTypes: [] as SheetComponentType[],
     templates: {} as { [key: string ]: SheetComponent[] },
-    selectedComponent: undefined as SheetComponent | undefined,
   }),
   actions: {
     createDummyData(): SheetComponent[] {
@@ -39,5 +38,6 @@ export const useTemplateStore = defineStore('template', {
 
       return componentTypesToModels(this.componentTypes).map((comp, i) => { comp.pos.x += 100 * i; comp.pos.y += 100 * i; return comp})
     }
+
   }
 })

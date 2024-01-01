@@ -8,12 +8,12 @@
       </v-col>
       <v-col cols="4"  :md="4" :lg="6">
         <VSheet class="editor-item" >
-          <EditorSheet v-model:components="editorModel"/>
+          <EditorSheet />
         </VSheet>
       </v-col>
       <v-col cols="4"  :md="4" :lg="3">
         <VSheet class="editor-item" rounded :elevation="8">
-            {{ templateStore.selectedComponent }}
+            <ComponentSettings v-if="templateEditorStore.selectedComponent" />
         </VSheet>
       </v-col>
     </v-row>
@@ -23,9 +23,10 @@
 <script lang="ts" setup>
   import { SheetComponentType } from '@/common/sheetComponent';
   import ComponentSelector from '@/components/templateEditor/ComponentSelector.vue';
+  import ComponentSettings from '@/components/templateEditor/ComponentSettings.vue';
   import EditorSheet from '@/components/templateEditor/EditorSheet.vue';
   import { useTemplateStore } from '@/store/template'
-  import { reactive, ref } from 'vue';
+  import { useTemplateEditorStore } from '@/store/templateEditor';
 
   type Props = {
     templateId?: string
@@ -33,12 +34,12 @@
   const props = defineProps<Props>()
 
   const templateStore = useTemplateStore()
+  const templateEditorStore = useTemplateEditorStore()
 
-  const editorModel = props.templateId ? templateStore.templates[props.templateId] : reactive(templateStore.createDummyData())
-  const counter = ref(0)
+  templateEditorStore.template = props.templateId ? templateStore.templates[props.templateId] : templateStore.createDummyData();
 
   function onAddComponentType(component: SheetComponentType) {
-    editorModel.splice(0,0,{name: component.name, pos: {x: counter.value++ * 50, y: counter.value * 100}})
+    templateEditorStore.template.splice(0,0,{name: component.name, pos: {x: 0, y: 0}})
   }
 </script>
 
