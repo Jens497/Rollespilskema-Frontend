@@ -1,32 +1,61 @@
 <template>
-  <VCard
-    :title="component.name"
-    class="sheet-component"
-    :style="{
+  <div ref="target" :style="{
       top: component.pos.y + 'px',
       left: component.pos.x + 'px',
-      borderStyle: isSelected ? 'solid' : 'none',
-      borderWidth: '2px'
     }"
-    @click="onClick"
-  />
+    style="background: crimson; padding: 5px;"
+    class="sheet-component"
+  >
+    <VCard
+      ref="el"
+      :title="component.name"
+      class="sheet-component"
+      :style="{
+        borderStyle: isSelected ? 'solid' : 'none',
+        borderWidth: '2px',
+      }"
+    />
+
+  </div>
 </template>
 
 <script lang=ts setup>
-  import { SheetComponent } from '@/common/sheetComponent';
-
-
+  import { SheetComponent, componentTypesToModels } from '@/common/sheetComponent';
+  import { useTemplateEditorStore } from '@/store/templateEditor';
+  import { Position, useDraggable, useParentElement, useScroll } from '@vueuse/core';
+  import { ref } from 'vue';
   type Props = {
     component: SheetComponent,
     isSelected: boolean
   }
-  withDefaults(
+  const props = withDefaults(
     defineProps<Props>(),
     { isSelected: false }
-  )
-  function onClick() {
-  }
-</script>
+    )
+    useParentElement
+    const templateEditorStore = useTemplateEditorStore()
+    const target = ref<HTMLElement | null>(null)
+    const parent = useParentElement(target)
+    const scroll = useScroll(parent)
+
+    useDraggable(target, {
+      initialValue: props.component.pos,
+      onMove: patchPosition,
+      containerElement: parent,
+    })
+
+    function patchPosition(position: Position, event: PointerEvent) {
+      templateEditorStore.updateComponent(
+        props.component,
+        {
+          pos: {
+            x: position.x + scroll.x.value,
+            y: position.y + scroll.y.value
+          }
+        }
+      )
+    }
+  </script>
 
 
 <style>

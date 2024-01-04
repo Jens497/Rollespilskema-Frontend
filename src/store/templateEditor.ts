@@ -1,10 +1,16 @@
 import { SheetComponent } from "@/common/sheetComponent";
 import { defineStore } from "pinia";
 
+
+interface State {
+  template: SheetComponent[],
+  selectedComponent: SheetComponent | undefined,
+}
+
 export const useTemplateEditorStore = defineStore('templateEditor', {
-  state: () => ({
-    template: [] as SheetComponent[],
-    selectedComponent: undefined as SheetComponent | undefined,
+  state: (): State => ({
+    template: [],
+    selectedComponent: undefined,
   }),
   actions: {
     selectComponentByIndex(index: number) {
@@ -19,6 +25,17 @@ export const useTemplateEditorStore = defineStore('templateEditor', {
     },
     unselectComponent() {
       this.selectedComponent = undefined
+    },
+    updateComponent(component: SheetComponent, updates: Partial<SheetComponent>) {
+      const index = this.template.indexOf(component)
+      if (index != -1) {
+        this.$patch((state: State) => {
+          state.template[index] = Object.assign(state.template[index], updates);
+        })
+      } else {
+        console.debug("useTemplateEditorStore: updateComponent: Component not found", component)
+        return
+      }
     }
   }
 })
