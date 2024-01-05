@@ -4,10 +4,23 @@
 			"path": "."
 		}
 	],
-	"settings": {},
+	"settings": {
+		"cSpell.words": [
+			"Rollespilskema"
+		],
+		"i18n-ally.sourceLanguage": "da-DK",
+		"i18n-ally.localesPaths": [
+			"src/i18n",
+			"src/i18n/vuetify"
+		],
+		"i18n-ally.keystyle": "nested",
+		"i18n-ally.annotationDelimiter": ".",
+		"i18n-ally.displayLanguage": "da-DK"
+	},
 	"extensions": {
 		"recommendations": [
-			"vue.volar"
+			"vue.volar",
+			"lokalise.i18n-ally"
 		]
 	}
 }

@@ -12,6 +12,23 @@
       <v-row class="d-flex align-center justify-center">
         <v-col cols="auto">
           <v-btn
+            min-width="164"
+            variant="text"
+            @click="$router.push({ name: 'Empty' })"
+          >
+            <v-icon
+              icon="mdi-link-variant"
+              size="large"
+              start
+            />
+
+            Link to Empty page
+          </v-btn>
+        </v-col>
+      </v-row>
+      <v-row class="d-flex align-center justify-center">
+        <v-col cols="auto">
+          <v-btn
             href="https://vuetifyjs.com/components/all/"
             min-width="164"
             rel="noopener noreferrer"
@@ -71,5 +88,5 @@
 </template>
 
 <script lang="ts" setup>
-  //
+//
 </script>

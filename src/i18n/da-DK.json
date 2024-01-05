@@ -1,0 +1,10 @@
+{
+    "view": {
+        "home": {
+            "title": "Hjem"
+        },
+        "empty": {
+            "title": "Tom test side"
+        }
+    }
+}
