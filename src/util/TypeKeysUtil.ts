@@ -1,5 +1,6 @@
 /// This file is heavily sourced from react-hook-from
 /// original code can be found at https://github.com/react-hook-form/react-hook-form/blob/011fad503cc8d4543892f8e847b9bd58c1d9400f/src/types/path/eager.ts#L51-L61
+/// The imported types in the original file has been added to this one for convenience.
 /// None of the original code has been edited, but new code has been added.
 /// Any code not from the original source has been annotated with an author
 /// if no author is annotated it can be assumed to be from react-hook-form.
