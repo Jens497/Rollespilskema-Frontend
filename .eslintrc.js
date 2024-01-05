@@ -4,7 +4,7 @@ module.exports = {
     node: true,
   },
   extends: [
-    'plugin:vue/vue3-essential',
+    'plugin:vue/vue3-recommended',
     'eslint:recommended',
     'plugin:@intlify/vue-i18n/recommended',
     '@vue/eslint-config-typescript',
@@ -21,6 +21,13 @@ module.exports = {
         extensions: ['.js', '.ts', '.vue']
       }
     ],
+    "vue/max-attributes-per-line": ["error", {singleline: { max: 3 }, multiline: { max: 1 } }],
+    'vue/html-indent': ['error', 2, {
+      attribute: 1,
+      closeBracket: 0,
+      alignAttributesVertically: true,
+      ignores: [],
+  }],
   },
   settings: {
     'vue-i18n': {

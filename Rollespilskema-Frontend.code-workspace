@@ -20,7 +20,8 @@
 			"typescript": true,
 			"html": true,
 			"css": true
-		}
+		},
+		"html.format.enable": false
 	},
 	"extensions": {
 		"recommendations": [
