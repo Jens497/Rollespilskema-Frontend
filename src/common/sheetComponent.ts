@@ -1,6 +1,7 @@
 import { EnumMember, EnumType } from "typescript";
 
 export enum PropertyTypeKinds {
+  Boolean = "kind_boolean",
   String = "kind_string",
   Number = "kind_number",
   Array = "kind_array",
@@ -17,6 +18,7 @@ export interface BaseSheetComponentProperty<T, K extends PropertyTypeKindsValues
   readonly default: T,
 }
 
+export interface BooleanSheetComponentProperty extends BaseSheetComponentProperty<boolean, PropertyTypeKinds.Boolean> { }
 export interface NumberSheetComponentProperty extends BaseSheetComponentProperty<number, PropertyTypeKinds.Number> { }
 export interface StringSheetComponentProperty extends BaseSheetComponentProperty<string, PropertyTypeKinds.String> { }
 
@@ -53,6 +55,7 @@ export interface ObjectSheetComponentProperty<T extends ObjectSheetComponentProp
 
 
 export type SheetComponentPropertyType =
+  | BooleanSheetComponentProperty
   | NumberSheetComponentProperty
   | StringSheetComponentProperty
   | EnumSheetComponentProperty<string | number>
@@ -81,6 +84,19 @@ type KindToTsTypeInternal<K extends PropertyTypeKindsValues> =
 export type KindToTsType<K extends PropertyTypeKindsValues> = K extends any ? KindToTsTypeInternal<K> : never;
 
 type PropertyToTsTypeInternal<P extends SheetComponentPropertyType | WithoutDefault<SheetComponentPropertyType>>
+  = P extends BaseSheetComponentProperty<infer T, infer _> ? T
+  : never;
+
+
+type _PropertyToTsTypeInternal<P extends SheetComponentPropertyType | WithoutDefault<SheetComponentPropertyType>>
+  = P extends { kind: PropertyTypeKinds.Enum, values: infer V } ? V[keyof V]
+  : P extends { kind: PropertyTypeKinds.Array } ? TsType<P["elementType"]>[]
+  : P extends { kind: PropertyTypeKinds.Object } & WithoutDefault<infer _> ? KindToTsType<P["kind"]>
+  : P extends { kind: PropertyTypeKinds.Object, default: infer D extends ObjectSheetComponentPropertyFields } ? { [key in keyof (D)]: TsType<D[key]> }
+  : P extends BaseSheetComponentProperty<infer T, infer _> ? T
+  : never
+
+type __PropertyToTsTypeInternal<P extends SheetComponentPropertyType | WithoutDefault<SheetComponentPropertyType>>
   = P extends { kind: PropertyTypeKinds.Number } ? number
   : P extends { kind: PropertyTypeKinds.String } ? string
   : P extends { kind: PropertyTypeKinds.Enum, values: infer V } ? V[keyof V]
@@ -136,6 +152,8 @@ export function isSheetComponentProperties(props: any): props is SheetComponentP
 function setDefaultValue<T extends SheetComponentPropertyType>(component: T): WithValue<T> {
   let _exhaustiveCheck: never;
   switch (component.kind) {
+    case PropertyTypeKinds.Boolean:
+      return Object.assign({}, component, { value: component.default }) as WithValue<T>
     case PropertyTypeKinds.String:
       return Object.assign({}, component, { value: component.default }) as WithValue<T>
     case PropertyTypeKinds.Number:
@@ -177,11 +195,4 @@ export function getDefault(componentType: SheetComponentType): SheetComponent {
 
 export function componentTypesToModels(compTypes: SheetComponentType[]): SheetComponent[] {
   return compTypes.map(getDefault)
-}
-
-
-const test: EnumSheetComponentProperty<number> = {
-  kind: PropertyTypeKinds.Enum,
-  values: {"Hi": 0, "Bye": 1},
-  default: 0
 }

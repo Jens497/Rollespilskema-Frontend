@@ -1,27 +1,33 @@
 <template>
   <div v-if="properties != undefined">
     <template v-for="(property, key) in properties " :key="key">
+      <template v-if="property.kind == PropertyTypeKinds.Boolean">
+        <VCheckbox :label="`${key}`" :model-value="property.value" @update:model-value="updateField(`${key}`, property, !!$event)" />
+      </template>
       <template v-if="property.kind == PropertyTypeKinds.String">
-        <VTextField :label="`${key}`" :model-value="property.value" @update:model-value="updateField(property, $event)" />
+        <VTextField :label="`${key}`" :model-value="property.value" @update:model-value="updateField(`${key}`, property, $event)" />
       </template>
       <template v-else-if="property.kind == PropertyTypeKinds.Number">
-        <VTextField :label="`${key}`" :model-value="property.value"
+        <VTextField
+          :label="`${key}`"
+          :model-value="property.value"
           :rules="[(value) => !Number.isNaN(Number.parseFloat(value))]"
-          @update:model-value="updateField(property, Number.parseFloat($event))" />
+          @update:model-value="updateField(`${key}`, property, Number.parseFloat($event))"
+        />
       </template>
       <template v-else-if="property.kind == PropertyTypeKinds.Enum">
-        <VCombobox :label="key + ''" :items="Object.entries(property.values).map(([k, v]) => ({ title: k, value: v }))" />
+        <VCombobox :label="key + ''" :items="Object.keys(property.values)" @update:model-value="$event && updateField(`${key}`, property, property.values[$event])" />
       </template>
       <template v-else-if="property.kind == PropertyTypeKinds.Object">
-        <VLabel :text="`${key}:`" /><br />
-        <PropertiesSettings :properties="property.value" />
+        <VLabel :text="`${key}:`" /><br>
+        <PropertiesSettings :properties="property.value" @update-property="updateField(`${key}`, property, { ...property.value, ...{ [$event.key]: $event.value } })" />
       </template>
     </template>
   </div>
 </template>
 
 <script setup lang="ts">
-  import { SheetComponentProperties, SheetComponentPropertyTypeDefinition, PropertyTypeKinds, WithValue, SheetComponentPropertyType } from '@/common/sheetComponent';
+  import { SheetComponentProperties, SheetComponentPropertyTypeDefinition, PropertyTypeKinds, WithValue, SheetComponentPropertyType, StringSheetComponentProperty } from '@/common/sheetComponent';
   import { defineEmits, ref } from 'vue';
   export interface Props {
     properties: SheetComponentProperties<SheetComponentPropertyTypeDefinition> | undefined,
@@ -29,14 +35,16 @@
   const props = defineProps<Props>()
   const value = ref({ title: "Green", value: "#00ff00" })
   const emit = defineEmits({
-    updateProperty<T extends WithValue<SheetComponentPropertyType>>(payload: { property: T, value: T["value"] }) {
-      return payload.property != null && payload.value != undefined;
+    updateProperty<T extends WithValue<SheetComponentPropertyType>>(payload: { key: string, value: T }) {
+      return payload.key != null && payload.key.length > 0 && payload.value != undefined;
     }
   })
 
 
-  function updateField<T extends WithValue<SheetComponentPropertyType>>(property: T, value: T["value"]) {
-    emit("updateProperty", { property, value })
+  function updateField<T extends WithValue<SheetComponentPropertyType>>(key: string, property: T, value: T["value"]) {
+    console.log("PropertiesSettings: updateField: ", key, property, " = ", value)
+    const newProperty: T = { ...property, "value": value }
+    emit("updateProperty", { key, value: newProperty })
   }
 
 </script>

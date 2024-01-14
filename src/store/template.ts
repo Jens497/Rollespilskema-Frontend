@@ -1,12 +1,12 @@
-import { SheetComponent, SheetComponentType, componentTypesToModels, isSheetComponentProperties } from "@/common/sheetComponent";
+import { SheetComponent, SheetComponentType, componentTypesToModels } from "@/common/sheetComponent";
 import { defineStore } from "pinia";
 import imgUrl from '@/assets/logo.png';
-import labelProperties from "@/common/Label.json"
+import { properties as labelProperties } from "@/common/Label"
 
 export const useTemplateStore = defineStore('template', {
   state: () => ({
     componentTypes: [] as SheetComponentType[],
-    templates: {} as { [key: string ]: SheetComponent[] },
+    templates: {} as { [key: string]: SheetComponent[] },
   }),
   actions: {
     createDummyData(): SheetComponent[] {
@@ -15,36 +15,36 @@ export const useTemplateStore = defineStore('template', {
         {
           name: "Box",
           image: imgUrl,
-          propertyTypes: isSheetComponentProperties(labelProperties) ? labelProperties : {},
+          propertyTypes: {},
         },
         {
           name: "Label",
           image: imgUrl,
-          propertyTypes: isSheetComponentProperties(labelProperties) ? labelProperties : {},
+          propertyTypes: labelProperties,
         },
         {
           name: "Text Input",
           image: imgUrl,
-          propertyTypes: isSheetComponentProperties(labelProperties) ? labelProperties : {},
+          propertyTypes: {},
         },
         {
           name: "Line",
           image: imgUrl,
-          propertyTypes: isSheetComponentProperties(labelProperties) ? labelProperties : {},
+          propertyTypes: {},
         },
         {
           name: "Image",
           image: imgUrl,
-          propertyTypes: isSheetComponentProperties(labelProperties) ? labelProperties : {},
+          propertyTypes: {},
         },
         {
           name: "Info Circle",
           image: imgUrl,
-          propertyTypes: isSheetComponentProperties(labelProperties) ? labelProperties : {},
+          propertyTypes: {},
         },
       ]
 
-      return componentTypesToModels(this.componentTypes).map((comp, i) => { comp.pos.x += 100 * i; comp.pos.y += 100 * i; return comp})
+      return componentTypesToModels(this.componentTypes).map((comp, i) => { comp.pos.x += 100 * i; comp.pos.y += 100 * i; return comp })
     }
 
   }
