@@ -22,7 +22,7 @@
   const templateEditorStore = useTemplateEditorStore()
 </script>
 
-<style>
+<style scoped>
   .sheet-container {
     position: relative;
     overflow: auto;

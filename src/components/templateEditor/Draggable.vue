@@ -70,7 +70,7 @@
   }
 </script>
 
-<style>
+<style scoped>
   .drag-component {
     width: fit-content;
     height: fit-content;

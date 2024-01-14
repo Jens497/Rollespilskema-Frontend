@@ -12,7 +12,7 @@
 </script>
 
 
-<style>
+<style scoped>
   .sheet-component {
     width: fit-content;
     min-width: max-content;
