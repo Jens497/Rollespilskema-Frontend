@@ -1,6 +1,7 @@
-import { SheetComponent, SheetComponentType, componentTypesToModels } from "@/common/sheetComponent";
+import { SheetComponent, SheetComponentType, componentTypesToModels, isSheetComponentProperties } from "@/common/sheetComponent";
 import { defineStore } from "pinia";
 import imgUrl from '@/assets/logo.png';
+import labelProperties from "@/common/Label.json"
 
 export const useTemplateStore = defineStore('template', {
   state: () => ({
@@ -9,30 +10,37 @@ export const useTemplateStore = defineStore('template', {
   }),
   actions: {
     createDummyData(): SheetComponent[] {
+      // TODO fix propertyTypes being empty
       this.componentTypes = [
         {
           name: "Box",
-          image: imgUrl
+          image: imgUrl,
+          propertyTypes: isSheetComponentProperties(labelProperties) ? labelProperties : {},
         },
         {
           name: "Label",
-          image: imgUrl
+          image: imgUrl,
+          propertyTypes: isSheetComponentProperties(labelProperties) ? labelProperties : {},
         },
         {
           name: "Text Input",
-          image: imgUrl
+          image: imgUrl,
+          propertyTypes: isSheetComponentProperties(labelProperties) ? labelProperties : {},
         },
         {
           name: "Line",
-          image: imgUrl
+          image: imgUrl,
+          propertyTypes: isSheetComponentProperties(labelProperties) ? labelProperties : {},
         },
         {
           name: "Image",
-          image: imgUrl
+          image: imgUrl,
+          propertyTypes: isSheetComponentProperties(labelProperties) ? labelProperties : {},
         },
         {
           name: "Info Circle",
-          image: imgUrl
+          image: imgUrl,
+          propertyTypes: isSheetComponentProperties(labelProperties) ? labelProperties : {},
         },
       ]
 

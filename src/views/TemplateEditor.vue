@@ -1,19 +1,19 @@
 <template>
   <v-container class="fill-height w-100" style="max-width: none;">
     <v-row dense class="fill-height w-100 ">
-      <v-col cols="4"  :md="4" :lg="3">
+      <v-col cols="4" :md="4" :lg="3">
         <VSheet class="editor-item" rounded :elevation="8">
-          <ComponentSelector :components="templateStore.componentTypes" :on-click-component="onAddComponentType"/>
+          <ComponentSelector :components="templateStore.componentTypes" :on-click-component="onAddComponentType" />
         </VSheet>
       </v-col>
-      <v-col cols="4"  :md="4" :lg="6">
-        <VSheet class="editor-item" >
+      <v-col cols="4" :md="4" :lg="6">
+        <VSheet class="editor-item">
           <EditorSheet />
         </VSheet>
       </v-col>
-      <v-col cols="4"  :md="4" :lg="3">
+      <v-col cols="4" :md="4" :lg="3">
         <VSheet class="editor-item" rounded :elevation="8">
-            <ComponentSettings v-if="templateEditorStore.selectedComponent" />
+          <ComponentSettings v-if="templateEditorStore.selectedComponent" />
         </VSheet>
       </v-col>
     </v-row>
@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { SheetComponentType } from '@/common/sheetComponent';
+  import { SheetComponentType, getDefault } from '@/common/sheetComponent';
   import ComponentSelector from '@/components/templateEditor/ComponentSelector.vue';
   import ComponentSettings from '@/components/templateEditor/ComponentSettings.vue';
   import EditorSheet from '@/components/templateEditor/EditorSheet.vue';
@@ -38,8 +38,9 @@
 
   templateEditorStore.template = props.templateId ? templateStore.templates[props.templateId] : templateStore.createDummyData();
 
-  function onAddComponentType(component: SheetComponentType) {
-    templateEditorStore.template.splice(0,0,{name: component.name, pos: {x: 0, y: 0}})
+  function onAddComponentType(componentType: SheetComponentType) {
+    const component = getDefault(componentType)
+    templateEditorStore.template.splice(0, 0, component)
   }
 </script>
 

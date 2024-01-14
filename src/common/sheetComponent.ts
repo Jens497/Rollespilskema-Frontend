@@ -1,81 +1,187 @@
-export enum SimplePropertyTypes {
-  String = "string",
-  Number = "number"
+import { EnumMember, EnumType } from "typescript";
+
+export enum PropertyTypeKinds {
+  String = "kind_string",
+  Number = "kind_number",
+  Array = "kind_array",
+  Enum = "kind_enum",
+  Object = "kind_object",
 }
 
-export enum ComplexPropertyTypes {
-  Array = "array",
-  Enum = "enum",
-  Object = "object",
+export type PropertyTypeKindsValues = `${typeof PropertyTypeKinds[keyof typeof PropertyTypeKinds]}`
+export const propertyTypeKindsValues = Object.values(PropertyTypeKinds)
+
+
+export interface BaseSheetComponentProperty<T, K extends PropertyTypeKindsValues = PropertyTypeKindsValues> {
+  readonly kind: K extends any ? K : never,
+  readonly default: T,
 }
 
-export interface SheetComponentProperty<T, K = SimplePropertyTypes | ComplexPropertyTypes> {
-  readonly kind: K,
-  default: T
+export interface NumberSheetComponentProperty extends BaseSheetComponentProperty<number, PropertyTypeKinds.Number> { }
+export interface StringSheetComponentProperty extends BaseSheetComponentProperty<string, PropertyTypeKinds.String> { }
+
+export interface EnumSheetComponentProperty<T extends number | string, K extends string = string, V extends { [key in K]: T extends any ? T : never } = { [key in K]: T }>
+  extends BaseSheetComponentProperty<V[keyof V], PropertyTypeKinds.Enum> {
+  values: V,
 }
 
-export interface EnumSheetComponentProperty<T extends number | string, K extends string = string, V extends {[key in K]: T extends number ? number : string} = {[key in K]: T extends number ? number : string}>
- extends SheetComponentProperty<K, ComplexPropertyTypes.Enum> {
-  values: V
-}
-
-type ElementType<T extends SheetComponentProperty<unknown>> = keyof Omit<T, "default" | "kind"> extends never
+type ElementType<T extends SheetComponentPropertyType> =
+  T extends any
+  ? keyof Omit<T, "default" | "kind"> extends never
   ? T["kind"]
-  : Omit<T, "default">;
+  : WithoutDefault<T>
+  : never;
 
-type ObjectSheetComponentPropertyFields = {
-  [key: string]: SheetComponentProperty<unknown>
-}
-
-type ObjectSheetComponentPropertyDefault<T extends ObjectSheetComponentPropertyFields> = {
-  [key in keyof T]: T[key]["default"]
-}
-
-export interface ObjectSheetComponentProperty<T extends ObjectSheetComponentPropertyFields>
-extends SheetComponentProperty<ObjectSheetComponentPropertyDefault<T>, ComplexPropertyTypes.Object> {
-  fields: { [key in keyof T]: Omit<T[key], "default"> }
-}
-
-
-
-export interface ArraySheetComponentProperty<T extends SheetComponentProperty<unknown>> extends SheetComponentProperty<TsType<T>[], ComplexPropertyTypes.Array> {
+export interface ArraySheetComponentProperty<T extends SheetComponentPropertyType> extends BaseSheetComponentProperty<PropertyToTsType<T>[], PropertyTypeKinds.Array> {
   elementType: ElementType<T>,
 }
 
+type ObjectSheetComponentPropertyFields<T extends SheetComponentPropertyType = SheetComponentPropertyType> = {
+  [key: string]: T
+}
 
-type TsType<P extends SheetComponentProperty<unknown> | ObjectSheetComponentPropertyFields | unknown> =
-  P extends NumberSheetComponentProperty ? number
-  : P extends StringSheetComponentProperty ? string
-  : P extends EnumSheetComponentProperty<infer _> ? P["values"]
-  : P extends ObjectSheetComponentProperty<infer F> ? TsType<F>
-  : P extends ArraySheetComponentProperty<infer E> ? TsType<E>[]
-  : P
+// type ObjectSheetComponentPropertyDefault<T extends ObjectSheetComponentPropertyFields> = T extends any
+//   ? { [key in keyof T]: WithoutDefault<T[key]> }
+//   : never;
+
+export interface ObjectSheetComponentProperty<T extends ObjectSheetComponentPropertyFields<SheetComponentPropertyType> = ObjectSheetComponentPropertyFields<SheetComponentPropertyType>>
+  extends BaseSheetComponentProperty<T, PropertyTypeKinds.Object> {
+  // fields: ObjectSheetComponentPropertyDefault<T>,
+}
+
+
+
+
+export type SheetComponentPropertyType =
+  | NumberSheetComponentProperty
+  | StringSheetComponentProperty
+  | EnumSheetComponentProperty<string | number>
+  | ArraySheetComponentProperty<SheetComponentPropertyType>
+  | ObjectSheetComponentProperty
   ;
 
 
+export type WithoutDefault<T extends SheetComponentPropertyType> = T extends any ? Omit<T, "default"> : never;
+export type WithValue<T extends SheetComponentPropertyType>
+  = T extends ObjectSheetComponentProperty ? ObjectWithValue<T>
+  : T extends { kind: PropertyTypeKinds } ? T & { value: TsType<T> }
+  : never
+  ;
+type ObjectWithValue<T extends ObjectSheetComponentProperty> = T & { value: { [key in keyof T["default"]]: WithValue<T["default"][key]> } }
+type DefinitionWithValue<T extends { [key: string]: SheetComponentPropertyType }> = T & { [key in keyof T]: WithValue<T[key]> }
 
-export type NumberSheetComponentProperty = SheetComponentProperty<number, SimplePropertyTypes.Number>
-type StringSheetComponentProperty = SheetComponentProperty<string, SimplePropertyTypes.String>
+type KindToTsTypeInternal<K extends PropertyTypeKindsValues> =
+  K extends PropertyTypeKinds.Number ? number
+  : K extends PropertyTypeKinds.String ? string
+  : K extends PropertyTypeKinds.Array ? unknown[]
+  : K extends PropertyTypeKinds.Enum ? { [key: string]: string } | { [key: string]: number }
+  : K extends PropertyTypeKinds.Object ? { [key: string]: SheetComponentPropertyType["default"] }
+  : never
+  ;
+export type KindToTsType<K extends PropertyTypeKindsValues> = K extends any ? KindToTsTypeInternal<K> : never;
 
+type PropertyToTsTypeInternal<P extends SheetComponentPropertyType | WithoutDefault<SheetComponentPropertyType>>
+  = P extends { kind: PropertyTypeKinds.Number } ? number
+  : P extends { kind: PropertyTypeKinds.String } ? string
+  : P extends { kind: PropertyTypeKinds.Enum, values: infer V } ? V[keyof V]
+  : P extends { kind: PropertyTypeKinds.Array } ? TsType<P["elementType"]>[]
+  : P extends { kind: PropertyTypeKinds.Object } & WithoutDefault<infer _> ? KindToTsType<P["kind"]>
+  : P extends { kind: PropertyTypeKinds.Object, default: infer D extends ObjectSheetComponentPropertyFields } ? { [key in keyof (D)]: TsType<D[key]> }
+  : never
+  ;
+export type PropertyToTsType<P extends SheetComponentPropertyType | WithoutDefault<SheetComponentPropertyType>> = P extends any ? PropertyToTsTypeInternal<P> : never;
 
+type TsTypeInternal<T extends ElementType<SheetComponentPropertyType> | WithoutDefault<SheetComponentPropertyType>>
+  = T extends PropertyTypeKindsValues ? KindToTsType<T>
+  : T extends WithoutDefault<SheetComponentPropertyType> ? PropertyToTsType<T>
+  : never
+  ;
+export type TsType<T extends ElementType<SheetComponentPropertyType> | WithoutDefault<SheetComponentPropertyType>> = T extends any ? TsTypeInternal<T> : never;
 
+export type SheetComponentPropertyTypeDefinition = ObjectSheetComponentPropertyFields;
+// {
+//   [key: string]: SheetComponentPropertyType
+// }
 
-export interface SheetComponentType {
+export type SheetComponentProperties<T extends SheetComponentPropertyTypeDefinition> = T extends any ? DefinitionWithValue<T> : never;
+// {
+//   [key in keyof T]:
+//     T[key] extends SheetComponentPropertyTypeDefinition ? SheetComponentProperties<T[key]>
+//     : T[key] extends SheetComponentPropertyType ? WithValue<T[key]>
+//     : T[key]
+// }
+
+export interface SheetComponentType<T extends SheetComponentPropertyTypeDefinition = SheetComponentPropertyTypeDefinition> {
   name: string
   image: string
-  properties: Record<string, unknown> // TODO figure out how to handle types for specific components
+  propertyTypes: T
 }
 
-export interface SheetComponent {
+export interface SheetComponent<T extends SheetComponentPropertyTypeDefinition = SheetComponentPropertyTypeDefinition> {
   name: string
   pos: {
     x: number
     y: number
   }
+  properties: SheetComponentProperties<T>
 }
 
-export function componentTypesToModels(compTypes: SheetComponentType[]) {
-  return compTypes.map(compType =>
-    ({name: compType.name, pos: { x: 0, y: 0}})
-  )
+export function isSheetComponentProperty(prop: any): prop is SheetComponentPropertyType {
+  return typeof prop["kind"] === "string" && propertyTypeKindsValues.some(p => p == prop.kind)
+}
+export function isSheetComponentProperties(props: any): props is SheetComponentPropertyTypeDefinition {
+  return typeof (props) === "object" && Object.keys(props).every(k => typeof k === "string") && Object.values(props).every(isSheetComponentProperty)
+}
+
+function setDefaultValue<T extends SheetComponentPropertyType>(component: T): WithValue<T> {
+  let _exhaustiveCheck: never;
+  switch (component.kind) {
+    case PropertyTypeKinds.String:
+      return Object.assign({}, component, { value: component.default }) as WithValue<T>
+    case PropertyTypeKinds.Number:
+      return Object.assign({}, component, { value: component.default }) as WithValue<T>
+    case PropertyTypeKinds.Array:
+      return Object.assign({}, component, { value: component.default }) as WithValue<T>
+    case PropertyTypeKinds.Enum:
+      return Object.assign({}, component, { value: component.default }) as WithValue<T>
+    case PropertyTypeKinds.Object:
+      return Object.assign({}, component, { value: setDefaultValues(component.default) }) as WithValue<T>
+    default:
+      _exhaustiveCheck = component;
+      return _exhaustiveCheck;
+  }
+}
+
+function setDefaultValues<T extends SheetComponentPropertyTypeDefinition>(definition: T): SheetComponentProperties<T> {
+  const properties = Object
+    .entries(definition)
+    .reduce((acc, [key, value]) => {
+      return Object.assign(acc, { [key]: setDefaultValue(value) }) as { [key in keyof T]: WithValue<T[key]> }
+    }, {})
+  return properties as SheetComponentProperties<T>
+}
+
+
+export function getDefault(componentType: SheetComponentType): SheetComponent {
+  const testComponent: SheetComponent<typeof componentType.propertyTypes> = {
+    name: componentType.name,
+    pos: {
+      x: 0,
+      y: 0
+    },
+    properties: setDefaultValues(componentType.propertyTypes)
+  };
+  return testComponent
+}
+
+
+export function componentTypesToModels(compTypes: SheetComponentType[]): SheetComponent[] {
+  return compTypes.map(getDefault)
+}
+
+
+const test: EnumSheetComponentProperty<number> = {
+  kind: PropertyTypeKinds.Enum,
+  values: {"Hi": 0, "Bye": 1},
+  default: 0
 }
