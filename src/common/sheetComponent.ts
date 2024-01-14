@@ -1,5 +1,3 @@
-import { EnumMember, EnumType } from "typescript";
-
 export enum PropertyTypeKinds {
   Boolean = "kind_boolean",
   String = "kind_string",
@@ -42,15 +40,10 @@ type ObjectSheetComponentPropertyFields<T extends SheetComponentPropertyType = S
   [key: string]: T
 }
 
-// type ObjectSheetComponentPropertyDefault<T extends ObjectSheetComponentPropertyFields> = T extends any
-//   ? { [key in keyof T]: WithoutDefault<T[key]> }
-//   : never;
 
 export interface ObjectSheetComponentProperty<T extends ObjectSheetComponentPropertyFields<SheetComponentPropertyType> = ObjectSheetComponentPropertyFields<SheetComponentPropertyType>>
   extends BaseSheetComponentProperty<T, PropertyTypeKinds.Object> {
-  // fields: ObjectSheetComponentPropertyDefault<T>,
 }
-
 
 
 
@@ -88,23 +81,6 @@ type PropertyToTsTypeInternal<P extends SheetComponentPropertyType | WithoutDefa
   : never;
 
 
-type _PropertyToTsTypeInternal<P extends SheetComponentPropertyType | WithoutDefault<SheetComponentPropertyType>>
-  = P extends { kind: PropertyTypeKinds.Enum, values: infer V } ? V[keyof V]
-  : P extends { kind: PropertyTypeKinds.Array } ? TsType<P["elementType"]>[]
-  : P extends { kind: PropertyTypeKinds.Object } & WithoutDefault<infer _> ? KindToTsType<P["kind"]>
-  : P extends { kind: PropertyTypeKinds.Object, default: infer D extends ObjectSheetComponentPropertyFields } ? { [key in keyof (D)]: TsType<D[key]> }
-  : P extends BaseSheetComponentProperty<infer T, infer _> ? T
-  : never
-
-type __PropertyToTsTypeInternal<P extends SheetComponentPropertyType | WithoutDefault<SheetComponentPropertyType>>
-  = P extends { kind: PropertyTypeKinds.Number } ? number
-  : P extends { kind: PropertyTypeKinds.String } ? string
-  : P extends { kind: PropertyTypeKinds.Enum, values: infer V } ? V[keyof V]
-  : P extends { kind: PropertyTypeKinds.Array } ? TsType<P["elementType"]>[]
-  : P extends { kind: PropertyTypeKinds.Object } & WithoutDefault<infer _> ? KindToTsType<P["kind"]>
-  : P extends { kind: PropertyTypeKinds.Object, default: infer D extends ObjectSheetComponentPropertyFields } ? { [key in keyof (D)]: TsType<D[key]> }
-  : never
-  ;
 export type PropertyToTsType<P extends SheetComponentPropertyType | WithoutDefault<SheetComponentPropertyType>> = P extends any ? PropertyToTsTypeInternal<P> : never;
 
 type TsTypeInternal<T extends ElementType<SheetComponentPropertyType> | WithoutDefault<SheetComponentPropertyType>>
@@ -115,17 +91,8 @@ type TsTypeInternal<T extends ElementType<SheetComponentPropertyType> | WithoutD
 export type TsType<T extends ElementType<SheetComponentPropertyType> | WithoutDefault<SheetComponentPropertyType>> = T extends any ? TsTypeInternal<T> : never;
 
 export type SheetComponentPropertyTypeDefinition = ObjectSheetComponentPropertyFields;
-// {
-//   [key: string]: SheetComponentPropertyType
-// }
 
 export type SheetComponentProperties<T extends SheetComponentPropertyTypeDefinition> = T extends any ? DefinitionWithValue<T> : never;
-// {
-//   [key in keyof T]:
-//     T[key] extends SheetComponentPropertyTypeDefinition ? SheetComponentProperties<T[key]>
-//     : T[key] extends SheetComponentPropertyType ? WithValue<T[key]>
-//     : T[key]
-// }
 
 export interface SheetComponentType<T extends SheetComponentPropertyTypeDefinition = SheetComponentPropertyTypeDefinition> {
   name: string
