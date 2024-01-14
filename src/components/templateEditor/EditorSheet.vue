@@ -1,10 +1,11 @@
 <template>
   <VSheet class="sheet-container">
     <Draggable
-      v-for="(component, index) in templateEditorStore.template"
-      :key="index"
+      v-for="(component, componentId) in templateEditorStore.template"
+      :key="componentId"
       :component="component"
-      :is-selected="component == templateEditorStore.selectedComponent"
+      :component-id="componentId"
+      :is-selected="componentId == templateEditorStore.selectedComponentId"
       class="drag-component"
     >
       <EditorSheetComponent

@@ -20,7 +20,7 @@
       </template>
       <template v-else-if="property.kind == PropertyTypeKinds.Object">
         <VLabel :text="`${key}:`" /><br>
-        <PropertiesSettings :properties="property.value" @update-property="updateField(`${key}`, property, { ...property.value, ...{ [$event.key]: $event.value } })" />
+        <PropertiesSettings :component-id="componentId" :properties="property.value" @update-property="updateField(`${key}`, property, { ...property.value, ...{ [$event.key]: $event.value } })" />
       </template>
     </template>
   </div>
@@ -31,11 +31,11 @@
   import { defineEmits, ref } from 'vue';
   export interface Props {
     properties: SheetComponentProperties<SheetComponentPropertyTypeDefinition> | undefined,
+    componentId: string,
   }
   const props = defineProps<Props>()
-  const value = ref({ title: "Green", value: "#00ff00" })
   const emit = defineEmits({
-    updateProperty<T extends WithValue<SheetComponentPropertyType>>(payload: { key: string, value: T }) {
+    updateProperty<T extends WithValue<SheetComponentPropertyType>>(payload: { key: string, value: T, componentId: string }) {
       return payload.key != null && payload.key.length > 0 && payload.value != undefined;
     }
   })
@@ -44,7 +44,7 @@
   function updateField<T extends WithValue<SheetComponentPropertyType>>(key: string, property: T, value: T["value"]) {
     console.log("PropertiesSettings: updateField: ", key, property, " = ", value)
     const newProperty: T = { ...property, "value": value }
-    emit("updateProperty", { key, value: newProperty })
+    emit("updateProperty", { key, value: newProperty, componentId: props.componentId })
   }
 
 </script>

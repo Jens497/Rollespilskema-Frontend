@@ -1,15 +1,22 @@
-import { SheetComponent, SheetComponentType, componentTypesToModels } from "@/common/sheetComponent";
+import { SheetComponentType, componentTypesToModels } from "@/common/sheetComponent";
 import { defineStore } from "pinia";
 import imgUrl from '@/assets/logo.png';
 import { properties as labelProperties } from "@/common/Label"
+import { type State as TemplateEditorState } from "@/store/templateEditor"
+
+type Template = TemplateEditorState["template"]
+interface State {
+  componentTypes: SheetComponentType[],
+  templates: { [key: string]: Template },
+}
 
 export const useTemplateStore = defineStore('template', {
-  state: () => ({
-    componentTypes: [] as SheetComponentType[],
-    templates: {} as { [key: string]: SheetComponent[] },
+  state: (): State => ({
+    componentTypes: [],
+    templates: {},
   }),
   actions: {
-    createDummyData(): SheetComponent[] {
+    createDummyData(): Template {
       // TODO fix propertyTypes being empty
       this.componentTypes = [
         {
@@ -44,7 +51,12 @@ export const useTemplateStore = defineStore('template', {
         },
       ]
 
-      return componentTypesToModels(this.componentTypes).map((comp, i) => { comp.pos.x += 100 * i; comp.pos.y += 100 * i; return comp })
+      return componentTypesToModels(this.componentTypes).reduce((acc, comp, i) => {
+        comp.pos.x += 100 * i;
+        comp.pos.y += 100 * i;
+        const id = crypto.randomUUID();
+        return { ...acc, ...{ [id]: comp } };
+      }, {})
     }
 
   }

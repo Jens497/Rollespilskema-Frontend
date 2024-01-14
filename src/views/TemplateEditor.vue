@@ -40,7 +40,7 @@
 
   function onAddComponentType(componentType: SheetComponentType) {
     const component = getDefault(componentType)
-    templateEditorStore.template.splice(0, 0, component)
+    templateEditorStore.addComponent(component)
   }
 </script>
 

@@ -1,5 +1,5 @@
 <template>
-  <VSheet v-if="templateEditorStore.selectedComponent != undefined">
+  <VSheet v-if="templateEditorStore.selectedComponentId != undefined && templateEditorStore.selectedComponent != undefined" class="settingsSheet">
     <p>
       <VLabel class="text-h4" :text="templateEditorStore.selectedComponent?.name" />
     </p>
@@ -13,7 +13,11 @@
       @update:model-value="updatePosX"
     />
     <VTextField label="Y" :model-value="templateEditorStore.selectedComponent?.pos.y" @update:model-value="updatePosY" />
-    <PropertiesSettings :properties="templateEditorStore.selectedComponent?.properties" @update-property="onPropertyUpdate" />
+    <PropertiesSettings
+      :component-id="templateEditorStore.selectedComponentId"
+      :properties="templateEditorStore.selectedComponent?.properties"
+      @update-property="onPropertyUpdate"
+    />
   </VSheet>
 </template>
 
@@ -28,20 +32,26 @@
 
   function updatePosX(newValue: number | string) {
     let value = typeof newValue == "number" ? newValue : Number.parseFloat(newValue);
-    if (Number.isNaN(value)) return;
-    templateEditorStore.$patch({ selectedComponent: { pos: { x: value } } })
+    const id = templateEditorStore.selectedComponentId
+    if (id == undefined || Number.isNaN(value)) return;
+    templateEditorStore.updateComponentById(id, { pos: { x: value } })
   }
   function updatePosY(newValue: number | string) {
     let value = typeof newValue == "number" ? newValue : Number.parseFloat(newValue);
-    if (Number.isNaN(value)) return;
-    if (templateEditorStore.selectedComponent != undefined) {
-      templateEditorStore.selectedComponent.pos.y = value
-    }
+    const id = templateEditorStore.selectedComponentId
+    if (id == undefined || Number.isNaN(value)) return;
+    templateEditorStore.updateComponentById(id, { pos: { y: value } })
   }
 
-  function onPropertyUpdate<T extends WithValue<SheetComponentPropertyType>>(payload: { key: string, value: T }) {
-    const { key, value } = payload;
+  function onPropertyUpdate<T extends WithValue<SheetComponentPropertyType>>(payload: { key: string, value: T, componentId: string }): void {
+    const { key, value, componentId: id } = payload;
     console.log("ComponentSettings: onPropertyUpdate: ", key, " = ", value)
-    templateEditorStore.$patch({ selectedComponent: { properties: { [key]: value } } })
+    templateEditorStore.updateComponentById(id, { properties: { [key]: value } })
   }
 </script>
+
+<style scoped>
+  .settingsSheet {
+    overflow-y: auto;
+  }
+</style>

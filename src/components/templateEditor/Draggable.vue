@@ -20,6 +20,7 @@
   import { ref } from 'vue';
   type Props = {
     component: SheetComponent,
+    componentId: string,
     isSelected?: boolean
   }
   const props = withDefaults(
@@ -47,8 +48,8 @@
   }
 
   function patchPosition(position: Position, _event: PointerEvent) {
-    templateEditorStore.updateComponent(
-      props.component,
+    templateEditorStore.updateComponentById(
+      props.componentId,
       {
         pos: {
           x: position.x + scroll.x.value,
