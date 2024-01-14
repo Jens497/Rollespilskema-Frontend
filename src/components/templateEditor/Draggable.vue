@@ -9,7 +9,7 @@
     class="drag-component"
     @click="onClick"
   >
-    <slot :ref="child" :component="component" />
+    <slot :component="component" />
   </div>
 </template>
 
@@ -29,18 +29,24 @@
 
   const templateEditorStore = useTemplateEditorStore()
   const target = ref<HTMLElement | null>(null)
-  const child = ref<HTMLElement | null>(null)
   const parent = useParentElement()
   const scroll = useScroll(parent)
+  const previousEvent = ref<'onMove' | 'onEnd' | 'onClick' | undefined>()
 
   useDraggable(target, {
     initialValue: props.component.pos,
     onMove: patchPosition,
+    onEnd: onEnd,
     containerElement: parent,
     draggingElement: parent,
   })
+  function onEnd(_pos: Position, _event: PointerEvent) {
+    if (previousEvent.value == 'onMove') {
+      previousEvent.value = 'onEnd'
+    }
+  }
 
-  function patchPosition(position: Position, event: PointerEvent) {
+  function patchPosition(position: Position, _event: PointerEvent) {
     templateEditorStore.updateComponent(
       props.component,
       {
@@ -50,12 +56,17 @@
         }
       }
     )
+    previousEvent.value = 'onMove';
   }
 
-  function onClick(event: MouseEvent) {
-    templateEditorStore.selectedComponent != props.component
-      ? templateEditorStore.selectComponentByIdentity(props.component)
-      : templateEditorStore.unselectComponent()
+  function onClick(_event: MouseEvent) {
+    if (previousEvent.value != 'onEnd') {
+      templateEditorStore.selectedComponent != props.component
+        ? templateEditorStore.selectComponentByIdentity(props.component)
+        : templateEditorStore.unselectComponent()
+    }
+
+    previousEvent.value = 'onClick'
   }
 </script>
 
@@ -64,11 +75,12 @@
     width: fit-content;
     height: fit-content;
     border-style: none;
+    --border-width: 2px;
+    margin: var(--border-width);
   }
 
   .drag-component.selected {
-    width: fit-content;
-    height: fit-content;
-    border: 2px solid
+    border: var(--border-width) solid;
+    margin: 0;
   }
 </style>
