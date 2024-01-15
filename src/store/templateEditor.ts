@@ -45,9 +45,7 @@ export const useTemplateEditorStore = defineStore('templateEditor', {
       }
     },
     updateComponentById(id: string, updates: _DeepPartial<SheetComponent>) {
-      this.$patch((state: State) => {
-        state.template[id] = Object.assign(state.template[id], updates);
-      })
+      this.$patch({ template: { [id]: updates } })
     },
     addComponent(component: SheetComponent) {
       const id = crypto.randomUUID();

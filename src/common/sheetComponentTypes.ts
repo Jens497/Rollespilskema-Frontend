@@ -1,9 +1,10 @@
 import imgUrl from '@/assets/logo.png';
 import { properties as labelProperties } from "@/common/sheetComponentProperties/Label"
 import { SheetComponentType } from './sheetComponent';
+import LabelComponent from "@/components/templateEditor/sheet-components/LabelComponent.vue"
 
-
-const DEFAULT_COMPONENT_TYPE_MAP = {
+// TODO add The component to each template (and to SheetComponentType)
+export const COMPONENT_TYPE_MAP = {
   "Box": {
     image: imgUrl,
     propertyTypes: {},
@@ -11,6 +12,7 @@ const DEFAULT_COMPONENT_TYPE_MAP = {
   "Label": {
     image: imgUrl,
     propertyTypes: labelProperties,
+    vueComponent: LabelComponent
   },
   "Text Input": {
     image: imgUrl,
@@ -31,7 +33,7 @@ const DEFAULT_COMPONENT_TYPE_MAP = {
 } as const
 
 
-export const DEFAULT_COMPONENT_TYPES: SheetComponentType[] = Object.entries(DEFAULT_COMPONENT_TYPE_MAP).map(([k, v]) => ({ ...v, name: k }))
+export const COMPONENT_TYPES: SheetComponentType[] = Object.entries(COMPONENT_TYPE_MAP).map(([k, v]) => ({ ...v, name: k }))
 
-export type ComponentTypeFieldsMap = typeof DEFAULT_COMPONENT_TYPE_MAP
-export type ComponentTypeFieldsList = typeof DEFAULT_COMPONENT_TYPES
+export type ComponentTypeFieldsMap = typeof COMPONENT_TYPE_MAP
+export type ComponentTypeFieldsList = typeof COMPONENT_TYPES

@@ -8,7 +8,9 @@
       :is-selected="componentId == templateEditorStore.selectedComponentId"
       class="drag-component"
     >
+      <component :is="COMPONENT_TYPE_MAP.Label.vueComponent" v-if="component.name == 'Label'" :component="component" />
       <EditorSheetComponent
+        v-else
         :component="component"
       />
     </Draggable>
@@ -19,6 +21,8 @@
   import { useTemplateEditorStore } from '@/store/templateEditor';
   import EditorSheetComponent from './sheet-components/EditorSheetComponent.vue';
   import Draggable from './Draggable.vue';
+  import { COMPONENT_TYPE_MAP } from '@/common/sheetComponentTypes';
+
 
   const templateEditorStore = useTemplateEditorStore()
 </script>

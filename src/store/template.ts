@@ -1,7 +1,7 @@
 import { componentTypesToModels } from "@/common/sheetComponent";
 import { defineStore } from "pinia";
 import { type State as TemplateEditorState } from "@/store/templateEditor"
-import { DEFAULT_COMPONENT_TYPES } from "@/common/sheetComponentTypes";
+import { COMPONENT_TYPES } from "@/common/sheetComponentTypes";
 
 type Template = TemplateEditorState["template"]
 interface State {
@@ -13,7 +13,7 @@ export const useTemplateStore = defineStore('template', {
     templates: {},
   }),
   getters: {
-    componentTypes: () => DEFAULT_COMPONENT_TYPES
+    componentTypes: () => COMPONENT_TYPES
   },
   actions: {
     createDummyData(): Template {
