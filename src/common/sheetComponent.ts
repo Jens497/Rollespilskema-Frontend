@@ -46,7 +46,6 @@ export interface ObjectSheetComponentProperty<T extends ObjectSheetComponentProp
 }
 
 
-
 export type SheetComponentPropertyType =
   | BooleanSheetComponentProperty
   | NumberSheetComponentProperty
@@ -91,6 +90,16 @@ type TsTypeInternal<T extends ElementType<SheetComponentPropertyType> | WithoutD
 export type TsType<T extends ElementType<SheetComponentPropertyType> | WithoutDefault<SheetComponentPropertyType>> = T extends any ? TsTypeInternal<T> : never;
 
 export type SheetComponentPropertyTypeDefinition = ObjectSheetComponentPropertyFields;
+
+type PropertyTranslationInternal<T extends SheetComponentPropertyType>
+  = T extends ObjectSheetComponentProperty<infer F> ? PropertyFieldTranslation<F>
+  : never
+  ;
+type PropertyFieldTranslationInternal<T extends { [key: string]: SheetComponentPropertyType }>
+  = { [key in keyof T]: string }
+  & { [key in keyof T & string as `_${PropertyTranslationInternal<T[key]> extends never ? never : key}`]: PropertyTranslationInternal<T[key]> };
+export type PropertyFieldTranslation<T extends { [key: string]: SheetComponentPropertyType }> = T extends any ? PropertyFieldTranslationInternal<T> : never;
+
 
 export type SheetComponentProperties<T extends SheetComponentPropertyTypeDefinition> = T extends any ? DefinitionWithValue<T> : never;
 
@@ -163,3 +172,5 @@ export function getDefault(componentType: SheetComponentType): SheetComponent {
 export function componentTypesToModels(compTypes: SheetComponentType[]): SheetComponent[] {
   return compTypes.map(getDefault)
 }
+
+

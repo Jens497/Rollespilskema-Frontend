@@ -1,6 +1,6 @@
-import { SheetComponentPropertyTypeDefinition, PropertyTypeKinds as Kind } from "./sheetComponent";
+import { PropertyTypeKinds as Kind, SheetComponentPropertyTypeDefinition, SheetComponentType } from "@/common/sheetComponent";
 
-export const properties: SheetComponentPropertyTypeDefinition = {
+export const properties = {
   text: {
     kind: Kind.String,
     default: "Empty Label"
@@ -31,4 +31,6 @@ export const properties: SheetComponentPropertyTypeDefinition = {
       },
     }
   }
-}
+} as const;
+
+export type Properties = typeof properties;
