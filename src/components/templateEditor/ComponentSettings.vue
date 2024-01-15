@@ -14,6 +14,7 @@
     />
     <VTextField label="Y" :model-value="templateEditorStore.selectedComponent?.pos.y" @update:model-value="updatePosY" />
     <PropertiesSettings
+      class="propertySettings"
       :component-id="templateEditorStore.selectedComponentId"
       :properties="templateEditorStore.selectedComponent?.properties"
       @update-property="onPropertyUpdate"
@@ -52,6 +53,14 @@
 
 <style scoped>
   .settingsSheet {
+    position: relative;
+    height: 100%;
+    width: 100%;
     overflow-y: auto;
+  }
+
+  .propertySettings {
+    position: absolute;
+    width: 100%;
   }
 </style>

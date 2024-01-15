@@ -45,10 +45,10 @@
 </script>
 
 
-<style>
+<style scoped>
   .editor-item {
     flex: 1;
-    overflow-y: visible;
+    overflow-y: clip;
     margin: 2px;
     height: 100%;
   }

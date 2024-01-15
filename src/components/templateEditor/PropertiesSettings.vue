@@ -19,7 +19,7 @@
         <VCombobox :label="$t(`${keyPrefix}${key}`)" :items="Object.keys(property.values)" @update:model-value="$event && updateField(`${key}`, property, property.values[$event])" />
       </template>
       <template v-else-if="property.kind == PropertyTypeKinds.Object">
-        <VLabel :text="$t(`${keyPrefix}${key}`) + ':'" /><br>
+        <VLabel class="text-h5" :text="$t(`${keyPrefix}${key}`) + ':'" /><br>
         <PropertiesSettings
           :component-id="componentId"
           :properties="property.value"

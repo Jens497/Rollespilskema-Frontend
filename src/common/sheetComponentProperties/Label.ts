@@ -1,4 +1,4 @@
-import { PropertyTypeKinds as Kind, SheetComponentPropertyTypeDefinition, SheetComponentType } from "@/common/sheetComponent";
+import { PropertyTypeKinds as Kind } from "@/common/sheetComponent";
 
 export const properties = {
   text: {
