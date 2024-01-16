@@ -1,6 +1,4 @@
-import { PropertyTypeKinds as Kind } from "@/common/sheetComponent";
-
-
+import { PropertyTypeKinds as Kind, SheetComponentProperties, SheetComponentPropertyTypeDefinition } from "@/common/sheetComponent";
 
 export const properties = {
   text: {
@@ -26,4 +24,5 @@ export const properties = {
   }
 } as const;
 
-export type Properties = typeof properties;
+type _Properties = typeof properties;
+export interface Properties extends SheetComponentPropertyTypeDefinition, _Properties { }
