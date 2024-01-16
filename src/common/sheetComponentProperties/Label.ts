@@ -1,5 +1,7 @@
 import { PropertyTypeKinds as Kind } from "@/common/sheetComponent";
 
+
+
 export const properties = {
   text: {
     kind: Kind.String,
@@ -7,19 +9,10 @@ export const properties = {
   },
   font: {
     kind: Kind.Object,
-    // "color": {
-    //     "kind": "kind_enum",
-    //     "values": {
-    //         "Red": "#ff0000",
-    //         "Green": "#00ff00",
-    //         "Blue": "#0000ff"
-    //     },
-    //     "default": "#ff0000"
-    // },
     default: {
       size: {
         kind: Kind.Number,
-        default: 40
+        default: 14
       },
       bold: {
         kind: Kind.Boolean,
