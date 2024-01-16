@@ -1,4 +1,4 @@
-import { SheetComponent } from "@/common/sheetComponent";
+import { SheetComponent } from "@/common/sheetComponentDefinitions";
 import { _DeepPartial, defineStore } from "pinia";
 
 

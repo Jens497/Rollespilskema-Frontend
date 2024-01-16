@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { SheetComponentType, getDefault } from '@/common/sheetComponent';
+  import { SheetComponentType, getDefault } from '@/common/sheetComponentDefinitions';
   import ComponentSelector from '@/components/templateEditor/ComponentSelector.vue';
   import ComponentSettings from '@/components/templateEditor/ComponentSettings.vue';
   import EditorSheet from '@/components/templateEditor/EditorSheet.vue';

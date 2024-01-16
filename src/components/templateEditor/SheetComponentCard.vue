@@ -3,11 +3,11 @@
     class="mx-auto"
     :image="component.image"
     :title="component.name"
-  ></VCard>
+  />
 </template>
 
 <script setup lang="ts">
-  import { SheetComponentType } from '@/common/sheetComponent.js';
+  import { SheetComponentType } from '@/common/sheetComponentDefinitions';
 
   type Props = {
     component: SheetComponentType

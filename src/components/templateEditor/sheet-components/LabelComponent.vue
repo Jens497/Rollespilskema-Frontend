@@ -11,8 +11,8 @@
 </template>
 
 <script lang=ts setup>
-  import { SheetComponent } from '@/common/sheetComponent';
-  import { properties, type Properties } from "@/common/sheetComponentProperties/Label"
+  import { SheetComponent } from '@/common/sheetComponentDefinitions';
+  import { type Properties } from "@/common/sheetComponentProperties/Label"
   import { computed } from 'vue';
 
 

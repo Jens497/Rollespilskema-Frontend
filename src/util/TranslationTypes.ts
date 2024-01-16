@@ -1,5 +1,5 @@
 import { type PropertyFieldTranslation, ObjectSheetComponentProperty } from "@/common/sheetComponent"
-import { ComponentTypeFieldsMap } from "@/common/sheetComponentTypes";
+import { ComponentTypeFieldsMap } from "@/common/sheetComponentDefinitions";
 
 type EmptyProperties = {
   [key in keyof ComponentTypeFieldsMap as `${keyof ComponentTypeFieldsMap[key]["propertyTypes"] extends never ? key : never}`]: string

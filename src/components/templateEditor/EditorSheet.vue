@@ -8,7 +8,7 @@
       :is-selected="componentId == templateEditorStore.selectedComponentId"
       class="drag-component"
     >
-      <component :is="component.vueComponent" v-if="component.vueComponent != undefined" :component="component" />
+      <component :is="vueComponentOf(component)" v-if="vueComponentOf(component) != undefined" :component="component" />
       <EditorSheetComponent
         v-else
         :component="component"
@@ -18,6 +18,7 @@
 </template>
 
 <script lang=ts setup>
+  import { vueComponentOf } from "@/common/sheetComponentDefinitions"
   import { useTemplateEditorStore } from '@/store/templateEditor';
   import EditorSheetComponent from './sheet-components/EditorSheetComponent.vue';
   import Draggable from './Draggable.vue';

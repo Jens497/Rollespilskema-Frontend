@@ -1,7 +1,6 @@
-import { componentTypesToModels } from "@/common/sheetComponent";
+import { componentTypesToModels, COMPONENT_TYPES } from "@/common/sheetComponentDefinitions";
 import { defineStore } from "pinia";
 import { type State as TemplateEditorState } from "@/store/templateEditor"
-import { COMPONENT_TYPES } from "@/common/sheetComponentTypes";
 
 type Template = TemplateEditorState["template"]
 interface State {
