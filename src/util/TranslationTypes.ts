@@ -10,22 +10,4 @@ type WithProperties = {
 
 type KeyTranslation = PropertyFieldTranslation<WithProperties> & EmptyProperties;
 
-export type ComponentsTranslation<T extends KeyTranslation = KeyTranslation> = T extends any ? { [key in keyof T]: T[key] } : never // { [key in keyof ComponentTypeFields]: PropertyFieldTranslation<ComponentTypeFields[key]["propertyTypes"]> }
-type Test = ComponentsTranslation<KeyTranslation>
-const test: Test = {
-  Label: "",
-  Box: "",
-  "Text Input": "",
-  Line: "",
-  Image: "",
-  "Info Circle": "",
-  _Label: {
-    "font": "",
-    "text": "",
-    "_font": {
-      "bold": "",
-      "italic": "",
-      "size": ""
-    }
-  }
-}
+export type ComponentsTranslation<T extends KeyTranslation = KeyTranslation> = T extends any ? { [key in keyof T]: T[key] } : never;

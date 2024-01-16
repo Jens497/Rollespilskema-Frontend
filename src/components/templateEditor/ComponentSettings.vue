@@ -44,7 +44,6 @@
     templateEditorStore.updateComponentById(id, { pos: { y: value } })
   }
 
-  // ! TODO: Find out why this erases all other fields
   function onPropertyUpdate<T extends WithValue<SheetComponentPropertyType>>(payload: { key: string, value: T, componentId: string }): void {
     const { key, value, componentId: id } = payload;
     console.log("ComponentSettings: onPropertyUpdate: ", key, " = ", value)

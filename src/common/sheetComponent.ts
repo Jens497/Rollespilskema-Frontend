@@ -1,3 +1,5 @@
+import { DefineComponent } from "vue";
+
 export enum PropertyTypeKinds {
   Boolean = "kind_boolean",
   String = "kind_string",
@@ -107,6 +109,7 @@ export interface SheetComponentType<T extends SheetComponentPropertyTypeDefiniti
   name: string
   image: string
   propertyTypes: T
+  vueComponent?: DefineComponent<unknown, unknown, any>
 }
 
 export interface SheetComponent<T extends SheetComponentPropertyTypeDefinition = SheetComponentPropertyTypeDefinition> {
@@ -116,6 +119,7 @@ export interface SheetComponent<T extends SheetComponentPropertyTypeDefinition =
     y: number
   }
   properties: SheetComponentProperties<T>
+  vueComponent?: DefineComponent<unknown, unknown, any>
 }
 
 export function isSheetComponentProperty(prop: any): prop is SheetComponentPropertyType {
@@ -163,7 +167,8 @@ export function getDefault(componentType: SheetComponentType): SheetComponent {
       x: 0,
       y: 0
     },
-    properties: setDefaultValues(componentType.propertyTypes)
+    properties: setDefaultValues(componentType.propertyTypes),
+    vueComponent: componentType.vueComponent
   };
   return testComponent
 }

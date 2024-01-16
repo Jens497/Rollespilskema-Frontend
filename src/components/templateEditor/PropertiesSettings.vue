@@ -54,7 +54,6 @@
     }
   })
 
-  // ! TODO: Find out why this erases all other fields
   function updateField<T extends WithValue<SheetComponentPropertyType>>(key: string, property: T, value: T["value"]) {
     console.log("PropertiesSettings: updateField: ", key, property, " = ", value)
     const newProperty: T = { ...property, "value": value }
