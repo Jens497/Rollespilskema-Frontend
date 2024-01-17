@@ -23,7 +23,7 @@ export type SheetComponentPropertyType =
 //#region ComponentProperty implementations
 export interface BaseSheetComponentProperty<T, K extends PropertyTypeKindsValues = PropertyTypeKindsValues> {
   readonly kind: K extends any ? K : never,
-  readonly default: T,
+  readonly defaultValue: T,
 }
 
 export interface BooleanSheetComponentProperty extends BaseSheetComponentProperty<boolean, PropertyTypeKinds.Boolean> { }
@@ -46,7 +46,7 @@ export interface ArraySheetComponentProperty<T extends SheetComponentPropertyTyp
   elementType: ElementType<T>,
 }
 
-type ObjectSheetComponentPropertyFields<T extends SheetComponentPropertyType = SheetComponentPropertyType> = {
+export type ObjectSheetComponentPropertyFields<T extends SheetComponentPropertyType = SheetComponentPropertyType> = {
   [key: string]: T
 }
 
@@ -59,10 +59,10 @@ export interface ObjectSheetComponentProperty<T extends ObjectSheetComponentProp
 export type WithoutDefault<T extends SheetComponentPropertyType> = T extends any ? Omit<T, "default"> : never;
 export type WithValue<T extends SheetComponentPropertyType>
   = T extends ObjectSheetComponentProperty ? ObjectWithValue<T>
-  : T extends { kind: PropertyTypeKinds } ? T & { value: T["default"] }
+  : T extends { kind: PropertyTypeKinds } ? T & { value: T["defaultValue"] }
   : never
   ;
-type ObjectWithValue<T extends ObjectSheetComponentProperty> = T & { value: { [key in keyof T["default"]]: WithValue<T["default"][key]> } }
+type ObjectWithValue<T extends ObjectSheetComponentProperty> = T & { value: { [key in keyof T["defaultValue"]]: WithValue<T["defaultValue"][key]> } }
 type DefinitionWithValue<T extends { [key: string]: SheetComponentPropertyType }> = T & { [key in keyof T]: WithValue<T[key]> }
 
 

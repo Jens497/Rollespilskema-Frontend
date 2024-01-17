@@ -2,24 +2,36 @@
   <div v-if="properties != undefined">
     <template v-for="(property, key) in properties " :key="key">
       <template v-if="property.kind == PropertyTypeKinds.Boolean">
-        <VCheckbox :label="$t(`${keyPrefix}${key}`)" :model-value="property.value" @update:model-value="updateField(`${key}`, property, !!$event)" />
+        <VCheckbox
+          :label="translateKey(keyPrefix, key)"
+          :model-value="property.value"
+          @update:model-value="updateField(`${key}`, property, !!$event)"
+        />
       </template>
       <template v-if="property.kind == PropertyTypeKinds.String">
-        <VTextField :label="$t(`${keyPrefix}${key}`)" :model-value="property.value" @update:model-value="updateField(`${key}`, property, $event)" />
+        <VTextField
+          :label="translateKey(keyPrefix, key)"
+          :model-value="property.value"
+          @update:model-value="updateField(`${key}`, property, $event)"
+        />
       </template>
       <template v-else-if="property.kind == PropertyTypeKinds.Number">
         <VTextField
-          :label="$t(`${keyPrefix}${key}`)"
+          :label="translateKey(keyPrefix, key)"
           :model-value="property.value"
           :rules="[(value) => !Number.isNaN(Number.parseFloat(value))]"
           @update:model-value="updateField(`${key}`, property, Number.parseFloat($event))"
         />
       </template>
       <template v-else-if="property.kind == PropertyTypeKinds.Enum">
-        <VCombobox :label="$t(`${keyPrefix}${key}`)" :items="Object.keys(property.values)" @update:model-value="$event && updateField(`${key}`, property, property.values[$event])" />
+        <VCombobox
+          :label="translateKey(keyPrefix, key)"
+          :items="Object.keys(property.values)"
+          @update:model-value="$event && updateField(`${key}`, property, property.values[$event])"
+        />
       </template>
       <template v-else-if="property.kind == PropertyTypeKinds.Object">
-        <VLabel class="text-h5" :text="$t(`${keyPrefix}${key}`) + ':'" /><br>
+        <VLabel class="text-h5" :text="translateKey(keyPrefix, key) + ':'" /><br>
         <PropertiesSettings
           :component-id="componentId"
           :properties="property.value"
@@ -35,6 +47,7 @@
   import { SheetComponentProperties, SheetComponentPropertyTypeDefinition, PropertyTypeKinds, WithValue, SheetComponentPropertyType } from '@/common/sheetComponent';
   import { useTemplateEditorStore } from '@/store/templateEditor';
   import { computed } from 'vue';
+  import { useI18n } from 'vue-i18n';
 
   export interface Props {
     properties: SheetComponentProperties<SheetComponentPropertyTypeDefinition> | undefined,
@@ -53,6 +66,12 @@
       return payload.key != null && payload.key.length > 0 && payload.value != undefined;
     }
   })
+
+  const { t } = useI18n()
+
+  function translateKey(keyPrefix: string, key: string | number): string {
+    return t(`${keyPrefix}${key}`, `${key}`);
+  }
 
   function updateField<T extends WithValue<SheetComponentPropertyType>>(key: string, property: T, value: T["value"]) {
     console.log("PropertiesSettings: updateField: ", key, property, " = ", value)

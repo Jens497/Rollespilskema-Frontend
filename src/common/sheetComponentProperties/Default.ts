@@ -1,25 +1,30 @@
 import { PropertyTypeKinds as Kind, SheetComponentPropertyTypeDefinition } from "@/common/sheetComponent";
 
 export const properties = {
-  text: {
-    kind: Kind.String,
-    defaultValue: "Empty Label"
-  },
-  font: {
+  pos: {
     kind: Kind.Object,
     defaultValue: {
-      size: {
+      x: {
         kind: Kind.Number,
-        defaultValue: 14
+        defaultValue: 0
       },
-      bold: {
-        kind: Kind.Boolean,
-        defaultValue: false
+      y: {
+        kind: Kind.Number,
+        defaultValue: 0
+      }
+    }
+  },
+  size: {
+    kind: Kind.Object,
+    defaultValue: {
+      height: {
+        kind: Kind.Number,
+        defaultValue: 0
       },
-      italic: {
-        kind: Kind.Boolean,
-        defaultValue: false
-      },
+      width: {
+        kind: Kind.Number,
+        defaultValue: 0
+      }
     }
   }
 } as const;
