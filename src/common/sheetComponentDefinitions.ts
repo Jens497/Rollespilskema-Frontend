@@ -5,23 +5,18 @@ import LabelComponent from "@/components/templateEditor/sheet-components/LabelCo
 import { properties as boxProperties } from "@/common/sheetComponentProperties/Box"
 import BoxComponent from "@/components/templateEditor/sheet-components/BoxComponent.vue"
 import { DefineComponent } from 'vue';
-import { ObjectSheetComponentProperty, ObjectSheetComponentPropertyFields, PropertyTypeKinds, SheetComponentProperties, SheetComponentPropertyType, SheetComponentPropertyTypeDefinition, WithValue, propertyTypeKindsValues } from './sheetComponent';
-import { assert } from 'node:console';
+import { PropertyTypeKinds, SheetComponentProperties, SheetComponentPropertyType, SheetComponentPropertyTypeDefinition, WithValue } from './sheetComponent';
 
 
 export interface SheetComponentType<T extends SheetComponentPropertyTypeDefinition = SheetComponentPropertyTypeDefinition> {
-  name: keyof ComponentTypeFieldsMap
+  readonly name: keyof ComponentTypeFieldsMap
   image: string
-  propertyTypes: T
+  readonly propertyTypes: T
   vueComponent?: DefineComponent<unknown, unknown, any>
 }
 
 export interface SheetComponent<T extends SheetComponentPropertyTypeDefinition = SheetComponentPropertyTypeDefinition> {
   name: keyof ComponentTypeFieldsMap
-  pos: {
-    x: number
-    y: number
-  },
   properties: SheetComponentProperties<T & DefaultProperties>
 }
 
@@ -123,7 +118,6 @@ function setDefaultValue<T extends SheetComponentPropertyType>(component: T): Wi
   }
 }
 
-// TODO make defaults merge correctly too
 function setDefaultValues<T extends SheetComponentPropertyTypeDefinition>(definition: T): SheetComponentProperties<T> {
   const properties = Object.entries(definition).reduce((acc: { [key: string]: SheetComponentPropertyType }, [key, value]) => {
     return Object.assign(acc, { [key]: setDefaultValue(value) }) as { [key in keyof (T)]: WithValue<T[key]> }
@@ -135,10 +129,6 @@ function setDefaultValues<T extends SheetComponentPropertyTypeDefinition>(defini
 export function getDefault(componentType: SheetComponentType): SheetComponent {
   const testComponent: SheetComponent<typeof componentType.propertyTypes> = {
     name: componentType.name,
-    pos: {
-      x: 0,
-      y: 0
-    },
     properties: setDefaultValues(mergeObjectSheetComponentDefaults(defaultProperties, componentType.propertyTypes))
   };
   return testComponent

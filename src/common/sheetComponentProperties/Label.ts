@@ -1,28 +1,18 @@
-import { PropertyTypeKinds as Kind, SheetComponentPropertyTypeDefinition } from "@/common/sheetComponent";
+import {
+  booleanProperty,
+  numberProperty,
+  objectProperty,
+  stringProperty
+} from "@/common/sheetComponent";
 
 export const properties = {
-  text: {
-    kind: Kind.String,
-    defaultValue: "Empty Label"
-  },
-  font: {
-    kind: Kind.Object,
-    defaultValue: {
-      size: {
-        kind: Kind.Number,
-        defaultValue: 14
-      },
-      bold: {
-        kind: Kind.Boolean,
-        defaultValue: false
-      },
-      italic: {
-        kind: Kind.Boolean,
-        defaultValue: false
-      },
-    }
-  }
-} as const;
+  text: stringProperty("Empty Label"),
+  font: objectProperty({
+    size: numberProperty(14),
+    bold: booleanProperty(false),
+    italic: booleanProperty(false),
+  })
+};
 
-type _Properties = typeof properties;
-export interface Properties extends SheetComponentPropertyTypeDefinition, _Properties { }
+
+export type Properties = typeof properties;

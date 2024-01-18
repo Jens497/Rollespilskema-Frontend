@@ -15,8 +15,8 @@
 
   const borderWidth = computed(() => props.component.properties.border.value.width.value + "pt")
   const borderStyle = computed(() => props.component.properties.border.value.style.value)
-  const height = computed(() => (props.component.properties.size.value.height ?? 100) + 'px')
-  const width = computed(() => (props.component.properties.size.value.width ?? 100) + 'px')
+  const height = computed(() => (props.component.properties.size.value.height.value ?? 100) + 'px')
+  const width = computed(() => (props.component.properties.size.value.width.value ?? 100) + 'px')
 </script>
 
 

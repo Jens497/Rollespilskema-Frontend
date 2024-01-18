@@ -14,11 +14,10 @@ export type SheetComponentPropertyType =
   | BooleanSheetComponentProperty
   | NumberSheetComponentProperty
   | StringSheetComponentProperty
-  | EnumSheetComponentProperty<string | number>
+  | EnumSheetComponentProperty
   | ArraySheetComponentProperty<SheetComponentPropertyType>
   | ObjectSheetComponentProperty
   ;
-
 
 //#region ComponentProperty implementations
 export interface BaseSheetComponentProperty<T, K extends PropertyTypeKindsValues = PropertyTypeKindsValues> {
@@ -30,20 +29,15 @@ export interface BooleanSheetComponentProperty extends BaseSheetComponentPropert
 export interface NumberSheetComponentProperty extends BaseSheetComponentProperty<number, PropertyTypeKinds.Number> { }
 export interface StringSheetComponentProperty extends BaseSheetComponentProperty<string, PropertyTypeKinds.String> { }
 
-export interface EnumSheetComponentProperty<T extends number | string, K extends string = string, V extends { [key in K]: T extends any ? T : never } = { [key in K]: T }>
-  extends BaseSheetComponentProperty<V[keyof V], PropertyTypeKinds.Enum> {
-  values: V,
+
+export interface EnumSheetComponentProperty<T extends { [key in keyof T]: number } | { [key in keyof T]: string } = { [key: string]: number } | { [key: string]: string }>
+  extends BaseSheetComponentProperty<T[keyof T], PropertyTypeKinds.Enum> {
+  values: T,
 }
 
-type ElementType<T extends SheetComponentPropertyType> =
-  T extends any
-  ? keyof Omit<T, "default" | "kind"> extends never
-  ? T["kind"]
-  : WithoutDefault<T>
-  : never;
 
 export interface ArraySheetComponentProperty<T extends SheetComponentPropertyType> extends BaseSheetComponentProperty<PropertyToTsType<T>[], PropertyTypeKinds.Array> {
-  elementType: ElementType<T>,
+  elementType: T,
 }
 
 export type ObjectSheetComponentPropertyFields<T extends SheetComponentPropertyType = SheetComponentPropertyType> = {
@@ -56,21 +50,27 @@ export interface ObjectSheetComponentProperty<T extends ObjectSheetComponentProp
 //#endregion
 
 //#region Helper Types
-export type WithoutDefault<T extends SheetComponentPropertyType> = T extends any ? Omit<T, "default"> : never;
+export type WithoutDefault<T extends SheetComponentPropertyType> = T extends any ? Omit<T, "defaultValue"> : never;
 export type WithValue<T extends SheetComponentPropertyType>
   = T extends ObjectSheetComponentProperty ? ObjectWithValue<T>
   : T extends { kind: PropertyTypeKinds } ? T & { value: T["defaultValue"] }
   : never
   ;
 type ObjectWithValue<T extends ObjectSheetComponentProperty> = T & { value: { [key in keyof T["defaultValue"]]: WithValue<T["defaultValue"][key]> } }
-type DefinitionWithValue<T extends { [key: string]: SheetComponentPropertyType }> = T & { [key in keyof T]: WithValue<T[key]> }
+export type DefinitionWithValue<T extends { [key: string]: SheetComponentPropertyType }> = T & { [key in keyof T]: WithValue<T[key]> }
 
-
+type KindToTsTypeInternal<K>
+  = K extends PropertyTypeKinds.String ? string
+  : K extends PropertyTypeKinds.Number ? number
+  : K extends PropertyTypeKinds.Enum ? Record<string, string> | Record<string, number>
+  : K extends PropertyTypeKinds.Array ? unknown[]
+  : K extends PropertyTypeKinds.Object ? Record<string, SheetComponentPropertyType>
+  : never
+  ;
+type KindToTsType<K> = K extends any ? KindToTsTypeInternal<K> : never;
 type PropertyToTsTypeInternal<P extends SheetComponentPropertyType | WithoutDefault<SheetComponentPropertyType>>
-  = P extends BaseSheetComponentProperty<infer T, infer _> ? T
-  : never;
+  = P extends BaseSheetComponentProperty<infer T, infer K> ? unknown extends T ? KindToTsType<K> : T : never;
 type PropertyToTsType<P extends SheetComponentPropertyType | WithoutDefault<SheetComponentPropertyType>> = P extends any ? PropertyToTsTypeInternal<P> : never;
-
 
 type PropertyTranslationInternal<T extends SheetComponentPropertyType>
   = T extends ObjectSheetComponentProperty<infer F> ? PropertyFieldTranslation<F>
@@ -85,4 +85,55 @@ export type PropertyFieldTranslation<T extends { [key: string]: SheetComponentPr
 export type SheetComponentPropertyTypeDefinition = ObjectSheetComponentPropertyFields;
 export type SheetComponentProperties<T extends SheetComponentPropertyTypeDefinition> = T extends any ? DefinitionWithValue<T> : never;
 
+//#region defineProperty functions
+export function numberProperty(defaultValue: number = 0): NumberSheetComponentProperty {
+  return {
+    kind: PropertyTypeKinds.Number,
+    defaultValue
+  }
+}
 
+export function stringProperty(defaultValue: string = ""): StringSheetComponentProperty {
+  return {
+    kind: PropertyTypeKinds.String,
+    defaultValue
+  }
+}
+
+export function booleanProperty(defaultValue: boolean = false): BooleanSheetComponentProperty {
+  return {
+    kind: PropertyTypeKinds.Boolean,
+    defaultValue
+  }
+}
+
+export function enumProperty<const T extends { [key in keyof T]: T[key] }>(
+  values: T,
+  defaultValue: T[keyof T] = Object.values(values)[0] as T[keyof T]
+): EnumSheetComponentProperty<T> {
+  return {
+    kind: PropertyTypeKinds.Enum,
+    values,
+    defaultValue
+  }
+}
+
+export function arrayProperty<T extends SheetComponentPropertyType>
+  (
+    elementType: T,
+    defaultValue: PropertyToTsType<T>[] = []
+  ): ArraySheetComponentProperty<T> {
+  return {
+    kind: PropertyTypeKinds.Array,
+    elementType,
+    defaultValue: defaultValue
+  }
+}
+
+export function objectProperty<const T extends { [key in keyof T]: T[key] }>(defaultValue: T): ObjectSheetComponentProperty<T> {
+  return {
+    kind: PropertyTypeKinds.Object,
+    defaultValue
+  }
+}
+//#endregion

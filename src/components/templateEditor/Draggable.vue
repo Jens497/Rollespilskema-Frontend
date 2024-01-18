@@ -2,8 +2,8 @@
   <div
     ref="target"
     :style="{
-      top: component.pos.y + 'px',
-      left: component.pos.x + 'px',
+      top: component.properties.pos.value.y.value + 'px',
+      left: component.properties.pos.value.x.value + 'px',
     }"
     :class="{ selected: isSelected }"
     class="drag-component"
@@ -14,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-  import { SheetComponent } from '@/common/sheetComponent';
+  import { SheetComponent } from '@/common/sheetComponentDefinitions';
   import { useTemplateEditorStore } from '@/store/templateEditor';
   import { Position, useDraggable, useParentElement, useScroll } from '@vueuse/core';
   import { ref } from 'vue';
@@ -35,7 +35,10 @@
   const previousEvent = ref<'onMove' | 'onEnd' | 'onClick' | undefined>()
 
   useDraggable(target, {
-    initialValue: props.component.pos,
+    initialValue: {
+      x: props.component.properties.pos.value.x.value,
+      y: props.component.properties.pos.value.y.value,
+    },
     onMove: patchPosition,
     onEnd: onEnd,
     containerElement: parent,
@@ -51,9 +54,13 @@
     templateEditorStore.updateComponentById(
       props.componentId,
       {
-        pos: {
-          x: position.x + scroll.x.value,
-          y: position.y + scroll.y.value
+        properties: {
+          pos: {
+            value: {
+              x: { value: position.x + scroll.x.value },
+              y: { value: position.y + scroll.y.value }
+            }
+          }
         }
       }
     )

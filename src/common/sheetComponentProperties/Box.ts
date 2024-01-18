@@ -1,49 +1,23 @@
-import { PropertyTypeKinds as Kind, SheetComponentPropertyTypeDefinition } from "@/common/sheetComponent";
-
-
+import { enumProperty, numberProperty, objectProperty } from "@/common/sheetComponent";
 
 export const properties = {
-  size: {
-    kind: Kind.Object,
-    defaultValue: {
-      height: {
-        kind: Kind.Number,
-        defaultValue: 100
-      },
-      // width: {
-      //   kind: Kind.Number,
-      //   default: 100
-      // }
-    }
-  },
-  border: {
-    kind: Kind.Object,
-    defaultValue: {
-      width: {
-        kind: Kind.Number,
-        defaultValue: 14
-      },
-      style: {
-        kind: Kind.Enum,
-        values: {
-          None: "none",
-          Hidden: "hidden",
-          Dotted: "dotted",
-          Dashed: "dashed",
-          Solid: "solid",
-          Double: "double",
-          Groove: "groove",
-          Ridge: "ridge",
-          Inset: "inset",
-          Outset: "outset",
-        },
-        defaultValue: "solid"
-      },
-    }
-  }
-} as const;
-
-type _Properties = typeof properties
-export interface Properties extends SheetComponentPropertyTypeDefinition, _Properties {
-
+  size: objectProperty({
+    height: numberProperty(100),
+    width: numberProperty(100),
+  }),
+  border: objectProperty({
+    width: numberProperty(4),
+    style: enumProperty({
+      Solid: "solid",
+      Dotted: "dotted",
+      Dashed: "dashed",
+      Double: "double",
+      Groove: "groove",
+      Ridge: "ridge",
+      Inset: "inset",
+      Outset: "outset"
+    })
+  })
 }
+
+export type Properties = typeof properties
