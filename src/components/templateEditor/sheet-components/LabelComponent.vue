@@ -2,11 +2,11 @@
   <p
     class="label-component"
     :class="{
-      'font-weight-bold': props.component.properties.font.value.bold.value,
-      'font-italic': props.component.properties.font.value.italic.value
+      'font-weight-bold': props.component.properties.internal.font.value.bold.value,
+      'font-italic': props.component.properties.internal.font.value.italic.value
     }"
   >
-    {{ component.properties.text.value }}
+    {{ component.properties.internal.text.value }}
   </p>
 </template>
 
@@ -21,7 +21,7 @@
   }
 
   const props = defineProps<Props>()
-  const fontSize = computed(() => props.component.properties.font.value.size.value + 'pt')
+  const fontSize = computed(() => props.component.properties.internal.font.value.size.value + 'pt')
 </script>
 
 

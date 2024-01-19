@@ -2,8 +2,8 @@
   <div
     ref="target"
     :style="{
-      top: component.properties.pos.value.y.value - totalBorderWidth + 'px',
-      left: component.properties.pos.value.x.value - totalBorderWidth + 'px',
+      top: component.properties.common.pos.value.y.value - totalBorderWidth + 'px',
+      left: component.properties.common.pos.value.x.value - totalBorderWidth + 'px',
     }"
     :class="{ selected: isSelected }"
     class="drag-component"
@@ -47,8 +47,8 @@
 
   useDraggable(target, {
     initialValue: {
-      x: props.component.properties.pos.value.x.value,
-      y: props.component.properties.pos.value.y.value,
+      x: props.component.properties.common.pos.value.x.value,
+      y: props.component.properties.common.pos.value.y.value,
     },
     onMove: patchPosition,
     onEnd: onEnd,
@@ -66,10 +66,12 @@
       props.componentId,
       {
         properties: {
-          pos: {
-            value: {
-              x: { value: position.x + scroll.x.value },
-              y: { value: position.y + scroll.y.value }
+          common: {
+            pos: {
+              value: {
+                x: { value: position.x + scroll.x.value },
+                y: { value: position.y + scroll.y.value }
+              }
             }
           }
         }

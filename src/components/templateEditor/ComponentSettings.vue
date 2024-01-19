@@ -2,8 +2,16 @@
   <VSheet v-if="templateEditorStore.selectedComponentId != undefined && templateEditorStore.selectedComponent != undefined" class="settingsSheet">
     <PropertiesSettings
       class="propertySettings"
+      property-group="common"
       :component-id="templateEditorStore.selectedComponentId"
-      :properties="templateEditorStore.selectedComponent?.properties"
+      :properties="templateEditorStore.selectedComponent?.properties.common"
+      @update-property="onPropertyUpdate"
+    />
+    <PropertiesSettings
+      class="propertySettings"
+      property-group="internal"
+      :component-id="templateEditorStore.selectedComponentId"
+      :properties="templateEditorStore.selectedComponent?.properties.internal"
       @update-property="onPropertyUpdate"
     />
   </VSheet>
@@ -33,7 +41,7 @@
   }
 
   .propertySettings {
-    position: absolute;
+    position: relative;
     width: 100%;
   }
 </style>

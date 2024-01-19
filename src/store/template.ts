@@ -17,8 +17,8 @@ export const useTemplateStore = defineStore('template', {
   actions: {
     createDummyData(): Template {
       return componentTypesToModels(this.componentTypes).reduce((acc, comp, i) => {
-        comp.properties.pos.value.x.value += 100 * i;
-        comp.properties.pos.value.y.value += 100 * i;
+        comp.properties.common.pos.value.x.value += 100 * i;
+        comp.properties.common.pos.value.y.value += 100 * i;
         const id = crypto.randomUUID();
         return { ...acc, ...{ [id]: comp } };
       }, {})

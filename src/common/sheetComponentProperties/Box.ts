@@ -16,7 +16,7 @@ export const properties = {
     })
   })
 }
-export const commonDefaults: CommonPropertiesOverrides = {
+export const commonOverrides: CommonPropertiesOverrides = {
   size: objectProperty({
     height: numberProperty(100),
     width: numberProperty(100),

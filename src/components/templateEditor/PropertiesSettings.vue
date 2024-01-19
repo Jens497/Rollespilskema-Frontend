@@ -35,6 +35,7 @@
         <PropertiesSettings
           :component-id="componentId"
           :properties="property.value"
+          :property-group="propertyGroup"
           :property-path="`${propertyPath}_${key}`"
           @update-property="updateField(`${key}`, property, { ...property.value, ...{ [$event.key]: $event.value } })"
         />
@@ -45,7 +46,7 @@
 
 <script setup lang="ts">
   import { PropertyTypeKinds, WithValue, SheetComponentPropertyType } from '@/common/sheetComponent';
-  import { SheetComponentProperties, SheetComponentPropertyTypeDefinition } from '@/common/sheetComponentDefinitions';
+  import { SheetComponent, SheetComponentProperties, SheetComponentPropertyTypeDefinition } from '@/common/sheetComponentDefinitions';
   import { useTemplateEditorStore } from '@/store/templateEditor';
   import { computed } from 'vue';
   import { useI18n } from 'vue-i18n';
@@ -53,14 +54,16 @@
   export interface Props {
     properties: SheetComponentProperties<SheetComponentPropertyTypeDefinition> | undefined,
     componentId: string,
-    propertyPath?: string
+    propertyGroup: keyof SheetComponent["properties"],
+    propertyPath?: string,
   }
 
   const templateEditorStore = useTemplateEditorStore()
 
   const props = withDefaults(defineProps<Props>(), { propertyPath: "" })
 
-  const keyPrefix = computed(() => `Components._${templateEditorStore.template[props.componentId].name}.${props.propertyPath ? props.propertyPath + '.' : ''}`)
+  const componentPrefixKey = computed(() => props.propertyGroup != "common" ? `._${templateEditorStore.template[props.componentId].name}` : "")
+  const keyPrefix = computed(() => `Properties.${props.propertyGroup}${componentPrefixKey.value}.${props.propertyPath ? props.propertyPath + '.' : ''}`)
 
   const emit = defineEmits({
     updateProperty<T extends WithValue<SheetComponentPropertyType>>(payload: { key: string, value: T, componentId: string }) {
