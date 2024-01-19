@@ -20,15 +20,15 @@
 <script setup lang="ts">
   import { SheetComponentPropertyType, WithValue } from '@/common/sheetComponent';
   import { useTemplateEditorStore } from '@/store/templateEditor';
-  import PropertiesSettings from './PropertiesSettings.vue';
+  import PropertiesSettings, { type EmitUpdatePropertyParams } from './PropertiesSettings.vue';
 
 
   const templateEditorStore = useTemplateEditorStore();
 
-  function onPropertyUpdate<T extends WithValue<SheetComponentPropertyType>>(payload: { key: string, value: T, componentId: string }): void {
-    const { key, value, componentId: id } = payload;
+  function onPropertyUpdate<T extends WithValue<SheetComponentPropertyType>>(payload: EmitUpdatePropertyParams<T>): void {
+    const { propertyGroup, key, value, componentId: id } = payload;
     console.log("ComponentSettings: onPropertyUpdate: ", key, " = ", value)
-    templateEditorStore.updateComponentById(id, { properties: { [key]: value } })
+    templateEditorStore.updateComponentById(id, { properties: { [propertyGroup]: { [key]: value } } })
   }
 </script>
 
