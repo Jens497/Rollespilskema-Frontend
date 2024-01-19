@@ -1,10 +1,7 @@
 import { enumProperty, numberProperty, objectProperty } from "@/common/sheetComponent";
+import { CommonPropertiesOverrides } from "./Common";
 
 export const properties = {
-  size: objectProperty({
-    height: numberProperty(100),
-    width: numberProperty(100),
-  }),
   border: objectProperty({
     width: numberProperty(4),
     style: enumProperty({
@@ -18,6 +15,12 @@ export const properties = {
       Outset: "outset"
     })
   })
+}
+export const commonDefaults: CommonPropertiesOverrides = {
+  size: objectProperty({
+    height: numberProperty(100),
+    width: numberProperty(100),
+  }),
 }
 
 export type Properties = typeof properties

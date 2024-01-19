@@ -38,7 +38,7 @@
 
   templateEditorStore.template = props.templateId ? templateStore.templates[props.templateId] : templateStore.createDummyData();
 
-  function onAddComponentType(componentType: SheetComponentType) {
+  function onAddComponentType<T extends SheetComponentType>(componentType: T) {
     const component = getDefault(componentType)
     templateEditorStore.addComponents(component)
   }

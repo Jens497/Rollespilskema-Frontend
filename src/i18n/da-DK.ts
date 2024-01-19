@@ -1,8 +1,7 @@
-import { ComponentsTranslation } from "@/util/TranslationTypes"
+import { type ComponentsTranslation } from "@/util/TranslationTypes"
 
 
 const components: ComponentsTranslation = {
-  "Box": "Boks",
   "Label": "Tekst",
   "_Label": {
     "font": "font",
@@ -16,7 +15,15 @@ const components: ComponentsTranslation = {
   "Text Input": "Tekstfelt",
   "Image": "Billede",
   "Line": "Linje",
-  "Info Circle": "Informationscirkel"
+  "Info Circle": "Informationscirkel",
+  "Box": "Boks",
+  "_Box": {
+    "border": "kant",
+    "_border": {
+      "style": "stil",
+      "width": "brede"
+    },
+  },
 }
 
 const translations = {
@@ -31,8 +38,6 @@ const translations = {
       "title": "Skabelon"
     }
   },
-  "Components": components
+  "Components": components,
 } as const
 export default translations
-
-translations.Components._Label

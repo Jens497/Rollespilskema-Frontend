@@ -22,7 +22,7 @@ export type SheetComponentPropertyType =
 //#region ComponentProperty implementations
 export interface BaseSheetComponentProperty<T, K extends PropertyTypeKindsValues = PropertyTypeKindsValues> {
   readonly kind: K extends any ? K : never,
-  readonly defaultValue: T,
+  defaultValue: T,
 }
 
 export interface BooleanSheetComponentProperty extends BaseSheetComponentProperty<boolean, PropertyTypeKinds.Boolean> { }
@@ -80,10 +80,13 @@ type PropertyFieldTranslationInternal<T extends { [key: string]: SheetComponentP
   = { [key in keyof T]: string }
   & { [key in keyof T & string as `_${PropertyTranslationInternal<T[key]> extends never ? never : key}`]: PropertyTranslationInternal<T[key]> };
 export type PropertyFieldTranslation<T extends { [key: string]: SheetComponentPropertyType }> = T extends any ? PropertyFieldTranslationInternal<T> : never;
-//#endregion
 
-export type SheetComponentPropertyTypeDefinition = ObjectSheetComponentPropertyFields;
-export type SheetComponentProperties<T extends SheetComponentPropertyTypeDefinition> = T extends any ? DefinitionWithValue<T> : never;
+export type PartialProperty<T extends SheetComponentPropertyType> =
+  T extends ObjectSheetComponentProperty<infer F>
+  ? { kind: PropertyTypeKinds.Object, defaultValue: PartialPropertyDefinition<F> }
+  : T;
+export type PartialPropertyDefinition<T extends ObjectSheetComponentPropertyFields> = T extends any ? { [key in keyof T]?: PartialProperty<T[key]> } : never
+//#endregion
 
 //#region defineProperty functions
 export function numberProperty(defaultValue: number = 0): NumberSheetComponentProperty {

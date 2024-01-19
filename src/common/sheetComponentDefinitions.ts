@@ -1,12 +1,14 @@
 import imgUrl from '@/assets/logo.png';
-import { type Properties as DefaultProperties, properties as defaultProperties } from "@/common/sheetComponentProperties/Default"
+import { type CommonProperties, commonProperties } from "@/common/sheetComponentProperties/Common"
 import { properties as labelProperties } from "@/common/sheetComponentProperties/Label"
 import LabelComponent from "@/components/templateEditor/sheet-components/LabelComponent.vue"
 import { properties as boxProperties } from "@/common/sheetComponentProperties/Box"
 import BoxComponent from "@/components/templateEditor/sheet-components/BoxComponent.vue"
 import { DefineComponent } from 'vue';
-import { PropertyTypeKinds, SheetComponentProperties, SheetComponentPropertyType, SheetComponentPropertyTypeDefinition, WithValue } from './sheetComponent';
+import { DefinitionWithValue, ObjectSheetComponentPropertyFields, PropertyTypeKinds, SheetComponentPropertyType, WithValue } from './sheetComponent';
 
+export type SheetComponentPropertyTypeDefinition = ObjectSheetComponentPropertyFields;
+export type SheetComponentProperties<T extends SheetComponentPropertyTypeDefinition> = T extends any ? DefinitionWithValue<T> : never;
 
 export interface SheetComponentType<T extends SheetComponentPropertyTypeDefinition = SheetComponentPropertyTypeDefinition> {
   readonly name: keyof ComponentTypeFieldsMap
@@ -17,7 +19,7 @@ export interface SheetComponentType<T extends SheetComponentPropertyTypeDefiniti
 
 export interface SheetComponent<T extends SheetComponentPropertyTypeDefinition = SheetComponentPropertyTypeDefinition> {
   name: keyof ComponentTypeFieldsMap
-  properties: SheetComponentProperties<T & DefaultProperties>
+  properties: SheetComponentProperties<T & CommonProperties>
 }
 
 export const COMPONENT_TYPE_MAP = {
@@ -129,7 +131,7 @@ function setDefaultValues<T extends SheetComponentPropertyTypeDefinition>(defini
 export function getDefault(componentType: SheetComponentType): SheetComponent {
   const testComponent: SheetComponent<typeof componentType.propertyTypes> = {
     name: componentType.name,
-    properties: setDefaultValues(mergeObjectSheetComponentDefaults(defaultProperties, componentType.propertyTypes))
+    properties: setDefaultValues(mergeObjectSheetComponentDefaults(commonProperties, componentType.propertyTypes))
   };
   return testComponent
 }

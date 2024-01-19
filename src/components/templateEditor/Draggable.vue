@@ -2,8 +2,8 @@
   <div
     ref="target"
     :style="{
-      top: component.properties.pos.value.y.value + 'px',
-      left: component.properties.pos.value.x.value + 'px',
+      top: component.properties.pos.value.y.value - totalBorderWidth + 'px',
+      left: component.properties.pos.value.x.value - totalBorderWidth + 'px',
     }"
     :class="{ selected: isSelected }"
     class="drag-component"
@@ -17,7 +17,8 @@
   import { SheetComponent } from '@/common/sheetComponentDefinitions';
   import { useTemplateEditorStore } from '@/store/templateEditor';
   import { Position, useDraggable, useParentElement, useScroll } from '@vueuse/core';
-  import { ref } from 'vue';
+  import { computed, ref } from 'vue';
+  import { useTheme } from 'vuetify/lib/framework.mjs';
   type Props = {
     component: SheetComponent,
     componentId: string,
@@ -28,6 +29,16 @@
     { isSelected: false }
   )
 
+  const borderWidth = 2
+  const paddingWidth = 2
+  const totalBorderWidth = borderWidth + paddingWidth
+
+  function px(n: number): string {
+    return `${n}px`
+  }
+
+  const theme = useTheme()
+  const borderColor = computed(() => theme.current.value.colors.primary)
   const templateEditorStore = useTemplateEditorStore()
   const target = ref<HTMLElement | null>(null)
   const parent = useParentElement()
@@ -83,12 +94,11 @@
     width: fit-content;
     height: fit-content;
     border-style: none;
-    --border-width: 2px;
-    margin: var(--border-width);
+    padding: calc(v-bind(px(borderWidth)) + v-bind(px(paddingWidth)));
   }
 
   .drag-component.selected {
-    border: var(--border-width) solid;
-    margin: 0;
+    border: v-bind('px(borderWidth)') solid v-bind(borderColor);
+    padding: v-bind('px(paddingWidth)');
   }
 </style>

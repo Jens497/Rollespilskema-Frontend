@@ -44,7 +44,8 @@
 </template>
 
 <script setup lang="ts">
-  import { SheetComponentProperties, SheetComponentPropertyTypeDefinition, PropertyTypeKinds, WithValue, SheetComponentPropertyType } from '@/common/sheetComponent';
+  import { PropertyTypeKinds, WithValue, SheetComponentPropertyType } from '@/common/sheetComponent';
+  import { SheetComponentProperties, SheetComponentPropertyTypeDefinition } from '@/common/sheetComponentDefinitions';
   import { useTemplateEditorStore } from '@/store/templateEditor';
   import { computed } from 'vue';
   import { useI18n } from 'vue-i18n';
