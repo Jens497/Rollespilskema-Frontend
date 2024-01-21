@@ -26,8 +26,10 @@
       <template v-else-if="property.kind == PropertyTypeKinds.Enum">
         <VCombobox
           :label="translateKey(keyPrefix, key)"
-          :items="Object.keys(property.values)"
-          @update:model-value="$event && updateField(`${key}`, property, property.values[$event])"
+          :items="enumToItems(property)"
+          :model-value="property.value"
+          :return-object="false"
+          @update:model-value="$event && updateField(`${key}`, property, $event)"
         />
       </template>
       <template v-else-if="property.kind == PropertyTypeKinds.Object">
@@ -45,7 +47,7 @@
 </template>
 
 <script setup lang="ts">
-  import { PropertyTypeKinds, WithValue, SheetComponentPropertyType } from '@/common/sheetComponent';
+  import { PropertyTypeKinds, WithValue, SheetComponentPropertyType, EnumSheetComponentProperty } from '@/common/sheetComponent';
   import { SheetComponent, SheetComponentProperties, SheetComponentPropertyTypeDefinition } from '@/common/sheetComponentDefinitions';
   import { useTemplateEditorStore } from '@/store/templateEditor';
   import { computed } from 'vue';
@@ -87,4 +89,7 @@
     emit("updateProperty", { propertyGroup: props.propertyGroup, key, value: newProperty, componentId: props.componentId })
   }
 
+  function enumToItems(enumProperty: EnumSheetComponentProperty): { title: string, value: string | number }[] {
+    return Object.entries(enumProperty.values).map(([key, value]) => ({ title: key, value: value }))
+  }
 </script>
