@@ -22,6 +22,16 @@ const components: PropertyTranslations = {
       "border": "kant",
       "_border": {
         "style": "stil",
+        "_style": {
+          "Solid": "Solid",
+          "Dashed": "Striber",
+          "Dotted": "Prikker",
+          "Double": "Dobbelt",
+          "Groove": "Rillet",
+          "Inset": "Indsat",
+          "Outset": "Udsat",
+          "Ridge": "Bakket"
+        },
         "width": "brede"
       },
     },

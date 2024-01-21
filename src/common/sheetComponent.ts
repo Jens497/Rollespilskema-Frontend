@@ -74,6 +74,7 @@ type PropertyToTsType<P extends SheetComponentPropertyType | WithoutDefault<Shee
 
 type PropertyTranslationInternal<T extends SheetComponentPropertyType>
   = T extends ObjectSheetComponentProperty<infer F> ? PropertyFieldTranslation<F>
+  : T extends EnumSheetComponentProperty<infer V> ? { [key in keyof V]: string }
   : never
   ;
 type PropertyFieldTranslationInternal<T extends { [key: string]: SheetComponentPropertyType }>
