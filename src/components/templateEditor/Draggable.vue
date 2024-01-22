@@ -25,10 +25,11 @@
 <script setup lang="ts">
   import { SheetComponent } from '@/common/sheetComponentDefinitions';
   import { useTemplateEditorStore } from '@/store/templateEditor';
-  import { approxEqual } from '@/util/NumberUtils';
   import { Position, useDraggable, useParentElement, useScroll } from '@vueuse/core';
   import { computed, ref } from 'vue';
   import { useTheme } from 'vuetify/lib/framework.mjs';
+  import { px } from '@/util/CssUnits'
+
   type Props = {
     component: SheetComponent,
     componentId: string,
@@ -132,7 +133,7 @@
   }
 
   function patchSize(isTop: boolean, isLeft: boolean, position: Position, _event: PointerEvent) {
-    const offset = {
+    const oldPos = {
       x: props.component.properties.common.pos.value.x.value,
       y: props.component.properties.common.pos.value.y.value
     }
@@ -142,12 +143,28 @@
     }
 
     const newSize = {
-      width: isLeft
-        ? oldSize.width - (position.x + scroll.x.value - offset.x)
-        : position.x + scroll.x.value - offset.x,
-      height: isTop
-        ? oldSize.height - (position.y + scroll.y.value - offset.y)
-        : position.y + scroll.y.value - offset.y,
+      width: Math.max(
+        isLeft
+          ? oldSize.width - (position.x + scroll.x.value - oldPos.x)
+          : position.x + scroll.x.value - oldPos.x,
+        0),
+      height: Math.max(
+        isTop
+          ? oldSize.height - (position.y + scroll.y.value - oldPos.y)
+          : position.y + scroll.y.value - oldPos.y,
+        0),
+    }
+    const newPos = {
+      x: !isLeft ?
+        oldPos.x
+        : newSize.width == 0
+          ? oldPos.x + oldSize.width
+          : position.x + scroll.x.value,
+      y: !isTop ?
+        oldPos.y
+        : newSize.height == 0
+          ? oldPos.y + oldSize.height
+          : position.y + scroll.y.value,
     }
     templateEditorStore.updateComponentById(
       props.componentId,
@@ -162,8 +179,8 @@
             },
             pos: {
               value: {
-                x: { value: isLeft ? position.x + scroll.x.value : offset.x },
-                y: { value: isTop ? position.y + scroll.y.value : offset.y },
+                x: { value: newPos.x },
+                y: { value: newPos.y },
               }
             }
           }
@@ -181,10 +198,6 @@
     }
 
     previousEvent.value = 'onClick'
-  }
-
-  function px(n: number): string {
-    return `${n}px`
   }
 </script>
 
