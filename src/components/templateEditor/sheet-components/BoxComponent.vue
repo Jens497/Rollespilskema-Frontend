@@ -3,6 +3,7 @@
 </template>
 
 <script lang=ts setup>
+  import { px } from '@/util/CssUnits'
   import { SheetComponent } from '@/common/sheetComponentDefinitions';
   import { Properties } from '@/common/sheetComponentProperties/Box';
   import { computed } from 'vue';
@@ -13,10 +14,10 @@
 
   const props = defineProps<Props>()
 
-  const borderWidth = computed(() => props.component.properties.internal.border.value.width.value + "pt")
+  const borderWidth = computed(() => props.component.properties.internal.border.value.width.value)
   const borderStyle = computed(() => props.component.properties.internal.border.value.style.value)
-  const height = computed(() => (props.component.properties.common.size.value.height.value ?? 100) + 'px')
-  const width = computed(() => (props.component.properties.common.size.value.width.value ?? 100) + 'px')
+  const height = computed(() => props.component.properties.common.size.value.height.value)
+  const width = computed(() => props.component.properties.common.size.value.width.value)
 </script>
 
 
@@ -25,10 +26,11 @@
     width: fit-content;
     min-width: max-content;
     height: fit-content;
-    border-width: v-bind(borderWidth);
+    box-sizing: content-box;
+    border-width: v-bind(px(borderWidth));
     border-style: v-bind(borderStyle);
-    height: v-bind(height);
-    width: v-bind(width);
+    height: v-bind(px(height));
+    width: v-bind(px(width));
     /* border-radius: ; */
   }
 </style>
