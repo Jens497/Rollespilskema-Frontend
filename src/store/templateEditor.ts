@@ -36,8 +36,8 @@ export const useTemplateEditorStore = defineStore('templateEditor', {
 
       if (matchingEntry) {
         const [id] = matchingEntry
-        this.$patch((state: State) => {
-          state.template[id] = Object.assign(state.template[id], updates);
+        this.$patch({
+          template: { [id]: updates }
         })
       } else {
         console.debug("useTemplateEditorStore: updateComponent: Component not found", component)
