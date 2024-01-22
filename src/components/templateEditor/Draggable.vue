@@ -1,49 +1,62 @@
 <template>
   <div
-    ref="target"
+    :class="{ selected: isSelected }"
+    class="drag-component"
     :style="{
       top: component.properties.common.pos.value.y.value - totalBorderWidth + 'px',
       left: component.properties.common.pos.value.x.value - totalBorderWidth + 'px',
     }"
-    :class="{ selected: isSelected }"
-    class="drag-component"
-    @click="onClick"
   >
-    <slot :component="component" />
+    <template v-if="isSelected">
+      <div ref="cornerTL" class="corner" :style="{ top: px(-cornerSize * 0.75), left: px(-cornerSize * 0.75) }" />
+      <div ref="cornerTR" class="corner" :style="{ top: px(-cornerSize * 0.75), right: px(-cornerSize * 0.75) }" />
+      <div ref="cornerBL" class="corner" :style="{ bottom: px(-cornerSize * 0.75), left: px(-cornerSize * 0.75) }" />
+      <div ref="cornerBR" class="corner" :style="{ bottom: px(-cornerSize * 0.75), right: px(-cornerSize * 0.75) }" />
+    </template>
+    <div
+      ref="target"
+      @click="onClick"
+    >
+      <slot :component="component" />
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
   import { SheetComponent } from '@/common/sheetComponentDefinitions';
   import { useTemplateEditorStore } from '@/store/templateEditor';
+  import { approxEqual } from '@/util/NumberUtils';
   import { Position, useDraggable, useParentElement, useScroll } from '@vueuse/core';
   import { computed, ref } from 'vue';
   import { useTheme } from 'vuetify/lib/framework.mjs';
   type Props = {
     component: SheetComponent,
     componentId: string,
-    isSelected?: boolean
+    isSelected?: boolean,
+    borderWidth?: number,
+    paddingWidth?: number,
+    cornerSize?: number
   }
-  const props = withDefaults(
-    defineProps<Props>(),
-    { isSelected: false }
-  )
+  const props = withDefaults(defineProps<Props>(), {
+    isSelected: false,
+    borderWidth: 2,
+    paddingWidth: 4,
+    cornerSize: 10
+  })
 
-  const borderWidth = 2
-  const paddingWidth = 2
-  const totalBorderWidth = borderWidth + paddingWidth
-
-  function px(n: number): string {
-    return `${n}px`
-  }
+  const totalBorderWidth = computed(() => props.borderWidth + props.paddingWidth)
 
   const theme = useTheme()
   const borderColor = computed(() => theme.current.value.colors.primary)
   const templateEditorStore = useTemplateEditorStore()
+  const cornerTL = ref<HTMLElement | null>(null)
+  const cornerTR = ref<HTMLElement | null>(null)
+  const cornerBL = ref<HTMLElement | null>(null)
+  const cornerBR = ref<HTMLElement | null>(null)
   const target = ref<HTMLElement | null>(null)
   const parent = useParentElement()
   const scroll = useScroll(parent)
-  const previousEvent = ref<'onMove' | 'onEnd' | 'onClick' | undefined>()
+  const previousEvent = ref<'onMove' | 'onEnd' | 'onClick' | 'onResize' | undefined>()
 
   useDraggable(target, {
     initialValue: {
@@ -55,6 +68,44 @@
     containerElement: parent,
     draggingElement: parent,
   })
+
+  useDraggable(cornerTL, {
+    initialValue: {
+      x: props.component.properties.common.size.value.width.value,
+      y: props.component.properties.common.size.value.height.value,
+    },
+    onMove: (pos, event) => patchSize(true, true, pos, event),
+    containerElement: parent,
+    draggingElement: parent,
+  })
+  useDraggable(cornerTR, {
+    initialValue: {
+      x: props.component.properties.common.size.value.width.value,
+      y: props.component.properties.common.size.value.height.value,
+    },
+    onMove: (pos, event) => patchSize(true, false, pos, event),
+    containerElement: parent,
+    draggingElement: parent,
+  })
+  useDraggable(cornerBL, {
+    initialValue: {
+      x: props.component.properties.common.size.value.width.value,
+      y: props.component.properties.common.size.value.height.value,
+    },
+    onMove: (pos, event) => patchSize(false, true, pos, event),
+    containerElement: parent,
+    draggingElement: parent,
+  })
+  useDraggable(cornerBR, {
+    initialValue: {
+      x: props.component.properties.common.size.value.width.value,
+      y: props.component.properties.common.size.value.height.value,
+    },
+    onMove: (pos, event) => patchSize(false, false, pos, event),
+    containerElement: parent,
+    draggingElement: parent,
+  })
+
   function onEnd(_pos: Position, _event: PointerEvent) {
     if (previousEvent.value == 'onMove') {
       previousEvent.value = 'onEnd'
@@ -80,6 +131,48 @@
     previousEvent.value = 'onMove';
   }
 
+  function patchSize(isTop: boolean, isLeft: boolean, position: Position, _event: PointerEvent) {
+    const offset = {
+      x: props.component.properties.common.pos.value.x.value,
+      y: props.component.properties.common.pos.value.y.value
+    }
+    const oldSize = {
+      width: props.component.properties.common.size.value.width.value,
+      height: props.component.properties.common.size.value.height.value,
+    }
+
+    const newSize = {
+      width: isLeft
+        ? oldSize.width - (position.x + scroll.x.value - offset.x)
+        : position.x + scroll.x.value - offset.x,
+      height: isTop
+        ? oldSize.height - (position.y + scroll.y.value - offset.y)
+        : position.y + scroll.y.value - offset.y,
+    }
+    templateEditorStore.updateComponentById(
+      props.componentId,
+      {
+        properties: {
+          common: {
+            size: {
+              value: {
+                width: { value: newSize.width },
+                height: { value: newSize.height }
+              }
+            },
+            pos: {
+              value: {
+                x: { value: isLeft ? position.x + scroll.x.value : offset.x },
+                y: { value: isTop ? position.y + scroll.y.value : offset.y },
+              }
+            }
+          }
+        }
+      }
+    )
+    previousEvent.value = 'onResize';
+  }
+
   function onClick(_event: MouseEvent) {
     if (previousEvent.value != 'onEnd') {
       templateEditorStore.selectedComponent != props.component
@@ -88,6 +181,10 @@
     }
 
     previousEvent.value = 'onClick'
+  }
+
+  function px(n: number): string {
+    return `${n}px`
   }
 </script>
 
@@ -102,5 +199,12 @@
   .drag-component.selected {
     border: v-bind('px(borderWidth)') solid v-bind(borderColor);
     padding: v-bind('px(paddingWidth)');
+  }
+
+  .corner {
+    position: absolute;
+    background-color: v-bind(borderColor);
+    height: v-bind('px(cornerSize)');
+    width: v-bind('px(cornerSize)');
   }
 </style>
