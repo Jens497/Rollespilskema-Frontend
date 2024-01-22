@@ -29,6 +29,7 @@
   import { computed, ref } from 'vue';
   import { useTheme } from 'vuetify/lib/framework.mjs';
   import { px } from '@/util/CssUnits'
+  import useResizeCorners from '@/composables/useResizeCorners';
 
   type Props = {
     component: SheetComponent,
@@ -70,41 +71,18 @@
     draggingElement: parent,
   })
 
-  useDraggable(cornerTL, {
-    initialValue: {
-      x: props.component.properties.common.size.value.width.value,
-      y: props.component.properties.common.size.value.height.value,
+
+  useResizeCorners({
+    corners: {
+      topLeft: cornerTL,
+      topRight: cornerTR,
+      bottomLeft: cornerBL,
+      bottomRight: cornerBR
     },
-    onMove: (pos, event) => patchSize(true, true, pos, event),
-    containerElement: parent,
-    draggingElement: parent,
-  })
-  useDraggable(cornerTR, {
-    initialValue: {
-      x: props.component.properties.common.size.value.width.value,
-      y: props.component.properties.common.size.value.height.value,
-    },
-    onMove: (pos, event) => patchSize(true, false, pos, event),
-    containerElement: parent,
-    draggingElement: parent,
-  })
-  useDraggable(cornerBL, {
-    initialValue: {
-      x: props.component.properties.common.size.value.width.value,
-      y: props.component.properties.common.size.value.height.value,
-    },
-    onMove: (pos, event) => patchSize(false, true, pos, event),
-    containerElement: parent,
-    draggingElement: parent,
-  })
-  useDraggable(cornerBR, {
-    initialValue: {
-      x: props.component.properties.common.size.value.width.value,
-      y: props.component.properties.common.size.value.height.value,
-    },
-    onMove: (pos, event) => patchSize(false, false, pos, event),
-    containerElement: parent,
-    draggingElement: parent,
+    componentId: props.componentId,
+    component: props.component,
+    scroll: scroll,
+    containerElement: parent
   })
 
   function onEnd(_pos: Position, _event: PointerEvent) {
@@ -132,63 +110,6 @@
     previousEvent.value = 'onMove';
   }
 
-  function patchSize(isTop: boolean, isLeft: boolean, position: Position, _event: PointerEvent) {
-    const oldPos = {
-      x: props.component.properties.common.pos.value.x.value,
-      y: props.component.properties.common.pos.value.y.value
-    }
-    const oldSize = {
-      width: props.component.properties.common.size.value.width.value,
-      height: props.component.properties.common.size.value.height.value,
-    }
-
-    const newSize = {
-      width: Math.max(
-        isLeft
-          ? oldSize.width - (position.x + scroll.x.value - oldPos.x)
-          : position.x + scroll.x.value - oldPos.x,
-        0),
-      height: Math.max(
-        isTop
-          ? oldSize.height - (position.y + scroll.y.value - oldPos.y)
-          : position.y + scroll.y.value - oldPos.y,
-        0),
-    }
-    const newPos = {
-      x: !isLeft ?
-        oldPos.x
-        : newSize.width == 0
-          ? oldPos.x + oldSize.width
-          : position.x + scroll.x.value,
-      y: !isTop ?
-        oldPos.y
-        : newSize.height == 0
-          ? oldPos.y + oldSize.height
-          : position.y + scroll.y.value,
-    }
-    templateEditorStore.updateComponentById(
-      props.componentId,
-      {
-        properties: {
-          common: {
-            size: {
-              value: {
-                width: { value: newSize.width },
-                height: { value: newSize.height }
-              }
-            },
-            pos: {
-              value: {
-                x: { value: newPos.x },
-                y: { value: newPos.y },
-              }
-            }
-          }
-        }
-      }
-    )
-    previousEvent.value = 'onResize';
-  }
 
   function onClick(_event: MouseEvent) {
     if (previousEvent.value != 'onEnd') {
