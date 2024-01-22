@@ -1,7 +1,5 @@
 <template>
   <div
-    :class="{ selected: isSelected }"
-    class="drag-component"
     :style="{
       top: component.properties.common.pos.value.y.value - totalBorderWidth + 'px',
       left: component.properties.common.pos.value.x.value - totalBorderWidth + 'px',
@@ -15,6 +13,8 @@
     </template>
     <div
       ref="target"
+      :class="{ selected: isSelected }"
+      class="drag-component"
       @click="onClick"
     >
       <slot :component="component" />
@@ -47,7 +47,7 @@
   })
 
   const totalBorderWidth = computed(() => props.borderWidth + props.paddingWidth)
-  const cornerOffset = computed(() => -(props.cornerSize * 0.75))
+  const cornerOffset = computed(() => totalBorderWidth.value - (props.cornerSize * 0.5))
 
   const theme = useTheme()
   const borderColor = computed(() => theme.current.value.colors.primary)
