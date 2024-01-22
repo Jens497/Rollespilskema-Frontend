@@ -16,6 +16,7 @@ type Arguments = {
   containerElement?: MaybeRefOrGetter<HTMLElement | SVGElement | null | undefined>
   scroll?: { x: Ref<number>, y: Ref<number> }
   initialValue?: MaybeRefOrGetter<Position>
+  offset?: MaybeRefOrGetter<{ x: number, y: number }>
 }
 
 
@@ -25,6 +26,7 @@ export default function useResizeCorners(args: Arguments) {
     x: args.component.properties.common.size.value.width.value,
     y: args.component.properties.common.size.value.height.value,
   }
+  const offset = toValue(args.offset) ?? { x: 0, y: 0 }
 
   useDraggable(args.corners.topLeft, {
     initialValue: initialValue,
@@ -69,13 +71,13 @@ export default function useResizeCorners(args: Arguments) {
     const newSize = {
       width: Math.max(
         isLeft
-          ? oldSize.width - (position.x + scrollValue.x.value - oldPos.x)
-          : position.x + scrollValue.x.value - oldPos.x,
+          ? (oldSize.width - offset.x) - (position.x + scrollValue.x.value - oldPos.x)
+          : position.x + scrollValue.x.value - oldPos.x - offset.x,
         0),
       height: Math.max(
         isTop
-          ? oldSize.height - (position.y + scrollValue.y.value - oldPos.y)
-          : position.y + scrollValue.y.value - oldPos.y,
+          ? (oldSize.height - offset.y) - (position.y + scrollValue.y.value - oldPos.y)
+          : position.y + scrollValue.y.value - oldPos.y - offset.y,
         0),
     }
     const newPos = {
@@ -83,12 +85,12 @@ export default function useResizeCorners(args: Arguments) {
         oldPos.x
         : newSize.width == 0
           ? oldPos.x + oldSize.width
-          : position.x + scrollValue.x.value,
+          : position.x + scrollValue.x.value + offset.x,
       y: !isTop ?
         oldPos.y
         : newSize.height == 0
           ? oldPos.y + oldSize.height
-          : position.y + scrollValue.y.value,
+          : position.y + scrollValue.y.value + offset.y,
     }
     templateEditorStore.updateComponentById(
       args.componentId,

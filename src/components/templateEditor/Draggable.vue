@@ -8,10 +8,10 @@
     }"
   >
     <template v-if="isSelected">
-      <div ref="cornerTL" class="corner" :style="{ top: px(-cornerSize * 0.75), left: px(-cornerSize * 0.75) }" />
-      <div ref="cornerTR" class="corner" :style="{ top: px(-cornerSize * 0.75), right: px(-cornerSize * 0.75) }" />
-      <div ref="cornerBL" class="corner" :style="{ bottom: px(-cornerSize * 0.75), left: px(-cornerSize * 0.75) }" />
-      <div ref="cornerBR" class="corner" :style="{ bottom: px(-cornerSize * 0.75), right: px(-cornerSize * 0.75) }" />
+      <div ref="cornerTL" class="corner" :style="{ top: px(cornerOffset), left: px(cornerOffset) }" />
+      <div ref="cornerTR" class="corner" :style="{ top: px(cornerOffset), right: px(cornerOffset) }" />
+      <div ref="cornerBL" class="corner" :style="{ bottom: px(cornerOffset), left: px(cornerOffset) }" />
+      <div ref="cornerBR" class="corner" :style="{ bottom: px(cornerOffset), right: px(cornerOffset) }" />
     </template>
     <div
       ref="target"
@@ -37,16 +37,17 @@
     isSelected?: boolean,
     borderWidth?: number,
     paddingWidth?: number,
-    cornerSize?: number
+    cornerSize?: number,
   }
   const props = withDefaults(defineProps<Props>(), {
     isSelected: false,
-    borderWidth: 2,
-    paddingWidth: 4,
-    cornerSize: 10
+    borderWidth: 3,
+    paddingWidth: 6,
+    cornerSize: 10,
   })
 
   const totalBorderWidth = computed(() => props.borderWidth + props.paddingWidth)
+  const cornerOffset = computed(() => -(props.cornerSize * 0.75))
 
   const theme = useTheme()
   const borderColor = computed(() => theme.current.value.colors.primary)
@@ -71,7 +72,6 @@
     draggingElement: parent,
   })
 
-
   useResizeCorners({
     corners: {
       topLeft: cornerTL,
@@ -82,7 +82,8 @@
     componentId: props.componentId,
     component: props.component,
     scroll: scroll,
-    containerElement: parent
+    containerElement: parent,
+    offset: () => ({ x: props.cornerSize, y: props.cornerSize }),
   })
 
   function onEnd(_pos: Position, _event: PointerEvent) {
@@ -109,7 +110,6 @@
     )
     previousEvent.value = 'onMove';
   }
-
 
   function onClick(_event: MouseEvent) {
     if (previousEvent.value != 'onEnd') {
