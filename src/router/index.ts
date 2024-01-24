@@ -25,9 +25,16 @@ const routes: RouteRecordRaw[] = [
         path: 'templates/editor/:templateId?',
         name: 'TemplateEditor',
         props: true,
-        meta: { appBar: {title: 'view.templateEditor.title'}},
+        meta: { appBar: { title: 'view.templateEditor.title' } },
         component: () => import('@/views/TemplateEditor.vue')
-      }
+      },
+      {
+        path: 'sheets/:sheetId?',
+        name: 'SheetViewer',
+        props: true,
+        meta: { appBar: { title: 'view.sheetViewer.title' } },
+        component: () => import('@/views/SheetViewer.vue')
+      },
     ],
   },
 ]

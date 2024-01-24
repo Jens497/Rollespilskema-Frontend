@@ -60,7 +60,10 @@ const translations = {
     },
     "templateEditor": {
       "title": "Skabelon"
-    }
+    },
+    "sheetViewer": {
+      "title": "Skema"
+    },
   },
   "Properties": components,
 } as const
