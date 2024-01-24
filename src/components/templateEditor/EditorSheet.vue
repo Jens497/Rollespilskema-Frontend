@@ -8,16 +8,15 @@
       :is-selected="componentId == templateEditorStore.selectedComponentId"
       class="draggable"
     >
-      <EditorSheetComponent :component="component" />
+      <SheetComponentWrapper :component="component" :test="false" />
     </Draggable>
   </VSheet>
 </template>
 
 <script lang=ts setup>
   import { useTemplateEditorStore } from '@/store/templateEditor';
-  import EditorSheetComponent from './sheet-components/SheetComponent.vue';
+  import SheetComponentWrapper from '@/components/sheetComponents/SheetComponentWrapper.vue';
   import Draggable from './Draggable.vue';
-
 
   const templateEditorStore = useTemplateEditorStore()
 </script>
