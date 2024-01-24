@@ -20,7 +20,7 @@
 <script setup lang="ts">
   import { SheetComponentPropertyType, WithValue } from '@/common/sheetComponent';
   import { useTemplateEditorStore } from '@/store/templateEditor';
-  import PropertiesSettings, { type EmitUpdatePropertyParams } from './PropertiesSettings.vue';
+  import PropertiesSettings, { type EmitUpdatePropertyParams } from '@/components/templateEditor/PropertiesSettings.vue';
 
 
   const templateEditorStore = useTemplateEditorStore();

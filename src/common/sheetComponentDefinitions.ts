@@ -1,9 +1,9 @@
 import imgUrl from '@/assets/logo.png';
 import { type CommonProperties, commonProperties, CommonPropertiesOverrides } from "@/common/sheetComponentProperties/Common"
 import { properties as labelProperties } from "@/common/sheetComponentProperties/Label"
-import LabelComponent from "@/components/templateEditor/sheet-components/LabelComponent.vue"
+import LabelComponent from "@/components/sheetComponents/LabelComponent.vue"
 import { properties as boxProperties, commonOverrides as boxCommonOverrides } from "@/common/sheetComponentProperties/Box"
-import BoxComponent from "@/components/templateEditor/sheet-components/BoxComponent.vue"
+import BoxComponent from "@/components/sheetComponents/BoxComponent.vue"
 import { DefineComponent } from 'vue';
 import { DefinitionWithValue, ObjectSheetComponentPropertyFields, PartialProperty, PartialPropertyDefinition, PropertyTypeKinds, SheetComponentPropertyType, WithValue, objectProperty } from './sheetComponent';
 

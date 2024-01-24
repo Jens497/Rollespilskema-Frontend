@@ -17,7 +17,7 @@
 
 <script lang="ts" setup>
   import { SheetComponentType } from '@/common/sheetComponentDefinitions';
-  import SheetComponentCard from './SheetComponentCard.vue';
+  import SheetComponentCard from '@/components/templateEditor/SheetComponentCard.vue';
 
 
   type Props = {
