@@ -1,13 +1,16 @@
 <template>
   <VSheet class="sheet-container">
     <Draggable
-      v-for="(component, index) in templateEditorStore.template"
-      :key="index"
+      v-for="(component, componentId) in templateEditorStore.template"
+      :key="componentId"
       :component="component"
-      :is-selected="component == templateEditorStore.selectedComponent"
-      class="drag-component"
+      :component-id="componentId"
+      :is-selected="componentId == templateEditorStore.selectedComponentId"
+      class="draggable"
     >
+      <component :is="vueComponentOf(component)" v-if="vueComponentOf(component) != undefined" :component="component" />
       <EditorSheetComponent
+        v-else
         :component="component"
       />
     </Draggable>
@@ -15,9 +18,11 @@
 </template>
 
 <script lang=ts setup>
+  import { vueComponentOf } from "@/common/sheetComponentDefinitions"
   import { useTemplateEditorStore } from '@/store/templateEditor';
   import EditorSheetComponent from './sheet-components/EditorSheetComponent.vue';
   import Draggable from './Draggable.vue';
+
 
   const templateEditorStore = useTemplateEditorStore()
 </script>
@@ -30,7 +35,7 @@
     width: 100%;
   }
 
-  .drag-component {
+  .draggable {
     position: absolute;
   }
 </style>

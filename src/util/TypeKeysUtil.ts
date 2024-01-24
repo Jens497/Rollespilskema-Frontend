@@ -24,8 +24,8 @@ type Primitive = null | undefined | string | number | boolean | symbol | bigint;
  */
 type IsEqual<T1, T2> = T1 extends T2
   ? (<G>() => G extends T1 ? 1 : 2) extends <G>() => G extends T2 ? 1 : 2
-    ? true
-    : false
+  ? true
+  : false
   : false;
 
 interface File extends Blob {
@@ -71,8 +71,8 @@ type TupleKeys<T extends ReadonlyArray<any>> = Exclude<keyof T, keyof any[]>;
  */
 type AnyIsEqual<T1, T2> = T1 extends T2
   ? IsEqual<T1, T2> extends true
-    ? true
-    : never
+  ? true
+  : never
   : never;
 
 /**
@@ -126,13 +126,13 @@ type ArrayKey = number;
  */
 type PathInternal<T, TraversedTypes = T> = T extends ReadonlyArray<infer V>
   ? IsTuple<T> extends true
-    ? {
-        [K in TupleKeys<T>]-?: PathImpl<K & string, T[K], TraversedTypes>;
-      }[TupleKeys<T>]
-    : PathImpl<ArrayKey, V, TraversedTypes>
+  ? {
+    [K in TupleKeys<T>]-?: PathImpl<K & string, T[K], TraversedTypes>;
+  }[TupleKeys<T>]
+  : PathImpl<ArrayKey, V, TraversedTypes>
   : {
-      [K in keyof T]-?: PathImpl<K & string, T[K], TraversedTypes>;
-    }[keyof T];
+    [K in keyof T]-?: PathImpl<K & string, T[K], TraversedTypes>;
+  }[keyof T];
 
 /**
  * Helper type for recursively finding leafs of a type.
@@ -142,12 +142,12 @@ type PathInternal<T, TraversedTypes = T> = T extends ReadonlyArray<infer V>
  * @author s185124
  */
 type LeafInternal<T, TraversedTypes = T> = T extends ReadonlyArray<infer V>
-? IsTuple<T> extends true
+  ? IsTuple<T> extends true
   ? {
-      [K in TupleKeys<T>]-?: LeafImpl<K & string, T[K], TraversedTypes>;
-    }[TupleKeys<T>]
+    [K in TupleKeys<T>]-?: LeafImpl<K & string, T[K], TraversedTypes>;
+  }[TupleKeys<T>]
   : LeafImpl<ArrayKey, V, TraversedTypes>
-: {
+  : {
     [K in keyof T]-?: LeafImpl<K & string, T[K], TraversedTypes>;
   }[keyof T];
 

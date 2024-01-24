@@ -1,42 +1,27 @@
-import { SheetComponent, SheetComponentType, componentTypesToModels } from "@/common/sheetComponent";
+import { componentTypesToModels, COMPONENT_TYPES } from "@/common/sheetComponentDefinitions";
 import { defineStore } from "pinia";
-import imgUrl from '@/assets/logo.png';
+import { type State as TemplateEditorState } from "@/store/templateEditor"
+
+type Template = TemplateEditorState["template"]
+interface State {
+  templates: { [key: string]: Template },
+}
 
 export const useTemplateStore = defineStore('template', {
-  state: () => ({
-    componentTypes: [] as SheetComponentType[],
-    templates: {} as { [key: string ]: SheetComponent[] },
+  state: (): State => ({
+    templates: {},
   }),
+  getters: {
+    componentTypes: () => COMPONENT_TYPES
+  },
   actions: {
-    createDummyData(): SheetComponent[] {
-      this.componentTypes = [
-        {
-          name: "Box",
-          image: imgUrl
-        },
-        {
-          name: "Label",
-          image: imgUrl
-        },
-        {
-          name: "Text Input",
-          image: imgUrl
-        },
-        {
-          name: "Line",
-          image: imgUrl
-        },
-        {
-          name: "Image",
-          image: imgUrl
-        },
-        {
-          name: "Info Circle",
-          image: imgUrl
-        },
-      ]
-
-      return componentTypesToModels(this.componentTypes).map((comp, i) => { comp.pos.x += 100 * i; comp.pos.y += 100 * i; return comp})
+    createDummyData(): Template {
+      return componentTypesToModels(this.componentTypes).reduce((acc, comp, i) => {
+        comp.properties.common.pos.value.x.value += 100 * i;
+        comp.properties.common.pos.value.y.value += 100 * i;
+        const id = crypto.randomUUID();
+        return { ...acc, ...{ [id]: comp } };
+      }, {})
     }
 
   }

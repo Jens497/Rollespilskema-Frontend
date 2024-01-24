@@ -3,7 +3,7 @@
 </template>
 
 <script lang=ts setup>
-  import { SheetComponent } from '@/common/sheetComponent';
+  import { SheetComponent } from '@/common/sheetComponentDefinitions';
   type Props = {
     component: SheetComponent
   }

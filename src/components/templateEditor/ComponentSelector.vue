@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { SheetComponentType } from '@/common/sheetComponent.js';
+  import { SheetComponentType } from '@/common/sheetComponentDefinitions';
   import SheetComponentCard from './SheetComponentCard.vue';
 
 

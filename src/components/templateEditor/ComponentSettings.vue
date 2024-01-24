@@ -1,34 +1,47 @@
 <template>
-  <VSheet v-if=" templateEditorStore.selectedComponent != undefined">
-    <p><VLabel class="text-h4" :text="templateEditorStore.selectedComponent?.name" /></p>
-    <p><VLabel class="text-h5" text="position" /></p>
-    <VTextField
-      label="X"
-      :model-value="templateEditorStore.selectedComponent?.pos.x"
-      :rules="[(value) => !Number.isNaN(Number.parseFloat(value))]"
-      @update:model-value="updatePosX"/>
-    <VTextField
-      label="Y"
-      :model-value="templateEditorStore.selectedComponent?.pos.y"
-      @update:model-value="updatePosY"/>
-
+  <VSheet v-if="templateEditorStore.selectedComponentId != undefined && templateEditorStore.selectedComponent != undefined" class="settingsSheet">
+    <PropertiesSettings
+      class="propertySettings"
+      property-group="common"
+      :component-id="templateEditorStore.selectedComponentId"
+      :properties="templateEditorStore.selectedComponent?.properties.common"
+      @update-property="onPropertyUpdate"
+    />
+    <PropertiesSettings
+      class="propertySettings"
+      property-group="internal"
+      :component-id="templateEditorStore.selectedComponentId"
+      :properties="templateEditorStore.selectedComponent?.properties.internal"
+      @update-property="onPropertyUpdate"
+    />
   </VSheet>
 </template>
 
 <script setup lang="ts">
+  import { SheetComponentPropertyType, WithValue } from '@/common/sheetComponent';
   import { useTemplateEditorStore } from '@/store/templateEditor';
+  import PropertiesSettings, { type EmitUpdatePropertyParams } from './PropertiesSettings.vue';
+
 
   const templateEditorStore = useTemplateEditorStore();
-  function updatePosX(newValue: number | string) {
-    let value = typeof newValue == "number" ? newValue : Number.parseFloat(newValue);
-    if (Number.isNaN(value)) return;
-    templateEditorStore.$patch({selectedComponent: { pos: { x: value } } })
-  }
-  function updatePosY(newValue: number | string) {
-    let value = typeof newValue == "number" ? newValue : Number.parseFloat(newValue);
-    if (Number.isNaN(value)) return;
-    if (templateEditorStore.selectedComponent != undefined) {
-      templateEditorStore.selectedComponent.pos.y = value
-    }
+
+  function onPropertyUpdate<T extends WithValue<SheetComponentPropertyType>>(payload: EmitUpdatePropertyParams<T>): void {
+    const { propertyGroup, key, value, componentId: id } = payload;
+    console.log("ComponentSettings: onPropertyUpdate: ", key, " = ", value)
+    templateEditorStore.updateComponentById(id, { properties: { [propertyGroup]: { [key]: value } } })
   }
 </script>
+
+<style scoped>
+  .settingsSheet {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    overflow-y: auto;
+  }
+
+  .propertySettings {
+    position: relative;
+    width: 100%;
+  }
+</style>
