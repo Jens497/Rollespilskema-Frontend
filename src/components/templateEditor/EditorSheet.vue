@@ -8,7 +8,7 @@
       :is-selected="componentId == templateEditorStore.selectedComponentId"
       class="draggable"
     >
-      <SheetComponentWrapper :component="component" :test="false" />
+      <SheetComponentWrapper :component="component" />
     </Draggable>
   </VSheet>
 </template>

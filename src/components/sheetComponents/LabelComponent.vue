@@ -14,8 +14,9 @@
   import { SheetComponent } from '@/common/sheetComponentDefinitions';
   import { type Properties } from "@/common/sheetComponentProperties/Label"
   import { computed } from 'vue';
+  import { SheetComponentProps } from './SheetComponentWrapper.vue';
 
-  interface Props {
+  interface Props extends SheetComponentProps {
     component: SheetComponent<Properties>
   }
 

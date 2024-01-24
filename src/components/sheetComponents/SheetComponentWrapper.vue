@@ -6,13 +6,13 @@
 <script lang=ts setup>
   import { SheetComponent, vueComponentOf } from "@/common/sheetComponentDefinitions"
 
-  interface Props {
+  export interface SheetComponentProps {
     component: SheetComponent
   }
 
-  const props = defineProps<Props>()
+  const props = defineProps<SheetComponentProps>()
 
-  defineExpose<Props>(props)
+  defineExpose<SheetComponentProps>(props)
 </script>
 
 

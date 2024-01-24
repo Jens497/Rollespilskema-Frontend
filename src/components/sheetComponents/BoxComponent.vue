@@ -7,8 +7,9 @@
   import { SheetComponent } from '@/common/sheetComponentDefinitions';
   import { Properties } from '@/common/sheetComponentProperties/Box';
   import { computed } from 'vue';
+  import { SheetComponentProps } from './SheetComponentWrapper.vue';
 
-  interface Props {
+  interface Props extends SheetComponentProps {
     component: SheetComponent<Properties>
   }
 
