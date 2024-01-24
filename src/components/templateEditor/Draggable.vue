@@ -47,7 +47,7 @@
   })
 
   const totalBorderWidth = computed(() => props.borderWidth + props.paddingWidth)
-  const cornerOffset = computed(() => totalBorderWidth.value - (props.cornerSize * 0.5))
+  const cornerOffset = computed(() => -(props.cornerSize * 0.5))
 
   const theme = useTheme()
   const borderColor = computed(() => theme.current.value.colors.primary)

@@ -6,7 +6,7 @@
       :component="component"
       :component-id="componentId"
       :is-selected="componentId == templateEditorStore.selectedComponentId"
-      class="drag-component"
+      class="draggable"
     >
       <component :is="vueComponentOf(component)" v-if="vueComponentOf(component) != undefined" :component="component" />
       <EditorSheetComponent
@@ -35,7 +35,7 @@
     width: 100%;
   }
 
-  .drag-component {
+  .draggable {
     position: absolute;
   }
 </style>
