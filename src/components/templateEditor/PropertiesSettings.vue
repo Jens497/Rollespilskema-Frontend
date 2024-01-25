@@ -49,7 +49,7 @@
 <script setup lang="ts">
   import { PropertyTypeKinds, WithValue, SheetComponentPropertyType, EnumSheetComponentProperty } from '@/common/sheetComponent';
   import { SheetComponent, SheetComponentProperties, SheetComponentPropertyTypeDefinition } from '@/common/sheetComponentDefinitions';
-  import { useTemplateEditorStore } from '@/store/templateEditor';
+  import { useEditorTemplate } from '@/composables/useEditorTemplate';
   import { computed } from 'vue';
   import { useI18n } from 'vue-i18n';
 
@@ -61,11 +61,11 @@
     propertyPath?: string,
   }
 
-  const templateEditorStore = useTemplateEditorStore()
+  const editorTemplate = useEditorTemplate()
 
   const props = withDefaults(defineProps<Props>(), { propertyPath: "" })
 
-  const componentPrefixKey = computed(() => props.propertyGroup != "common" ? `._${templateEditorStore.template[props.componentId].name}` : "")
+  const componentPrefixKey = computed(() => props.propertyGroup != "common" ? `._${editorTemplate.state.value.template[props.componentId].name}` : "")
   const keyPrefix = computed(() => `Properties.${props.propertyGroup}${componentPrefixKey.value}.${props.propertyPath ? props.propertyPath + '.' : ''}`)
 
   export type EmitUpdatePropertyParams<T extends WithValue<SheetComponentPropertyType>> = {

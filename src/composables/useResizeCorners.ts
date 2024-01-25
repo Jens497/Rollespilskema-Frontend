@@ -1,5 +1,5 @@
 import { SheetComponent } from "@/common/sheetComponentDefinitions";
-import { useTemplateEditorStore } from "@/store/templateEditor";
+import { useEditorTemplate } from "./useEditorTemplate";
 import { Position, useDraggable } from "@vueuse/core";
 import { MaybeRefOrGetter, Ref, ref, toValue } from "vue";
 
@@ -21,7 +21,7 @@ type Arguments = {
 
 
 export default function useResizeCorners(args: Arguments) {
-  const templateEditorStore = useTemplateEditorStore()
+  const templateEditorStore = useEditorTemplate()
   const initialValue = toValue(args.initialValue) ?? {
     x: args.component.properties.common.size.value.width.value,
     y: args.component.properties.common.size.value.height.value,

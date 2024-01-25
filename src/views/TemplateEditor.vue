@@ -13,7 +13,7 @@
       </v-col>
       <v-col cols="4" :md="4" :lg="3">
         <VSheet class="editor-item" rounded :elevation="8">
-          <ComponentSettings v-if="templateEditorStore.selectedComponent" />
+          <ComponentSettings />
         </VSheet>
       </v-col>
     </v-row>
@@ -21,26 +21,33 @@
 </template>
 
 <script lang="ts" setup>
+  import { templateIdKey } from '@/common/injectionKeys';
   import { SheetComponentType, getDefault } from '@/common/sheetComponentDefinitions';
   import ComponentSelector from '@/components/templateEditor/ComponentSelector.vue';
   import ComponentSettings from '@/components/templateEditor/ComponentSettings.vue';
   import EditorSheet from '@/components/templateEditor/EditorSheet.vue';
+  import { useEditorTemplate } from '@/composables/useEditorTemplate';
   import { useTemplateStore } from '@/store/template'
-  import { useTemplateEditorStore } from '@/store/templateEditor';
+  import { provide } from 'vue';
 
   type Props = {
-    templateId?: string
+    templateId: string
   }
   const props = defineProps<Props>()
 
   const templateStore = useTemplateStore()
-  const templateEditorStore = useTemplateEditorStore()
 
-  templateEditorStore.template = props.templateId ? templateStore.templates[props.templateId] : templateStore.createDummyData();
+  if (templateStore.templates[props.templateId] == undefined) {
+    templateStore.createTemplate(props.templateId)
+  }
+
+  const editorTemplate = useEditorTemplate(props.templateId)
+
+  provide(templateIdKey, props.templateId)
 
   function onAddComponentType<T extends SheetComponentType>(componentType: T) {
     const component = getDefault(componentType)
-    templateEditorStore.addComponents(component)
+    editorTemplate.addComponents(component)
   }
 </script>
 

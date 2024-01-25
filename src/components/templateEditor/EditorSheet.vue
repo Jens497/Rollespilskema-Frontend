@@ -1,11 +1,11 @@
 <template>
   <VSheet class="sheet-container">
     <Draggable
-      v-for="(component, componentId) in templateEditorStore.template"
+      v-for="(component, componentId) in editorTemplate.state.value.template"
       :key="componentId"
       :component="component"
       :component-id="componentId"
-      :is-selected="componentId == templateEditorStore.selectedComponentId"
+      :is-selected="componentId == editorTemplate.state.value.selectedComponentId"
       class="draggable"
     >
       <SheetComponentWrapper :component="component" />
@@ -14,11 +14,11 @@
 </template>
 
 <script lang=ts setup>
-  import { useTemplateEditorStore } from '@/store/templateEditor';
+import { useEditorTemplate } from '@/composables/useEditorTemplate';
   import SheetComponentWrapper from '@/components/sheetComponents/SheetComponentWrapper.vue';
   import Draggable from '@/components/templateEditor/Draggable.vue';
 
-  const templateEditorStore = useTemplateEditorStore()
+  const editorTemplate = useEditorTemplate()
 </script>
 
 <style scoped>

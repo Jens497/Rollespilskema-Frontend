@@ -24,7 +24,7 @@
 
 <script setup lang="ts">
   import { SheetComponent } from '@/common/sheetComponentDefinitions';
-  import { useTemplateEditorStore } from '@/store/templateEditor';
+  import { useEditorTemplate } from '@/composables/useEditorTemplate';
   import { Position, useDraggable, useParentElement, useScroll } from '@vueuse/core';
   import { computed, ref } from 'vue';
   import { useTheme } from 'vuetify/lib/framework.mjs';
@@ -51,7 +51,7 @@
 
   const theme = useTheme()
   const borderColor = computed(() => theme.current.value.colors.primary)
-  const templateEditorStore = useTemplateEditorStore()
+  const editorTemplate = useEditorTemplate()
   const cornerTL = ref<HTMLElement | null>(null)
   const cornerTR = ref<HTMLElement | null>(null)
   const cornerBL = ref<HTMLElement | null>(null)
@@ -93,7 +93,7 @@
   }
 
   function patchPosition(position: Position, _event: PointerEvent) {
-    templateEditorStore.updateComponentById(
+    editorTemplate.updateComponentById(
       props.componentId,
       {
         properties: {
@@ -113,9 +113,9 @@
 
   function onClick(_event: MouseEvent) {
     if (previousEvent.value != 'onEnd') {
-      templateEditorStore.selectedComponent != props.component
-        ? templateEditorStore.selectComponentByIdentity(props.component)
-        : templateEditorStore.unselectComponent()
+      editorTemplate.selectedComponent.value != props.component
+        ? editorTemplate.selectComponentByIdentity(props.component)
+        : editorTemplate.unselectComponent()
     }
 
     previousEvent.value = 'onClick'
