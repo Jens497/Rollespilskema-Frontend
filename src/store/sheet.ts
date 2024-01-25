@@ -1,15 +1,37 @@
-import { componentTypesToModels, COMPONENT_TYPES, SheetComponent } from "@/common/sheetComponentDefinitions";
+import { SheetComponent } from "@/common/sheetComponentDefinitions";
 import { defineStore } from "pinia";
-import { type State as TemplateEditorState } from "@/store/templateEditor"
+import { useTemplateStore } from "./template";
+
+export type Sheet = Record<string, SheetComponent>
 
 interface State {
-  sheet: Record<string, SheetComponent>
+  sheets: Record<string, Sheet>
 }
 
 export const useSheetStore = defineStore('sheet', {
   state: (): State => ({
-    sheet: {},
+    sheets: {},
   }),
   getters: {
+  },
+  actions: {
+    addSheet(sheet: Sheet, id?: string): string {
+      if (id == undefined) {
+        id = crypto.randomUUID()
+      }
+
+      if (this.sheets[id] != undefined) throw new Error("Id already exists", { cause: { id } });
+
+      this.$patch({ sheets: { [id]: sheet } })
+      return id;
+    },
+    addSheetFromTemplate(templateId: string, sheetId?: string): string {
+      const templateStore = useTemplateStore()
+      const sheet = templateStore.templates[templateId]
+
+      if (sheet == undefined) throw new Error("Template not found", { "cause": { templateId } })
+
+      return this.addSheet(sheet, sheetId)
+    },
   },
 })

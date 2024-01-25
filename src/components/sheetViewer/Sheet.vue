@@ -1,20 +1,28 @@
 <template>
   <VSheet class="sheet-container">
-    <SheetComponentWrapper
-      v-for="(component, componentId) in sheetStore.sheet"
+    <div
+      v-for="(component, componentId) in sheet"
       :key="componentId"
       class="sheet-component"
-      :component="component"
-      :test="false"
-    />
+      :style="{
+        top: px(component.properties.common.pos.value.y.value),
+        left: px(component.properties.common.pos.value.x.value),
+      }"
+    >
+      <SheetComponentWrapper :component="component" />
+    </div>
   </VSheet>
 </template>
 
 <script lang=ts setup>
   import SheetComponentWrapper from '@/components/sheetComponents/SheetComponentWrapper.vue';
-  import { useSheetStore } from '@/store/sheet';
+  import { type Sheet } from "@/store/sheet"
+  import { px } from "@/util/CssUnits"
+  interface Props {
+    sheet: Sheet
+  }
 
-  const sheetStore = useSheetStore()
+  defineProps<Props>()
 </script>
 
 <style scoped>

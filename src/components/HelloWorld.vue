@@ -15,63 +15,85 @@
 
       <v-row class="d-flex align-center justify-center">
         <v-col cols="auto">
-          <v-btn min-width="164" variant="text" @click="$router.push({ name: 'TemplateEditor' })">
-            <v-icon icon="mdi-link-variant" size="large" start />
+          <v-menu open-on-hover :close-on-content-click="false" location="start">
+            <template #activator="{ props }">
+              <v-btn
+                min-width="164"
+                variant="text"
+                v-bind="props"
+              >
+                <v-icon size="large" start />
 
-            Link to Editor page
-          </v-btn>
+                Sheet Editor
+              </v-btn>
+            </template>
+
+            <v-list>
+              <v-btn
+                :style="{
+                  width: '100%'
+                }"
+                :to="{ name: 'TemplateEditor', params: { templateId: randomTemplateId } }"
+              >
+                <v-icon icon="mdi-plus" size="large" start />
+                Ny skabelon
+              </v-btn>
+
+              <v-list-item
+                v-for="(sheet, templateId) of templateStore.templates "
+                :key="templateId"
+                :title="templateId"
+                :to="{ name: 'TemplateEditor', params: { templateId: templateId } }"
+              />
+            </v-list>
+          </v-menu>
         </v-col>
         <v-col cols="auto">
-          <v-btn min-width="164" variant="text" @click="$router.push({ name: 'SheetViewer', params: { sheetId: 'test' } })">
-            <v-icon icon="mdi-link-variant" size="large" start />
-
-            Link to SheetViewer page
-          </v-btn>
-        </v-col>
-      </v-row>
-      <v-row class="d-flex align-center justify-center">
-        <v-col cols="auto">
-          <v-btn
-            href="https://vuetifyjs.com/components/all/"
-            min-width="164"
-            rel="noopener noreferrer"
-            target="_blank"
-            variant="text"
+          <v-menu
+            open-on-hover
+            :close-on-content-click="false"
+            location="end"
           >
-            <v-icon icon="mdi-view-dashboard" size="large" start />
+            <template #activator="{ props }">
+              <v-btn
+                variant="text"
+                v-bind="props"
+              >
+                <v-icon size="large" start />
 
-            Components
-          </v-btn>
-        </v-col>
+                Sheet Viewer
+              </v-btn>
+            </template>
 
-        <v-col cols="auto">
-          <v-btn
-            color="primary"
-            href="https://vuetifyjs.com/introduction/why-vuetify/#feature-guides"
-            min-width="228"
-            rel="noopener noreferrer"
-            size="x-large"
-            target="_blank"
-            variant="flat"
-          >
-            <v-icon icon="mdi-speedometer" size="large" start />
-
-            Get Started
-          </v-btn>
-        </v-col>
-
-        <v-col cols="auto">
-          <v-btn
-            href="https://community.vuetifyjs.com/"
-            min-width="164"
-            rel="noopener noreferrer"
-            target="_blank"
-            variant="text"
-          >
-            <v-icon icon="mdi-account-group" size="large" start />
-
-            Community
-          </v-btn>
+            <v-list>
+              <v-menu open-on-hover :close-on-content-click="false" location="end">
+                <template #activator="{ props }">
+                  <v-btn
+                    variant="text"
+                    :style="{ width: '100%' }"
+                    v-bind="props"
+                  >
+                    <v-icon icon="mdi-plus" size="large" start />
+                    Nyt skema fra skabelon
+                  </v-btn>
+                </template>
+                <v-list>
+                  <v-list-item
+                    v-for="( template, templateId ) of templateStore.templates "
+                    :key="templateId"
+                    :title="templateId"
+                    @click="sheetStore.addSheetFromTemplate(templateId as string, randomSheetId); $router.push({ name: 'SheetViewer', params: { sheetId: randomSheetId } })"
+                  />
+                </v-list>
+              </v-menu>
+              <v-list-item
+                v-for="( sheet, sheetId ) of sheetStore.sheets "
+                :key="sheetId"
+                :title="sheetId"
+                :to="{ name: 'SheetViewer', params: { sheetId: sheetId } }"
+              />
+            </v-list>
+          </v-menu>
         </v-col>
       </v-row>
     </v-responsive>
@@ -79,5 +101,13 @@
 </template>
 
 <script lang="ts" setup>
-  //
+  import { useSheetStore } from '@/store/sheet';
+  import { useTemplateStore } from '@/store/template';
+
+
+  const randomTemplateId = crypto.randomUUID()
+  const randomSheetId = crypto.randomUUID()
+
+  const templateStore = useTemplateStore()
+  const sheetStore = useSheetStore()
 </script>

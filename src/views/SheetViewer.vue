@@ -4,7 +4,7 @@
       <v-col cols="4" :md="4" :lg="3" />
       <v-col cols="4" :md="4" :lg="6">
         <VSheet class="sheet-view-item">
-          <Sheet />
+          <Sheet :sheet="sheet" />
         </VSheet>
       </v-col>
       <v-col cols="4" :md="4" :lg="3">
@@ -18,6 +18,20 @@
 
 <script setup lang="ts">
   import Sheet from "@/components/sheetViewer/Sheet.vue"
+  import { useSheetStore } from "@/store/sheet";
+  import { useTemplateStore } from "@/store/template";
+  import { computed } from "vue";
+
+  type Props = {
+    sheetId: string
+  }
+
+  const props = defineProps<Props>()
+  const sheetStore = useSheetStore()
+  const templateStore = useTemplateStore()
+
+  const sheet = computed(() => sheetStore.sheets[props.sheetId])
+
 </script>
 
 <style scoped>

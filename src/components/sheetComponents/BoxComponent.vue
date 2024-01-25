@@ -24,9 +24,7 @@
 
 <style scoped>
   .box-component {
-    width: fit-content;
     min-width: max-content;
-    height: fit-content;
     box-sizing: content-box;
     border-width: v-bind(px(borderWidth));
     border-style: v-bind(borderStyle);
