@@ -20,6 +20,6 @@ type CommonPropertyTranslation = PropertyFieldTranslation<CommonProperties>
 type PropertyKeyed<T> = T extends { [key in keyof SheetComponent["properties"]]: unknown } ? T : never;
 
 export type PropertyTranslations = PropertyKeyed<{
-  internal: ComponentsTranslation,
+  internal: ComponentsTranslation<KeyTranslation>,
   common: CommonPropertyTranslation
 }>

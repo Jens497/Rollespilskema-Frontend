@@ -80,7 +80,7 @@ type PropertyTranslationInternal<T extends SheetComponentPropertyType>
 type PropertyFieldTranslationInternal<T extends { [key: string]: SheetComponentPropertyType }>
   = { [key in keyof T]: string }
   & { [key in keyof T & string as `_${PropertyTranslationInternal<T[key]> extends never ? never : key}`]: PropertyTranslationInternal<T[key]> };
-export type PropertyFieldTranslation<T extends { [key: string]: SheetComponentPropertyType }> = T extends any ? PropertyFieldTranslationInternal<T> : never;
+export type PropertyFieldTranslation<T extends { [key in keyof T]: SheetComponentPropertyType }> = T extends any ? PropertyFieldTranslationInternal<T> : never;
 
 export type PartialProperty<T extends SheetComponentPropertyType> =
   T extends ObjectSheetComponentProperty<infer F>
