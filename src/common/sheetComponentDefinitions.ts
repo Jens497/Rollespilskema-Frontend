@@ -4,6 +4,8 @@ import { properties as labelProperties } from "@/common/sheetComponentProperties
 import LabelComponent from "@/components/sheetComponents/LabelComponent.vue"
 import { properties as boxProperties, commonOverrides as boxCommonOverrides } from "@/common/sheetComponentProperties/Box"
 import BoxComponent from "@/components/sheetComponents/BoxComponent.vue"
+import { properties as textInputProperties, commonOverrides as textInputOverrides } from "@/common/sheetComponentProperties/TextInput"
+import TextInputComponent from "@/components/sheetComponents/TextInputComponent.vue"
 import { DefineComponent } from 'vue';
 import { DefinitionWithValue, ObjectSheetComponentPropertyFields, PartialProperty, PartialPropertyDefinition, PropertyTypeKinds, SheetComponentPropertyType, WithValue, objectProperty } from './sheetComponent';
 
@@ -41,8 +43,8 @@ export const COMPONENT_TYPE_MAP = {
   },
   "Text Input": {
     image: imgUrl,
-    propertyTypes: { internal: {}, common: {} },
-    vueComponent: undefined
+    propertyTypes: { internal: textInputProperties, common: textInputOverrides },
+    vueComponent: TextInputComponent
   },
   "Line": {
     image: imgUrl,

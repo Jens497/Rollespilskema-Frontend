@@ -35,6 +35,33 @@ const components: PropertyTranslations = {
         "width": "brede"
       },
     },
+    "_Text Input": {
+      "hint": "Forklarende tekst",
+      "text": "tekst",
+      "multiLine": "Flerelinjestekst",
+      "label": "Felt navn",
+      "font": "Font",
+      "_font": {
+        "bold": "Fed",
+        "italic": "Kursiv",
+        "size": "Størrelse"
+      },
+      "inputType": "indput type",
+      "_inputType": {
+        "number": "tal",
+        "text": "tekst"
+      },
+      "style": "Stil",
+      "_style": {
+        "Filled": "Fyldt",
+        "Outlined": "Outlined",
+        "Plain": "Simpel",
+        "Solo": "Enkel",
+        "SoloFilled": "Enkel Fyldt",
+        "SoloInverted": "Enkel omvendt",
+        "Underlined": "Understreget"
+      }
+    }
   },
   common: {
     "pos": "position",
