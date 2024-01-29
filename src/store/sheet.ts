@@ -1,6 +1,7 @@
 import { SheetComponent } from "@/common/sheetComponentDefinitions";
 import { defineStore } from "pinia";
 import { useTemplateStore } from "./template";
+import { deepClone } from "@/util/cloneUtils";
 
 export type Sheet = Record<string, SheetComponent>
 
@@ -27,7 +28,7 @@ export const useSheetStore = defineStore('sheet', {
     },
     addSheetFromTemplate(templateId: string, sheetId?: string): string {
       const templateStore = useTemplateStore()
-      const sheet = templateStore.templates[templateId]
+      const sheet = deepClone(templateStore.templates[templateId])
 
       if (sheet == undefined) throw new Error("Template not found", { "cause": { templateId } })
 

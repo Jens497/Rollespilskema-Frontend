@@ -4,7 +4,7 @@
       <v-col cols="4" :md="4" :lg="3" />
       <v-col cols="4" :md="4" :lg="6">
         <VSheet class="sheet-view-item">
-          <Sheet :sheet="sheet" />
+          <SheetVue :sheet="sheet" :patch-sheet="patchSheet" />
         </VSheet>
       </v-col>
       <v-col cols="4" :md="4" :lg="3">
@@ -17,9 +17,9 @@
 </template>
 
 <script setup lang="ts">
-  import Sheet from "@/components/sheetViewer/Sheet.vue"
-  import { useSheetStore } from "@/store/sheet";
-  import { useTemplateStore } from "@/store/template";
+  import SheetVue from "@/components/sheetViewer/Sheet.vue";
+  import { type Sheet, useSheetStore } from "@/store/sheet";
+  import { _DeepPartial } from "pinia";
   import { computed } from "vue";
 
   type Props = {
@@ -28,9 +28,9 @@
 
   const props = defineProps<Props>()
   const sheetStore = useSheetStore()
-  const templateStore = useTemplateStore()
 
   const sheet = computed(() => sheetStore.sheets[props.sheetId])
+  const patchSheet = (updates: _DeepPartial<Sheet>) => sheetStore.$patch({ sheets: { [props.sheetId]: updates } })
 
 </script>
 

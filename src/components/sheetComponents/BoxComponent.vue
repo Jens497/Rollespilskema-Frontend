@@ -4,32 +4,26 @@
 
 <script lang=ts setup>
   import { px } from '@/util/CssUnits'
-  import { SheetComponent } from '@/common/sheetComponentDefinitions';
   import { Properties } from '@/common/sheetComponentProperties/Box';
   import { computed } from 'vue';
   import { SheetComponentProps } from './SheetComponentWrapper.vue';
 
-  interface Props extends SheetComponentProps {
-    component: SheetComponent<Properties>
+  interface Props extends SheetComponentProps<Properties> {
   }
 
   const props = defineProps<Props>()
 
   const borderWidth = computed(() => props.component.properties.internal.border.value.width.value)
   const borderStyle = computed(() => props.component.properties.internal.border.value.style.value)
-  const height = computed(() => props.component.properties.common.size.value.height.value)
-  const width = computed(() => props.component.properties.common.size.value.width.value)
 </script>
 
 
 <style scoped>
   .box-component {
-    min-width: max-content;
-    box-sizing: content-box;
+    box-sizing: border-box;
     border-width: v-bind(px(borderWidth));
     border-style: v-bind(borderStyle);
-    height: v-bind(px(height));
-    width: v-bind(px(width));
-    /* border-radius: ; */
+    height: 100%;
+    width: 100%;
   }
 </style>

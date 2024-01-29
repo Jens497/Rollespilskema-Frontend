@@ -9,7 +9,7 @@
         left: px(component.properties.common.pos.value.x.value),
       }"
     >
-      <SheetComponentWrapper :component="component" />
+      <SheetComponentWrapper :component="component" :patch-properties="(updates) => patchSheet({ [componentId]: { properties: updates } })" />
     </div>
   </VSheet>
 </template>
@@ -18,8 +18,11 @@
   import SheetComponentWrapper from '@/components/sheetComponents/SheetComponentWrapper.vue';
   import { type Sheet } from "@/store/sheet"
   import { px } from "@/util/CssUnits"
+  import { type _DeepPartial } from 'pinia';
+
   interface Props {
-    sheet: Sheet
+    sheet: Sheet,
+    patchSheet: (updates: _DeepPartial<Sheet>) => void
   }
 
   defineProps<Props>()

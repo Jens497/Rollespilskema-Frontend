@@ -8,22 +8,26 @@
       :is-selected="componentId == editorTemplate.state.value.selectedComponentId"
       class="draggable"
     >
-      <SheetComponentWrapper :component="component" />
+      <SheetComponentWrapper :component="component" :patch-properties="getPatchProperties(componentId)" />
     </Draggable>
   </VSheet>
 </template>
 
 <script lang=ts setup>
-import { useEditorTemplate } from '@/composables/useEditorTemplate';
+  import { useEditorTemplate } from '@/composables/useEditorTemplate';
   import SheetComponentWrapper from '@/components/sheetComponents/SheetComponentWrapper.vue';
   import Draggable from '@/components/templateEditor/Draggable.vue';
+  import { SheetComponent, SheetComponentPropertyTypeDefinition } from '@/common/sheetComponentDefinitions';
+  import { _DeepPartial } from 'pinia';
 
   const editorTemplate = useEditorTemplate()
+  const getPatchProperties = (id: string) =>
+    (updates: _DeepPartial<SheetComponent<SheetComponentPropertyTypeDefinition>>["properties"]) => editorTemplate.updateComponentById(id, { properties: updates })
 </script>
 
 <style scoped>
   .sheet-container {
-    position: relative;
+    position: absolute;
     overflow: auto;
     height: 100%;
     width: 100%;

@@ -11,13 +11,11 @@
 </template>
 
 <script lang=ts setup>
-  import { SheetComponent } from '@/common/sheetComponentDefinitions';
   import { type Properties } from "@/common/sheetComponentProperties/Label"
   import { computed } from 'vue';
   import { SheetComponentProps } from './SheetComponentWrapper.vue';
 
-  interface Props extends SheetComponentProps {
-    component: SheetComponent<Properties>
+  interface Props extends SheetComponentProps<Properties> {
   }
 
   const props = defineProps<Props>()
@@ -27,9 +25,8 @@
 
 <style scoped>
   .label-component {
-    width: fit-content;
-    min-width: max-content;
-    height: fit-content;
     font-size: v-bind('fontSize');
+    min-width: min-content;
+    min-height: min-content;
   }
 </style>

@@ -1,13 +1,22 @@
 <template>
-  <component :is="vueComponentOf(component)" v-if="vueComponentOf(component) != undefined" v-bind="props" />
-  <VCard v-else :title="component.name" class="sheet-component" />
+  <div class="sheet-component">
+    <component
+      :is="vueComponentOf(component)"
+      v-if="vueComponentOf(component) != undefined"
+      v-bind="props"
+    />
+    <VCard v-else :title="component.name" />
+  </div>
 </template>
 
 <script lang=ts setup>
-  import { SheetComponent, vueComponentOf } from "@/common/sheetComponentDefinitions"
+  import { SheetComponent, SheetComponentPropertyTypeDefinition, vueComponentOf } from "@/common/sheetComponentDefinitions"
+  import { px } from "@/util/CssUnits";
+  import { _DeepPartial } from "pinia";
 
-  export interface SheetComponentProps {
-    component: SheetComponent
+  export interface SheetComponentProps<T extends SheetComponentPropertyTypeDefinition = SheetComponentPropertyTypeDefinition> {
+    component: SheetComponent<T>
+    patchProperties: (updates: _DeepPartial<SheetComponent<T>["properties"]>) => void
   }
 
   const props = defineProps<SheetComponentProps>()
@@ -18,8 +27,8 @@
 
 <style scoped>
   .sheet-component {
-    width: fit-content;
-    min-width: max-content;
-    height: fit-content;
+    box-sizing: content-box;
+    height: v-bind('px(props.component.properties.common.size.value.height.value)');
+    width: v-bind('px(props.component.properties.common.size.value.width.value)');
   }
 </style>

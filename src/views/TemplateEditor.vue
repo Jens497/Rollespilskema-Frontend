@@ -58,5 +58,6 @@
     overflow-y: clip;
     margin: 2px;
     height: 100%;
+    position: relative;
   }
 </style>

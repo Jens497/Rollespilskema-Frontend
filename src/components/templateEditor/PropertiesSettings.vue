@@ -9,9 +9,12 @@
         />
       </template>
       <template v-if="property.kind == PropertyTypeKinds.String">
-        <VTextField
+        <VTextarea
           :label="translateKey(keyPrefix, key)"
           :model-value="property.value"
+          auto-grow
+          :rows="1"
+          density="compact"
           @update:model-value="updateField(`${key}`, property, $event)"
         />
       </template>
