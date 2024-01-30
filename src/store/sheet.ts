@@ -1,7 +1,7 @@
 import { SheetComponent } from "@/common/sheetComponentDefinitions";
 import { defineStore } from "pinia";
 import { useTemplateStore } from "./template";
-import { deepClone } from "@/util/cloneUtils";
+import { deepClone } from "@/util/tsUtils";
 
 export type Sheet = Record<string, SheetComponent>
 

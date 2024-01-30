@@ -23,7 +23,7 @@ export const properties = {
     Solo: "solo",
     SoloInverted: "solo-inverted",
     SoloFilled: "solo-filled",
-  }),
+  }, "outlined"),
   multiLine: booleanProperty(),
   font: objectProperty({
     size: numberProperty(14),

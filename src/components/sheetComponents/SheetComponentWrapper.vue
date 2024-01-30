@@ -30,5 +30,6 @@
     box-sizing: content-box;
     height: v-bind('px(props.component.properties.common.size.value.height.value)');
     width: v-bind('px(props.component.properties.common.size.value.width.value)');
+    overflow: hidden;
   }
 </style>

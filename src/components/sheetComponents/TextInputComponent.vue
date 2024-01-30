@@ -1,6 +1,5 @@
 <template>
   <v-textarea
-    ref="el"
     class="input-component"
     :class="{
       'font-weight-bold': props.component.properties.internal.font.value.bold.value,
@@ -17,8 +16,8 @@
     :rows="rows"
     @update:focused="isFocused = $event"
     @update:model-value="onUpdateText"
-    @mousedown:control="onClickControl"
-    @click:control="onClickControl"
+    @mousedown:control.stop="onClickControl"
+    @click:control.stop
   />
 </template>
 
@@ -28,34 +27,28 @@
   import { SheetComponentProps } from './SheetComponentWrapper.vue';
   import { px } from '@/util/CssUnits';
   import { ref } from "vue";
+  import { useEditorTemplate } from "@/composables/useEditorTemplate";
+  import { tryOrDefault } from "@/util/tsUtils";
 
   interface Props extends SheetComponentProps<Properties> {
   }
 
-  // TODO handle multiline
+  // TODO handle multiline & input type
   const props = defineProps<Props>()
-  const emit = defineEmits<{ click: [payload: MouseEvent] }>()
-  const el = ref<HTMLElement>()
 
   const fontSize = computed(() => props.component.properties.internal.font.value.size.value)
   const height = computed(() => props.component.properties.common.size.value.height.value)
   const rows = computed(() => Math.max(1, Math.round((height.value / (fontSize.value + 7) - 2))))
+  const editorTemplate = tryOrDefault(useEditorTemplate, undefined)
 
   const onUpdateText = (newValue: string) => props.patchProperties({ internal: { text: { value: newValue } } });
 
   const isFocused = ref(false);
-  const lastFocusValue = ref(false);
 
-
-  function onClickControl(event: MouseEvent) {
-    if (isFocused.value && lastFocusValue.value) {
-      event.stopPropagation()
-      event.stopImmediatePropagation()
-      console.log(`${event.type}:control  -  if`, event)
-    } else {
-      console.log(`${event.type}:control  -  else`, event)
+  function onClickControl(_event: MouseEvent) {
+    if (!isFocused.value) {
+      editorTemplate?.selectComponentByIdentity(props.component)
     }
-    lastFocusValue.value = isFocused.value
   }
 </script>
 
