@@ -1,23 +1,27 @@
 <template>
   <div
     :style="{
-      top: component.properties.common.pos.value.y.value - totalBorderWidth + 'px',
-      left: component.properties.common.pos.value.x.value - totalBorderWidth + 'px',
+      top: px(component.properties.common.pos.value.y.value - totalBorderWidth),
+      left: px(component.properties.common.pos.value.x.value - totalBorderWidth),
+      padding: px(cornerSize),
+      margin: px(-cornerSize)
     }"
   >
-    <template v-if="isSelected">
-      <div ref="cornerTL" class="corner" :style="{ top: px(cornerOffset), left: px(cornerOffset) }" />
-      <div ref="cornerTR" class="corner" :style="{ top: px(cornerOffset), right: px(cornerOffset) }" />
-      <div ref="cornerBL" class="corner" :style="{ bottom: px(cornerOffset), left: px(cornerOffset) }" />
-      <div ref="cornerBR" class="corner" :style="{ bottom: px(cornerOffset), right: px(cornerOffset) }" />
-    </template>
-    <div
-      ref="target"
-      :class="{ selected: isSelected }"
-      class="drag-component"
-      @click="onClick"
-    >
-      <slot :component="component" />
+    <div style="position: relative; ">
+      <template v-if="isSelected">
+        <div ref="cornerTL" class="corner" :style="{ top: px(cornerOffset), left: px(cornerOffset) }" />
+        <div ref="cornerTR" class="corner" :style="{ top: px(cornerOffset), right: px(cornerOffset) }" />
+        <div ref="cornerBL" class="corner" :style="{ bottom: px(cornerOffset), left: px(cornerOffset) }" />
+        <div ref="cornerBR" class="corner" :style="{ bottom: px(cornerOffset), right: px(cornerOffset) }" />
+      </template>
+      <div
+        ref="target"
+        :class="{ selected: isSelected }"
+        class="drag-component"
+        @click="onClick"
+      >
+        <slot :component="component" />
+      </div>
     </div>
   </div>
 </template>

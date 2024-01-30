@@ -1,5 +1,5 @@
 <template>
-  <VSheet class="sheet-container">
+  <VSheet class="sheet-container" @click.self="onClickSheet">
     <Draggable
       v-for="(component, componentId) in editorTemplate.state.value.template"
       :key="componentId"
@@ -23,6 +23,10 @@
   const editorTemplate = useEditorTemplate()
   const getPatchProperties = (id: string) =>
     (updates: _DeepPartial<SheetComponent<SheetComponentPropertyTypeDefinition>>["properties"]) => editorTemplate.updateComponentById(id, { properties: updates })
+
+  function onClickSheet() {
+    editorTemplate.unselectComponent()
+  }
 </script>
 
 <style scoped>
