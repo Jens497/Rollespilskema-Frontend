@@ -12,7 +12,6 @@
     :hint="props.component.properties.internal.hint.value"
     hide-details="auto"
     no-resize
-    density="compact"
     :rows="rows"
     @update:focused="isFocused = $event"
     @update:model-value="onUpdateText"
@@ -58,5 +57,6 @@
     box-sizing: border-box;
     font-size: v-bind('px(fontSize)');
     height: 100%;
+    margin: v-bind('props.component.properties.internal.style.value == "outlined" ? px(fontSize / 3) : px(0)');
   }
 </style>
