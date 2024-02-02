@@ -1,19 +1,18 @@
 <template>
-  <div>
-    <VSheet v-if="editorTemplate.state.value.selectedComponentId != undefined && editorTemplate.selectedComponent != undefined" class="settingsSheet">
+  <div id="settings-container">
+    <VSheet v-if="editorTemplate.state.value.selectedComponentId != undefined && selectedComponent != undefined" class="settingsSheet">
+      <VLabel class="text-h4" :text="$t(`Properties.internal.${selectedComponent.name}`)" />
       <PropertiesSettings
         class="propertySettings"
-        property-group="common"
-        :component-id="editorTemplate.state.value.selectedComponentId"
         :properties="editorTemplate.selectedComponent.value?.properties.common"
-        @update-property="onPropertyUpdate"
+        :property-path="commonKeyPrefix"
+        @update-property="onPropertyUpdate(editorTemplate.state.value.selectedComponentId, 'common', $event)"
       />
       <PropertiesSettings
         class="propertySettings"
-        property-group="internal"
-        :component-id="editorTemplate.state.value.selectedComponentId"
         :properties="editorTemplate.selectedComponent.value?.properties.internal"
-        @update-property="onPropertyUpdate"
+        :property-path="internalKeyPrefix"
+        @update-property="onPropertyUpdate(editorTemplate.state.value.selectedComponentId, 'internal', $event)"
       />
     </VSheet>
   </div>
@@ -21,16 +20,23 @@
 
 <script setup lang="ts">
   import { SheetComponentPropertyType, WithValue } from '@/common/sheetComponent';
+  import { SheetComponent } from '@/common/sheetComponentDefinitions';
   import PropertiesSettings, { type EmitUpdatePropertyParams } from '@/components/templateEditor/PropertiesSettings.vue';
   import { useEditorTemplate } from '@/composables/useEditorTemplate';
+  import { computed } from 'vue';
 
   const editorTemplate = useEditorTemplate()
+  const selectedComponent = computed(() => editorTemplate.selectedComponent.value)
 
-  function onPropertyUpdate<T extends WithValue<SheetComponentPropertyType>>(payload: EmitUpdatePropertyParams<T>): void {
-    const { propertyGroup, key, value, componentId: id } = payload;
-    console.log("ComponentSettings: onPropertyUpdate: ", key, " = ", value)
-    editorTemplate.updateComponentById(id, { properties: { [propertyGroup]: { [key]: value } } })
+  type PropertyGroup = keyof SheetComponent["properties"]
+  function onPropertyUpdate<T extends WithValue<SheetComponentPropertyType>>(componentId: string, propertyGroup: PropertyGroup, payload: EmitUpdatePropertyParams<T>): void {
+    const { key, value } = payload;
+    console.debug("ComponentSettings: onPropertyUpdate: ", key, " = ", value)
+    editorTemplate.updateComponentById(componentId, { properties: { [propertyGroup]: { [key]: value } } })
   }
+
+  const commonKeyPrefix = "Properties.common"
+  const internalKeyPrefix = computed(() => `Properties.internal._${selectedComponent.value?.name}`)
 </script>
 
 <style scoped>

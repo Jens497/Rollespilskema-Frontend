@@ -5,23 +5,22 @@ const components: PropertyTranslations = {
   internal: {
     "Label": "Tekst",
     "_Label": {
-      "font": "font",
-      "text": "tekst",
+      "text": "Tekst",
+      "font": "Font",
       "_font": {
-        "bold": "fed",
-        "italic": "kursiv",
-        "size": "størrelse",
+        "bold": "Fed",
+        "italic": "Kursiv",
+        "size": "Størrelse",
       }
     },
-    "Text Input": "Tekstfelt",
     "Image": "Billede",
     "Line": "Linje",
     "Info Circle": "Informationscirkel",
     "Box": "Boks",
     "_Box": {
-      "border": "kant",
+      "border": "Kant",
       "_border": {
-        "style": "stil",
+        "style": "Stil",
         "_style": {
           "Solid": "Solid",
           "Dashed": "Striber",
@@ -35,44 +34,55 @@ const components: PropertyTranslations = {
         "width": "brede"
       },
     },
+    "Text Input": "Tekstfelt",
     "_Text Input": {
-      "hint": "Forklarende tekst",
-      "text": "tekst",
-      "multiLine": "Flerelinjestekst",
-      "label": "Felt navn",
-      "font": "Font",
-      "_font": {
-        "bold": "Fed",
-        "italic": "Kursiv",
-        "size": "Størrelse"
+      "contents": "Indhold",
+      "_contents": {
+        "hint": "Forklarende tekst",
+        "text": "Tekst",
+        "label": "Felt navn",
       },
-      "inputType": "indput type",
-      "_inputType": {
-        "number": "tal",
-        "text": "tekst"
+      "appearance": "Udseende",
+      "_appearance": {
+
+        "font": "Font",
+        "_font": {
+          "bold": "Fed",
+          "italic": "Kursiv",
+          "size": "Størrelse"
+        },
+        "style": "Stil",
+        "_style": {
+          "Filled": "Fyldt",
+          "Outlined": "Outlined",
+          "Plain": "Simpel",
+          "Solo": "Enkel",
+          "SoloFilled": "Enkel Fyldt",
+          "SoloInverted": "Enkel omvendt",
+          "Underlined": "Understreget"
+        }
       },
-      "style": "Stil",
-      "_style": {
-        "Filled": "Fyldt",
-        "Outlined": "Outlined",
-        "Plain": "Simpel",
-        "Solo": "Enkel",
-        "SoloFilled": "Enkel Fyldt",
-        "SoloInverted": "Enkel omvendt",
-        "Underlined": "Understreget"
-      }
+      "behavior": "Opførsel",
+      "_behavior": {
+        "multiLine": "Flerelinjestekst",
+        "inputType": "Input type",
+        "_inputType": {
+          "number": "Tal",
+          "text": "Tekst"
+        },
+      },
     }
   },
   common: {
-    "pos": "position",
+    "pos": "Position",
     "_pos": {
-      "x": "x",
-      "y": "y",
+      "x": "X",
+      "y": "Y",
     },
-    "size": "størrelse",
+    "size": "Størrelse",
     "_size": {
-      "height": "højde",
-      "width": "brede"
+      "height": "Højde",
+      "width": "Brede"
     }
   }
 }
