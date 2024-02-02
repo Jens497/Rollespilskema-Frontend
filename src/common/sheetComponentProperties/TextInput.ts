@@ -8,33 +8,39 @@ import {
 import { CommonPropertiesOverrides } from "./Common";
 
 export const properties = {
-  text: stringProperty(),
-  label: stringProperty(),
-  hint: stringProperty(),
-  inputType: enumProperty({
-    number: "number",
-    text: "text",
-  }, "text"),
-  style: enumProperty({
-    Filled: "filled",
-    Outlined: "outlined",
-    Plain: "plain",
-    Underlined: "underlined",
-    Solo: "solo",
-    SoloInverted: "solo-inverted",
-    SoloFilled: "solo-filled",
-  }, "outlined"),
-  multiLine: booleanProperty(),
-  font: objectProperty({
-    size: numberProperty(14),
-    bold: booleanProperty(false),
-    italic: booleanProperty(false),
-  })
+  contents: objectProperty({
+    text: stringProperty(),
+    label: stringProperty(),
+    hint: stringProperty(),
+  }),
+  behavior: objectProperty({
+    inputType: enumProperty({
+      number: "number",
+      text: "text",
+    }, "text"),
+    multiLine: booleanProperty(),
+  }),
+  appearance: objectProperty({
+    style: enumProperty({
+      Filled: "filled",
+      Outlined: "outlined",
+      Plain: "plain",
+      Underlined: "underlined",
+      Solo: "solo",
+      SoloInverted: "solo-inverted",
+      SoloFilled: "solo-filled",
+    }, "outlined"),
+    font: objectProperty({
+      size: numberProperty(14),
+      bold: booleanProperty(false),
+      italic: booleanProperty(false),
+    }),
+  }),
 };
 
 export const commonOverrides: CommonPropertiesOverrides = {
   size: objectProperty({
-    height: numberProperty(20),
+    height: numberProperty(85),
     width: numberProperty(100),
   }),
 }
