@@ -6,8 +6,8 @@ export const commonProperties = {
     y: numberProperty(0),
   }),
   size: objectProperty({
-    height: numberProperty(0),
-    width: numberProperty(0),
+    height: numberProperty(100),
+    width: numberProperty(100),
   })
 }
 
