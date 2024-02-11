@@ -1,5 +1,7 @@
 // Composables
+import { useAppStore } from '@/store/app'
 import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router'
+const LOGIN_ROUTE_NAME = "Login";
 
 const routes: RouteRecordRaw[] = [
   {
@@ -35,6 +37,13 @@ const routes: RouteRecordRaw[] = [
         meta: { appBar: { title: 'view.sheetViewer.title' } },
         component: () => import('@/views/SheetViewer.vue')
       },
+      {
+        path: 'login',
+        name: LOGIN_ROUTE_NAME,
+        meta: { appBar: { title: 'view.Login.title' } },
+        component: () => import('@/views/Login.vue')
+      }
+      // TODO make login route
     ],
   },
 ]
@@ -43,5 +52,11 @@ const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
 })
-
+router.beforeEach(async (to, from) => {
+  const appStore = useAppStore();
+  if (!appStore.isLoggedIn && to.name != LOGIN_ROUTE_NAME) {
+    return { name: LOGIN_ROUTE_NAME }
+  }
+  //! TODO cite example in report!!!
+})
 export default router

@@ -101,6 +101,9 @@ const translations = {
     "sheetViewer": {
       "title": "Skema"
     },
+    "Login": {
+      "title": "Login"
+    },
   },
   "Properties": components,
 } as const
