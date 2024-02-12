@@ -3,7 +3,7 @@ import { useAppStore } from '@/store/app'
 import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router'
 const LOGIN_ROUTE_NAME = "Login";
 
-const routes: RouteRecordRaw[] = [
+export const routes = [
   {
     path: '/',
     component: () => import('@/layouts/default/Default.vue'),
@@ -42,11 +42,28 @@ const routes: RouteRecordRaw[] = [
         name: LOGIN_ROUTE_NAME,
         meta: { appBar: { title: 'view.Login.title' } },
         component: () => import('@/views/Login.vue')
-      }
-      // TODO make login route
+      },
+      {
+        path: "user",
+        children: [
+          {
+            path: 'create',
+            name: 'createUser',
+            meta: { appBar: { title: 'view.CreateUser.title' } },
+            component: () => import('@/views/CreateUser.vue')
+          },
+          {
+            path: 'edit',
+            name: 'editUser',
+            meta: { appBar: { title: 'view.EditUser.title' } },
+            component: () => import('@/views/EditUser.vue')
+          },
+        ]
+      },
+
     ],
   },
-]
+] as const satisfies RouteRecordRaw[]
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
@@ -59,4 +76,5 @@ router.beforeEach(async (to, from) => {
   }
   //! TODO cite example in report!!!
 })
+
 export default router

@@ -14,6 +14,6 @@ export const useAppStore = defineStore('app', {
     user: undefined
   }),
   getters: {
-    isLoggedIn: (state) => state.user != undefined
+    isLoggedIn: (state) => state.user != undefined // TODO: use an api request instead
   }
 })

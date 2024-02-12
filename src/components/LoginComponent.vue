@@ -1,27 +1,42 @@
 <template>
-  <div class="content">
-    <VCard class="login-box">
-      <VForm @submit="onSubmit">
-        <VLabel text="Login" class="text-h3 pb-5 mx-3" />
+  <VContainer class="content">
+    <VRow no-gutters class="login-row">
+      <VCol
+        :cols="12"
+        :offset="0"
+        :sm="8"
+        :offset-sm="2"
+        :md="6"
+        :offset-md="3"
+        :lg="4"
+        :offset-lg="4"
+      >
+        <VCard class="login-box pa-5">
+          <VForm @submit="onSubmit">
+            <VLabel text="Login" class="text-h3 pb-5 mx-3" />
 
-        <VTextField
-          v-model="username"
-          label="username"
-          class="mx-3"
-          :rules="[validators.required]"
-        />
-        <VTextField
-          v-model="password"
-          label="password"
-          type="password"
-          class="mx-3"
-          :rules="[validators.required]"
-        />
+            <VTextField
+              v-model="username"
+              label="username"
+              class="mx-3"
+              :rules="[validators.required]"
+            />
+            <VTextField
+              v-model="password"
+              label="password"
+              type="password"
+              class="mx-3"
+              :rules="[validators.required]"
+            />
 
-        <VBtn text="Login" type="submit" />
-      </VForm>
-    </VCard>
-  </div>
+            <VCardActions>
+              <VBtn text="Login" type="submit" />
+            </VCardActions>
+          </VForm>
+        </VCard>
+      </VCol>
+    </VRow>
+  </VContainer>
 </template>
 
 <script setup lang="ts">
@@ -42,8 +57,11 @@
   async function onSubmit(event: SubmitEventPromise) {
     event.preventDefault()
     event.stopPropagation()
+
+    if (!(await event).valid) return;
+
     const data = { username: username.value, password: password.value };
-    backend.post("/auth/Login", data)
+    backend.post("/auth/Login", data, { withCredentials: true })
       .then((response) => {
         appStore.user = response.data
         router.replace(route.redirectedFrom ?? { name: "Home" })
@@ -57,16 +75,11 @@
 <style scoped>
   .content {
     width: 100%;
-    height: 100dvh;
+    height: 100%;
   }
 
-  .login-box {
-    position: relative;
-    transform: translate(-50%, -50%);
-    left: 50%;
-    top: 40%;
-    max-width: 90%;
-    min-width: 25%;
-
+  .login-row {
+    height: 100%;
+    align-content: center;
   }
 </style>

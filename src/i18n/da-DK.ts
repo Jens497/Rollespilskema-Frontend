@@ -90,7 +90,15 @@ const components: PropertyTranslations = {
 const translations = {
   "view": {
     "home": {
-      "title": "Hjem"
+      "title": "Hjem",
+      "templates": {
+        "emptyText": "Der er endnu ikke oprettet en skabelon",
+        "new": "Ny skabelon",
+      },
+      "sheets": {
+        "emptyText": "Der er endnu ikke oprettet et skema",
+        "new": "Nyt skema",
+      }
     },
     "empty": {
       "title": "Tom test side"
@@ -104,7 +112,14 @@ const translations = {
     "Login": {
       "title": "Login"
     },
+    "CreateUser": {
+      "title": "Opret Bruger"
+    },
+    "EditUser": {
+      "title": "Opdater Bruger"
+    }
   },
   "Properties": components,
 } as const
+
 export default translations
