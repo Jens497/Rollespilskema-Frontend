@@ -34,5 +34,8 @@ export const useTemplateStore = defineStore('template', {
       }
       this.$patch({ templates: { [templateId]: {} } })
     },
+  },
+  persist: {
+    storage: sessionStorage
   }
 })

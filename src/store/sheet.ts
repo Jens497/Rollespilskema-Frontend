@@ -35,4 +35,7 @@ export const useSheetStore = defineStore('sheet', {
       return this.addSheet(sheet, sheetId)
     },
   },
+  persist: {
+    storage: sessionStorage
+  }
 })

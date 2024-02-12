@@ -63,7 +63,7 @@
     const data = { username: username.value, password: password.value };
     backend.post("/auth/Login", data, { withCredentials: true })
       .then((response) => {
-        appStore.user = response.data
+        appStore._user = response.data
         router.replace(route.redirectedFrom ?? { name: "Home" })
       })
       .catch((reason) => {
