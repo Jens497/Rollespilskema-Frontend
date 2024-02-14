@@ -18,7 +18,8 @@
     ],
     "types": [
       "node",
-      "vuetify"
+      "vuetify",
+      "axios"
     ],
     "paths": {
       "@/*": [

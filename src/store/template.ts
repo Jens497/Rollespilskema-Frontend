@@ -1,4 +1,5 @@
 import { componentTypesToModels, COMPONENT_TYPES, SheetComponent } from "@/common/sheetComponentDefinitions";
+import useBackend, { TemplateDto } from "@/composables/useBackend";
 import { defineStore } from "pinia";
 import { useI18n } from "vue-i18n";
 
@@ -34,7 +35,17 @@ export const useTemplateStore = defineStore('template', {
         throw new Error("Cannot create template: Duplicate keys not allowed")
       }
       const { t } = useI18n()
-      this.$patch({ templates: { [templateId]: { name: t("view.templateEditor.template.defaultName"), components: {} } } })
+      const template = { name: t("view.templateEditor.template.defaultName"), components: {} }
+
+      this.$patch({ templates: { [templateId]: template } })
+
+      const backend = useBackend()
+
+      const data: TemplateDto = { templateId: templateId, name: template.name, components: [] }
+
+      backend.post("/template", data)
+        .then(value => value.data, reason => reason)
+        .then(value => console.log("createTemplate: Save in db: ", value))
     },
   },
   persist: {

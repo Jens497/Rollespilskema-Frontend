@@ -9,6 +9,21 @@
       <v-col cols="4" :md="4" :lg="6">
         <VSheet class="editor-item">
           <EditorSheet />
+          <v-btn
+            v-if="isEdited"
+            class="fab"
+            icon="mdi-content-save"
+            color="primary"
+            @click="onSave"
+          />
+          <v-snackbar v-model="showSnackbar">
+            <template #text>
+              {{ snackBarMessage }}
+            </template>
+            <template #actions>
+              <v-btn icon="mdi-close" @click="showSnackbar = false" />
+            </template>
+          </v-snackbar>
         </VSheet>
       </v-col>
       <v-col cols="4" :md="4" :lg="3">
@@ -28,26 +43,49 @@
   import EditorSheet from '@/components/templateEditor/EditorSheet.vue';
   import { useEditorTemplate } from '@/composables/useEditorTemplate';
   import { useTemplateStore } from '@/store/template'
+  import { debounceFilter, useRefHistory, watchWithFilter } from '@vueuse/core';
+  import { computed, ref } from 'vue';
   import { provide } from 'vue';
+  import { useI18n } from 'vue-i18n';
 
   type Props = {
     templateId: string
   }
   const props = defineProps<Props>()
+  const isSaving = ref(false)
+  const showSnackbar = ref(false)
+  const snackBarMessage = ref<string>()
 
   const templateStore = useTemplateStore()
+
+  const { t } = useI18n()
 
   if (templateStore.templates[props.templateId] == undefined) {
     templateStore.createTemplate(props.templateId)
   }
 
   const editorTemplate = useEditorTemplate(props.templateId)
+  const templateHistory = useRefHistory(editorTemplate.state, { deep: true, capacity: 25, eventFilter: debounceFilter(500) })
+  const saveTime = ref(Date.now())
+  const isEdited = computed(() => templateHistory.last.value.timestamp !== saveTime.value)
 
   provide(templateIdKey, props.templateId)
 
   function onAddComponentType<T extends SheetComponentType>(componentType: T) {
     const component = getDefault(componentType)
     editorTemplate.addComponents(component)
+  }
+
+  async function onSave() {
+    isSaving.value = true
+    const lastUpdated = templateHistory.last.value.timestamp
+
+    const response = await editorTemplate.saveTemplate()
+    snackBarMessage.value = response.success ? t("view.templateEditor.template.save.success") : t("view.templateEditor.template.save.error") + response.response;
+    showSnackbar.value = true
+
+    saveTime.value = lastUpdated
+    isSaving.value = false
   }
 </script>
 
@@ -59,5 +97,11 @@
     margin: 2px;
     height: 100%;
     position: relative;
+  }
+
+  .fab {
+    position: absolute;
+    bottom: 25px;
+    right: 25px;
   }
 </style>

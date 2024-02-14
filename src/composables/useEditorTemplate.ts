@@ -3,7 +3,8 @@ import { SheetComponent } from "@/common/sheetComponentDefinitions";
 import { Template, useTemplateStore } from "@/store/template";
 import { createSharedComposable, isDef } from "@vueuse/core";
 import { _DeepPartial } from "pinia";
-import { computed, inject, ref, toValue, watch, watchEffect } from "vue";
+import { computed, inject, ref } from "vue";
+import useBackend, { ComponentDto, TemplateDto } from "./useBackend";
 
 export interface State {
   template: Template,
@@ -75,7 +76,26 @@ function _useEditorTemplate(templateId?: string) {
           state.templates[templateId as string].components[id] = component;
         }
       })
-    }
+    },
+    async saveTemplate() {
+      const backend = useBackend()
+
+      const components: ComponentDto[] = Object.entries(state.value.template.components)
+        .map(([id, component]) => ({
+          componentId: id,
+          name: component.name,
+          properties: JSON.stringify(component.properties)
+        }))
+
+      const data: TemplateDto = { templateId: templateId as string, name: state.value.template.name, components: components }
+      return await backend.post("/template/update", data)
+        .then(
+          value => {
+            return { success: true, response: value }
+          },
+          reason => ({ success: false, response: reason })
+        )
+    },
   }
 
   return { state, ...getters, ...actions }

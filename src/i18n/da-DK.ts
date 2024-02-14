@@ -107,6 +107,10 @@ const translations = {
       "title": "Skabelon",
       "template": {
         "defaultName": "Ny Skabelon",
+        "save": {
+          "success": "Gemt Succesfult",
+          "error": "Mislykkedes i at gemme"
+        }
       },
     },
     "sheetViewer": {
