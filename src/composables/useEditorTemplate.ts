@@ -1,9 +1,9 @@
 import { templateIdKey } from "@/common/injectionKeys";
 import { SheetComponent } from "@/common/sheetComponentDefinitions";
 import { Template, useTemplateStore } from "@/store/template";
-import { createSharedComposable } from "@vueuse/core";
+import { createSharedComposable, isDef } from "@vueuse/core";
 import { _DeepPartial } from "pinia";
-import { computed, inject, ref } from "vue";
+import { computed, inject, ref, toValue, watch, watchEffect } from "vue";
 
 export interface State {
   template: Template,
@@ -14,8 +14,13 @@ function _useEditorTemplate(templateId?: string) {
   const templateStore = useTemplateStore()
   templateId ??= inject(templateIdKey)
 
-  if (templateId == undefined) {
+  if (!isDef(templateId)) {
     throw new Error("Couldn't determine a templateId to use in composable")
+  }
+
+
+  if (templateStore.templates[templateId] == undefined) {
+    templateStore.createTemplate(templateId);
   }
 
   const state = ref<State>({
@@ -23,8 +28,9 @@ function _useEditorTemplate(templateId?: string) {
     selectedComponentId: undefined,
   })
 
+
   const getters = {
-    selectedComponent: computed(() => state.value.selectedComponentId != undefined ? state.value.template[state.value.selectedComponentId] : undefined),
+    selectedComponent: computed(() => state.value.selectedComponentId != undefined ? state.value.template.components[state.value.selectedComponentId] : undefined),
   }
 
   // Actions
@@ -33,7 +39,7 @@ function _useEditorTemplate(templateId?: string) {
       state.value.selectedComponentId = id
     },
     selectComponentByIdentity(component: SheetComponent) {
-      const matchingEntry = Object.entries(state.value.template).find(([k, v]) => v == component)
+      const matchingEntry = Object.entries(state.value.template.components).find(([k, v]) => v == component)
       if (matchingEntry) {
         const [id] = matchingEntry
         state.value.selectedComponentId = id
@@ -45,12 +51,12 @@ function _useEditorTemplate(templateId?: string) {
       state.value.selectedComponentId = undefined
     },
     updateComponentByIdentity(component: SheetComponent, updates: _DeepPartial<SheetComponent>) {
-      const matchingEntry = Object.entries(state.value.template).find(([k, v]) => v == component)
+      const matchingEntry = Object.entries(state.value.template.components).find(([k, v]) => v == component)
 
       if (matchingEntry) {
         const [id] = matchingEntry
         templateStore.$patch({
-          templates: { [templateId as string]: { [id]: updates } }
+          templates: { [templateId as string]: { components: { [id]: updates } } }
         })
       } else {
         console.debug("useTemplateEditorStore: updateComponent: Component not found", component)
@@ -59,14 +65,14 @@ function _useEditorTemplate(templateId?: string) {
     },
     updateComponentById(id: string, updates: _DeepPartial<SheetComponent>) {
       templateStore.$patch({
-        templates: { [templateId as string]: { [id]: updates } }
+        templates: { [templateId as string]: { components: { [id]: updates } } }
       })
     },
     addComponents(...components: SheetComponent[]) {
       const entries = components.map(c => ({ id: crypto.randomUUID(), component: c }));
       templateStore.$patch((state) => {
         for (const { id, component } of entries) {
-          state.templates[templateId as string][id] = component;
+          state.templates[templateId as string].components[id] = component;
         }
       })
     }

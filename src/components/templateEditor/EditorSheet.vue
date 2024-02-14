@@ -1,7 +1,7 @@
 <template>
   <VSheet class="sheet-container" @click.self="onClickSheet">
     <Draggable
-      v-for="(component, componentId) in editorTemplate.state.value.template"
+      v-for="(component, componentId) in editorTemplate.state.value.template.components"
       :key="componentId"
       :component="component"
       :component-id="componentId"

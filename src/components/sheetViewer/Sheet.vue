@@ -1,7 +1,7 @@
 <template>
   <VSheet class="sheet-container">
     <div
-      v-for="(component, componentId) in sheet"
+      v-for="(component, componentId) in sheet.components"
       :key="componentId"
       class="sheet-component"
       :style="{

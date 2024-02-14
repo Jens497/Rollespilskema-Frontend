@@ -61,9 +61,10 @@
     if (!(await event).valid) return;
 
     const data = { username: username.value, password: password.value };
-    backend.post("/auth/Login", data, { withCredentials: true })
+    backend.post("/auth/Login", data)
       .then((response) => {
         appStore._user = response.data
+
         router.replace(route.redirectedFrom ?? { name: "Home" })
       })
       .catch((reason) => {

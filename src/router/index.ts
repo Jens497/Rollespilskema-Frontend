@@ -1,6 +1,8 @@
 // Composables
 import { useAppStore } from '@/store/app'
 import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router'
+import AppBarNameField from '@/components/templateEditor/AppBarNameField.vue'
+
 const LOGIN_ROUTE_NAME = "Login";
 
 export const routes = [
@@ -27,7 +29,7 @@ export const routes = [
         path: 'templates/editor/:templateId',
         name: 'TemplateEditor',
         props: true,
-        meta: { appBar: { title: 'view.templateEditor.title' } },
+        meta: { appBar: { title: 'view.templateEditor.title', component: AppBarNameField } },
         component: () => import('@/views/TemplateEditor.vue')
       },
       {
@@ -71,7 +73,8 @@ const router = createRouter({
 })
 router.beforeEach(async (to, from) => {
   const appStore = useAppStore();
-  if (!appStore.isLoggedIn && to.name != LOGIN_ROUTE_NAME) {
+  const isLoggedIn = await appStore.getIsLoggedIn();
+  if (!isLoggedIn && to.name != LOGIN_ROUTE_NAME) {
     return { name: LOGIN_ROUTE_NAME }
   }
   //! TODO cite example in report!!!

@@ -5,11 +5,13 @@ export function deepClone<T>(o: T): T {
 }
 
 
-export function tryOrDefault<T, D>(fn: () => T, defaultValue: D): T | D {
+export function tryOrDefault<T, D>(fn: () => T, defaultValue: D, options?: { logOnDefault?: boolean }): T | D {
   try {
     return fn()
   } catch (err) {
-    console.debug("tryOrDefault: default returned due to exception", err)
+    if (options?.logOnDefault) {
+      console.debug("tryOrDefault: default returned due to exception", err)
+    }
     return defaultValue
   }
 }

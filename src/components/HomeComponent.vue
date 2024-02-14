@@ -1,11 +1,11 @@
 <template>
-  <v-container class="fill-height w-100 pt-5" style="max-width: none;">
+  <v-container class="h-100 w-100 pt-5" style="max-width: none; overflow-y: hidden;">
     <v-row
       class="d-flex h-100 w-100"
       :align="'start'"
       justify="space-evenly"
     >
-      <v-col cols="5">
+      <v-col cols="5" class="h-100">
         <v-menu
           class="mb-5"
           open-on-hover
@@ -26,17 +26,17 @@
             <v-list-item
               v-for="( template, templateId ) of templateStore.templates"
               :key="templateId"
-              :title="templateId"
+              :title="template.name"
               @click="sheetStore.addSheetFromTemplate(templateId as string, randomSheetId); $router.push({ name: 'SheetViewer', params: { sheetId: randomSheetId } })"
             />
             <v-list-item v-if="Object.entries(templateStore.templates).length == 0" :subtitle="$t<LocalizationKey>('view.home.templates.emptyText')" />
           </v-list>
         </v-menu>
-        <v-list>
+        <v-list max-height="100%">
           <v-list-item
             v-for="( sheet, sheetId ) of sheetStore.sheets "
             :key="sheetId"
-            :title="sheetId"
+            :title="sheet.name"
             :to="{ name: 'SheetViewer', params: { sheetId: sheetId } }"
           />
           <v-list-item v-if="Object.entries(sheetStore.sheets).length == 0" :subtitle="$t<LocalizationKey>('view.home.sheets.emptyText')" />
@@ -47,7 +47,7 @@
         <v-divider vertical />
       </v-col>
 
-      <v-col cols="5">
+      <v-col cols="5" class="h-100">
         <v-btn
           class="primary-button"
           color="primary"
@@ -56,12 +56,11 @@
           <v-icon icon="mdi-plus" size="large" start />
           {{ $t<LocalizationKey>("view.home.templates.new") }}
         </v-btn>
-
-        <v-list>
+        <v-list max-height="100%">
           <v-list-item
             v-for="(sheet, templateId) of templateStore.templates "
             :key="templateId"
-            :title="templateId"
+            :title="sheet.name"
             :to="{ name: 'TemplateEditor', params: { templateId: templateId } }"
           />
           <v-list-item v-if="Object.entries(templateStore.templates).length == 0" :subtitle="$t<LocalizationKey>('view.home.templates.emptyText')" />

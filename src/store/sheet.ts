@@ -3,7 +3,7 @@ import { defineStore } from "pinia";
 import { useTemplateStore } from "./template";
 import { deepClone } from "@/util/tsUtils";
 
-export type Sheet = Record<string, SheetComponent>
+export type Sheet = { name: string, components: Record<string, SheetComponent> }
 
 interface State {
   sheets: Record<string, Sheet>

@@ -1,10 +1,14 @@
 <template>
-  <v-app>
+  <v-app style="overflow: hidden;">
     <default-bar
       v-model="isDrawerOpen"
       :title="$route.meta.appBar.title"
       :can-navigate-back="$route.meta.appBar.canNavigateBack"
-    />
+    >
+      <template v-if="$route.meta.appBar.component != undefined" #default>
+        <component :is="$route.meta.appBar.component" />
+      </template>
+    </default-bar>
     <v-navigation-drawer v-model="isDrawerOpen" location="end">
       <v-list-item :to="{ name: 'editUser' }" title="Account" prepend-icon="mdi-account" />
       <v-list-item
@@ -14,7 +18,7 @@
         prepend-icon="mdi-plus"
       />
     </v-navigation-drawer>
-    <default-view />
+    <default-view style="max-height: 100dvh;" />
   </v-app>
 </template>
 
@@ -23,10 +27,12 @@
   import DefaultBar from './AppBar.vue'
   import DefaultView from './View.vue'
   import { useAppStore } from '@/store/app';
-  import { computedAsync } from '@vueuse/core';
 
   const isDrawerOpen = ref(false)
   const appStore = useAppStore()
 
-  const isAdmin = computedAsync(async () => (await appStore.getUserAsync)?.roles.includes('Admin'))
+
+  const isAdmin = computed(() => appStore._user?.roles.includes('Admin'))
+
+
 </script>

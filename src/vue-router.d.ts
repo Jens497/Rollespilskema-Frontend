@@ -3,15 +3,17 @@
 // project's tsconfig.json "files"
 import 'vue-router'
 import { LocalizationKey } from './plugins/vue-i18n'
+import { Component } from 'vue'
 
 // To ensure it is treated as a module, add at least one `export` statement
-export {}
+export { }
 
 declare module 'vue-router' {
   interface RouteMeta {
     appBar: {
       title: LocalizationKey,
-      canNavigateBack?: boolean
+      canNavigateBack?: boolean,
+      component?: string | Component
     }
   }
 }

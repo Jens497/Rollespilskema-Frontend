@@ -104,7 +104,10 @@ const translations = {
       "title": "Tom test side"
     },
     "templateEditor": {
-      "title": "Skabelon"
+      "title": "Skabelon",
+      "template": {
+        "defaultName": "Ny Skabelon",
+      },
     },
     "sheetViewer": {
       "title": "Skema"
