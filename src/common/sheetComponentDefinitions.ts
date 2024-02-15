@@ -1,13 +1,13 @@
 import imgUrl from '@/assets/logo.png';
-import { type CommonProperties, commonProperties, CommonPropertiesOverrides } from "@/common/sheetComponentProperties/Common"
+import { type CommonProperties, commonProperties, type CommonPropertiesOverrides } from "@/common/sheetComponentProperties/Common"
 import { properties as labelProperties } from "@/common/sheetComponentProperties/Label"
 import LabelComponent from "@/components/sheetComponents/LabelComponent.vue"
 import { properties as boxProperties, commonOverrides as boxCommonOverrides } from "@/common/sheetComponentProperties/Box"
 import BoxComponent from "@/components/sheetComponents/BoxComponent.vue"
 import { properties as textInputProperties, commonOverrides as textInputOverrides } from "@/common/sheetComponentProperties/TextInput"
 import TextInputComponent from "@/components/sheetComponents/TextInputComponent.vue"
-import { DefineComponent } from 'vue';
-import { DefinitionWithValue, ObjectSheetComponentPropertyFields, PartialProperty, PartialPropertyDefinition, PropertyTypeKinds, SheetComponentPropertyType, WithValue, objectProperty } from './sheetComponent';
+import { type Component } from 'vue';
+import { type DefinitionWithValue, type ObjectSheetComponentPropertyFields, type PartialProperty, type PartialPropertyDefinition, PropertyTypeKinds, type SheetComponentPropertyType, type WithValue, objectProperty } from './sheetComponent';
 
 export type SheetComponentPropertyTypeDefinition = ObjectSheetComponentPropertyFields;
 export type SheetComponentProperties<T extends SheetComponentPropertyTypeDefinition> = T extends any ? DefinitionWithValue<T> : never;
@@ -19,7 +19,7 @@ export interface SheetComponentType<T extends SheetComponentPropertyTypeDefiniti
     common: CommonPropertiesOverrides,
     internal: T
   }
-  vueComponent?: DefineComponent<unknown, unknown, any>
+  vueComponent?: Component<unknown, unknown, any>
 }
 
 export interface SheetComponent<T extends SheetComponentPropertyTypeDefinition = SheetComponentPropertyTypeDefinition> {
@@ -69,7 +69,7 @@ export const COMPONENT_TYPES: SheetComponentType[] = Object.entries(COMPONENT_TY
 export type ComponentTypeFieldsMap = typeof COMPONENT_TYPE_MAP
 export type ComponentTypeFieldsList = typeof COMPONENT_TYPES
 
-export function vueComponentOf(component: SheetComponent): DefineComponent<unknown, unknown, any> | undefined {
+export function vueComponentOf(component: SheetComponent): Component<unknown, unknown, any> | undefined {
   const vueComponent = COMPONENT_TYPE_MAP[component.name].vueComponent
   return vueComponent
 }
