@@ -21,17 +21,17 @@ steps:
   displayName: 'npm install and build'
 
 - task: CopyFiles@2
-  displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
+  displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)/archive.zip'
   inputs:
     SourceFolder: '$(Build.SourcesDirectory)'
     Contents: |
       dist/**/*
       !.git/**/*
-    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)/archive.zip'
   condition: succeededOrFailed()
 
 - task: PublishBuildArtifacts@1
-  displayName: 'Copy files to: $(build.sourcesdirectory)'
+  displayName: 'Copy files to: $(build.sourcesdirectory)/archive.zip'
   inputs:
-    PathtoPublish: '$(build.artifactstagingdirectory)'
+    PathtoPublish: '$(build.artifactstagingdirectory)/archive.zip'
   condition: succeededOrFailed()
