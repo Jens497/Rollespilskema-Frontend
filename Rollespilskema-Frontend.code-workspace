@@ -15,7 +15,13 @@
 		],
 		"i18n-ally.keystyle": "nested",
 		"i18n-ally.annotationDelimiter": ".",
-		"i18n-ally.displayLanguage": "da-DK"
+		"i18n-ally.displayLanguage": "da-DK",
+		"volar.format.initialIndent": {
+			"typescript": true,
+			"html": true,
+			"css": true
+		},
+		"html.format.enable": false
 	},
 	"extensions": {
 		"recommendations": [

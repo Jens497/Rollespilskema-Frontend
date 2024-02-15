@@ -1,8 +1,34 @@
 /// This file is heavily sourced from react-hook-from
 /// original code can be found at https://github.com/react-hook-form/react-hook-form/blob/011fad503cc8d4543892f8e847b9bd58c1d9400f/src/types/path/eager.ts#L51-L61
+/// The imported types in the original file has been added to this one for convenience.
 /// None of the original code has been edited, but new code has been added.
 /// Any code not from the original source has been annotated with an author
 /// if no author is annotated it can be assumed to be from react-hook-form.
+
+
+// The original license is included here in case this counts as a substantive portion of their software:
+//
+// MIT License
+//
+// Copyright (c) 2019-present Beier(Bill) Luo
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 type Primitive = null | undefined | string | number | boolean | symbol | bigint;
@@ -23,8 +49,8 @@ type Primitive = null | undefined | string | number | boolean | symbol | bigint;
  */
 type IsEqual<T1, T2> = T1 extends T2
   ? (<G>() => G extends T1 ? 1 : 2) extends <G>() => G extends T2 ? 1 : 2
-    ? true
-    : false
+  ? true
+  : false
   : false;
 
 interface File extends Blob {
@@ -70,8 +96,8 @@ type TupleKeys<T extends ReadonlyArray<any>> = Exclude<keyof T, keyof any[]>;
  */
 type AnyIsEqual<T1, T2> = T1 extends T2
   ? IsEqual<T1, T2> extends true
-    ? true
-    : never
+  ? true
+  : never
   : never;
 
 /**
@@ -125,13 +151,13 @@ type ArrayKey = number;
  */
 type PathInternal<T, TraversedTypes = T> = T extends ReadonlyArray<infer V>
   ? IsTuple<T> extends true
-    ? {
-        [K in TupleKeys<T>]-?: PathImpl<K & string, T[K], TraversedTypes>;
-      }[TupleKeys<T>]
-    : PathImpl<ArrayKey, V, TraversedTypes>
+  ? {
+    [K in TupleKeys<T>]-?: PathImpl<K & string, T[K], TraversedTypes>;
+  }[TupleKeys<T>]
+  : PathImpl<ArrayKey, V, TraversedTypes>
   : {
-      [K in keyof T]-?: PathImpl<K & string, T[K], TraversedTypes>;
-    }[keyof T];
+    [K in keyof T]-?: PathImpl<K & string, T[K], TraversedTypes>;
+  }[keyof T];
 
 /**
  * Helper type for recursively finding leafs of a type.
@@ -141,12 +167,12 @@ type PathInternal<T, TraversedTypes = T> = T extends ReadonlyArray<infer V>
  * @author s185124
  */
 type LeafInternal<T, TraversedTypes = T> = T extends ReadonlyArray<infer V>
-? IsTuple<T> extends true
+  ? IsTuple<T> extends true
   ? {
-      [K in TupleKeys<T>]-?: LeafImpl<K & string, T[K], TraversedTypes>;
-    }[TupleKeys<T>]
+    [K in TupleKeys<T>]-?: LeafImpl<K & string, T[K], TraversedTypes>;
+  }[TupleKeys<T>]
   : LeafImpl<ArrayKey, V, TraversedTypes>
-: {
+  : {
     [K in keyof T]-?: LeafImpl<K & string, T[K], TraversedTypes>;
   }[keyof T];
 
