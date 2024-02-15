@@ -25,7 +25,7 @@ steps:
   inputs:
     SourceFolder: '$(Build.SourcesDirectory)'
     Contents: |
-      **/*
+      dist/**/*
       !.git/**/*
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
   condition: succeededOrFailed()
