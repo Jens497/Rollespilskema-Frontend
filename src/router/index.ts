@@ -2,6 +2,7 @@
 import { useAppStore } from '@/store/app'
 import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router'
 import AppBarNameField from '@/components/templateEditor/AppBarNameField.vue'
+import { tryOrDefault } from '@/util/tsUtils';
 
 const LOGIN_ROUTE_NAME = "Login";
 
@@ -73,7 +74,7 @@ const router = createRouter({
 })
 router.beforeEach(async (to, from) => {
   const appStore = useAppStore();
-  const isLoggedIn = await appStore.getIsLoggedIn();
+  const isLoggedIn = await tryOrDefault(appStore.getIsLoggedIn, Promise.resolve(appStore._isLoggedIn));
   if (!isLoggedIn && to.name != LOGIN_ROUTE_NAME) {
     return { name: LOGIN_ROUTE_NAME }
   }

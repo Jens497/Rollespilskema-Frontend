@@ -74,15 +74,24 @@
   import useBackend from '@/composables/useBackend';
   import { LocalizationKey } from '@/plugins/vue-i18n';
   import { useSheetStore } from '@/store/sheet';
+  import { useTemplateStore } from '@/store/template';
 
 
   const randomTemplateId = crypto.randomUUID()
   const randomSheetId = crypto.randomUUID()
 
   const sheetStore = useSheetStore()
+  const templateStore = useTemplateStore()
 
-  const templates = (await useBackend().get<{ id: string, name: string }[]>("/template")).data
-  const sheets = (await useBackend().get<{ id: string, name: string }[]>("/sheet")).data
+  try {
+    await sheetStore.fetchSheetNames()
+    await templateStore.fetchTemplateNames()
+  } catch (err) {
+    console.log(err)
+    // TODO: give errormessage
+  }
+  const templates = templateStore.templateNames
+  const sheets = sheetStore.sheetNames
 </script>
 
 <style scoped lang="scss">

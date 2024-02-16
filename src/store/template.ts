@@ -1,19 +1,18 @@
 import { componentTypesToModels, COMPONENT_TYPES, SheetComponent } from "@/common/sheetComponentDefinitions";
-import { properties } from "@/common/sheetComponentProperties/Label";
 import useBackend, { TemplateDto } from "@/composables/useBackend";
-import { PiniaPluginContext, Store, defineStore } from "pinia";
+import { defineStore } from "pinia";
 import { useI18n } from "vue-i18n";
 
 export type Template = { name: string, components: Record<string, SheetComponent> }
 interface State {
-  templateNames: { [key: string]: string }
+  templateNames: { id: string, name: string }[]
   templates: { [key: string]: Template },
 }
 
 export const useTemplateStore = defineStore('template', {
   state: (): State => ({
     templates: {},
-    templateNames: {}
+    templateNames: []
   }),
   getters: {
     componentTypes: () => COMPONENT_TYPES
@@ -40,7 +39,8 @@ export const useTemplateStore = defineStore('template', {
       const { t } = useI18n()
       const template: Template = { name: t("view.templateEditor.template.defaultName"), components: {} }
 
-      this.$patch({ templates: { [templateId]: template }, templateNames: { [templateId]: template.name } })
+      this.$patch({ templates: { [templateId]: template } })
+      this.templateNames.push({ id: templateId, name: template.name })
 
       const backend = useBackend()
 
@@ -49,6 +49,16 @@ export const useTemplateStore = defineStore('template', {
       backend.post("/template", data)
         .then(value => value.data, reason => reason)
         .then(value => console.log("createTemplate: Save in db: ", value))
+    },
+    async fetchTemplateNames() {
+      const templateNamesResult = await useBackend()
+        .get<{ id: string, name: string }[]>("/template")
+        .catch(reason => { console.log("templateStore: fetchSheetNames: ", reason); return undefined })
+
+      if (templateNamesResult != undefined) {
+        const templateNames = templateNamesResult.data
+        this.$patch({ templateNames: templateNames })
+      }
     },
     async fetchTemplatesAsync(...ids: string[]) {
       const response = await useBackend().get<TemplateDto[]>("template/templates", { params: { Ids: ids } })

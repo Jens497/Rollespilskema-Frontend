@@ -1,8 +1,8 @@
 <template>
-  <Suspense suspensible>
+  <Suspense>
     <TemplateEditorComponent :template-id="templateId" />
     <template #fallback>
-      <div class="w-100 h-100">
+      <div  class="d-flex w-100 h-100 align-center justify-center">
         <v-progress-circular indeterminate />
       </div>
     </template>

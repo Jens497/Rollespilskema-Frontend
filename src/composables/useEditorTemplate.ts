@@ -7,11 +7,11 @@ import { computed, inject, ref } from "vue";
 import useBackend, { ComponentDto, TemplateDescriptionDto, TemplateDto } from "./useBackend";
 
 export interface State {
-  template: Template,
+  template: Template | undefined,
   selectedComponentId?: string,
 }
 
-async function _useEditorTemplate(templateId?: string) {
+function _useEditorTemplate(templateId?: string) {
   const templateStore = useTemplateStore()
   templateId ??= inject(templateIdKey)
 
@@ -20,14 +20,17 @@ async function _useEditorTemplate(templateId?: string) {
   }
 
 
-  await templateStore.fetchTemplatesAsync(templateId);
-
-  if (templateStore.templates[templateId] == undefined) {
-    await templateStore.fetchTemplatesAsync(templateId)
-
-    if (templateStore.templates[templateId] == undefined) { //now we know it didn't exist locally or in the backend
-      templateStore.createTemplate(templateId);
+  try {
+    if (!templateStore.templateNames.some(t => t.id == templateId)) {
+      templateStore.fetchTemplateNames()
+        .then(() => {
+          if (!templateStore.templateNames.some(t => t.id == templateId)) {
+            templateStore.createTemplate(templateId as string);
+          }
+        })
     }
+  } catch (err) {
+    console.log("useEditorTemplate: ", err)
   }
 
 
@@ -38,7 +41,7 @@ async function _useEditorTemplate(templateId?: string) {
 
 
   const getters = {
-    selectedComponent: computed(() => state.value.selectedComponentId != undefined ? state.value.template.components[state.value.selectedComponentId] : undefined),
+    selectedComponent: computed(() => state.value.selectedComponentId != undefined ? state.value.template?.components[state.value.selectedComponentId] : undefined),
   }
 
   // Actions
@@ -47,7 +50,7 @@ async function _useEditorTemplate(templateId?: string) {
       state.value.selectedComponentId = id
     },
     selectComponentByIdentity(component: SheetComponent) {
-      const matchingEntry = Object.entries(state.value.template.components).find(([k, v]) => v == component)
+      const matchingEntry = Object.entries(state.value.template?.components ?? []).find(([k, v]) => v == component)
       if (matchingEntry) {
         const [id] = matchingEntry
         state.value.selectedComponentId = id
@@ -59,7 +62,7 @@ async function _useEditorTemplate(templateId?: string) {
       state.value.selectedComponentId = undefined
     },
     updateComponentByIdentity(component: SheetComponent, updates: _DeepPartial<SheetComponent>) {
-      const matchingEntry = Object.entries(state.value.template.components).find(([k, v]) => v == component)
+      const matchingEntry = Object.entries(state.value.template?.components ?? []).find(([k, v]) => v == component)
 
       if (matchingEntry) {
         const [id] = matchingEntry
@@ -85,6 +88,9 @@ async function _useEditorTemplate(templateId?: string) {
       })
     },
     async saveTemplate() {
+      if (state.value.template == undefined) {
+        throw new Error("template cannot be null or undefined")
+      }
       const backend = useBackend()
 
       const components: ComponentDto[] = Object.entries(state.value.template.components)

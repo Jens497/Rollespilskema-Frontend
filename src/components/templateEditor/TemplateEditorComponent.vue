@@ -11,7 +11,9 @@
           <Suspense suspensible>
             <EditorSheet />
             <template #fallback>
-              <v-progress-circular indeterminate />
+              <div class="d-flex w-100 h-100 align-center justify-center">
+                <v-progress-circular indeterminate />
+              </div>
             </template>
           </Suspense>
           <v-btn
@@ -66,7 +68,7 @@
   const { t } = useI18n()
 
 
-  const editorTemplate = await useEditorTemplate(props.templateId)
+  const editorTemplate = useEditorTemplate(props.templateId)
   const templateHistory = useRefHistory(editorTemplate.state, { deep: true, capacity: 25, eventFilter: debounceFilter(500) })
   const saveTime = ref(Date.now())
   const isEdited = computed(() => templateHistory.last.value.timestamp !== saveTime.value)
