@@ -3,7 +3,6 @@ import { defineStore } from "pinia";
 import { useTemplateStore } from "./template";
 import { deepClone } from "@/util/tsUtils";
 import useBackend, { SheetDto } from "@/composables/useBackend";
-import { i } from "vite/dist/node/types.d-jgA8ss1A";
 
 export type Sheet = { name: string, components: Record<string, SheetComponent> }
 
@@ -30,8 +29,9 @@ export const useSheetStore = defineStore('sheet', {
       return id;
     },
     addSheetFromTemplate(templateId: string, sheetId?: string): string {
+      const normalizedTemplateId = templateId.toLowerCase()
       const templateStore = useTemplateStore()
-      const sheet = deepClone(templateStore.templates[templateId])
+      const sheet = deepClone(templateStore.templates[normalizedTemplateId])
 
       if (sheet == undefined) throw new Error("Template not found", { "cause": { templateId } })
 
