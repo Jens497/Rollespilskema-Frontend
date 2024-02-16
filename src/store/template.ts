@@ -32,12 +32,11 @@ export const useTemplateStore = defineStore('template', {
 
       return this.templates[id]
     },
-    createTemplate(templateId: string) {
+    createTemplate(templateId: string, name: string) {
       if (this.templates[templateId] != undefined) {
         throw new Error("Cannot create template: Duplicate keys not allowed")
       }
-      const { t } = useI18n()
-      const template: Template = { name: t("view.templateEditor.template.defaultName"), components: {} }
+      const template: Template = { name, components: {} }
 
       this.$patch({ templates: { [templateId]: template } })
       this.templateNames.push({ id: templateId, name: template.name })
@@ -62,14 +61,18 @@ export const useTemplateStore = defineStore('template', {
     },
     async fetchTemplatesAsync(...ids: string[]) {
       const response = await useBackend().get<TemplateDto[]>("template/templates", { params: { Ids: ids } })
-      const templatesObject = response.data.reduce((acc, t) => {
+      const templatesObject: State["templates"] = response.data.reduce((acc, t) => {
         acc[t.templateId] = {
           name: t.name,
-          components: t.components.reduce((comps, v) => {
+          components: t.components.reduce((comps, v) =>
+          {
             comps[v.componentId] = { name: v.name as SheetComponent["name"], properties: JSON.parse(v.properties) };
             return comps
-          }, {} as State["templates"][string]["components"])
-        }; return acc
+          },
+            {} as State["templates"][string]["components"]
+          )
+        } satisfies Template;
+        return acc
       }, {} as State["templates"])
 
       this.$patch({ templates: templatesObject })

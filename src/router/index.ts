@@ -3,6 +3,7 @@ import { useAppStore } from '@/store/app'
 import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router'
 import AppBarNameField from '@/components/templateEditor/AppBarNameField.vue'
 import { tryOrDefault } from '@/util/tsUtils';
+import { useTemplateStore } from '@/store/template';
 
 const LOGIN_ROUTE_NAME = "Login";
 
@@ -30,6 +31,9 @@ export const routes = [
         path: 'templates/editor/:templateId',
         name: 'TemplateEditor',
         props: true,
+        beforeEnter: async (to, from) => {
+          await useTemplateStore().fetchTemplatesAsync(to.params.templateId as string)
+        },
         meta: { appBar: { title: 'view.templateEditor.title', component: AppBarNameField } },
         component: () => import('@/views/TemplateEditor.vue')
       },

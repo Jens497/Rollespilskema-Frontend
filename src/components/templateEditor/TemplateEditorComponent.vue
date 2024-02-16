@@ -8,16 +8,9 @@
       </v-col>
       <v-col cols="4" :md="4" :lg="6">
         <VSheet class="editor-item">
-          <Suspense suspensible>
             <EditorSheet />
-            <template #fallback>
-              <div class="d-flex w-100 h-100 align-center justify-center">
-                <v-progress-circular indeterminate />
-              </div>
-            </template>
-          </Suspense>
+            <!-- v-if="isEdited" -->
           <v-btn
-            v-if="isEdited"
             class="fab"
             icon="mdi-content-save"
             color="primary"
@@ -67,11 +60,10 @@
 
   const { t } = useI18n()
 
-
-  const editorTemplate = useEditorTemplate(props.templateId)
-  const templateHistory = useRefHistory(editorTemplate.state, { deep: true, capacity: 25, eventFilter: debounceFilter(500) })
+  const editorTemplate = useEditorTemplate(props.templateId, t)
+  // const templateHistory = useRefHistory(editorTemplate.state.template, { deep: true, capacity: 25, eventFilter: debounceFilter(500) })
   const saveTime = ref(Date.now())
-  const isEdited = computed(() => templateHistory.last.value.timestamp !== saveTime.value)
+  // const isEdited = computed(() => templateHistory.last.value.timestamp !== saveTime.value)
 
   provide(templateIdKey, props.templateId)
 
@@ -82,13 +74,13 @@
 
   async function onSave() {
     isSaving.value = true
-    const lastUpdated = templateHistory.last.value.timestamp
+    // const lastUpdated = templateHistory.last.value.timestamp
 
     const response = await editorTemplate.saveTemplate()
     snackBarMessage.value = response.success ? t("view.templateEditor.template.save.success") : t("view.templateEditor.template.save.error") + response.response;
     showSnackbar.value = true
 
-    saveTime.value = lastUpdated
+    // saveTime.value = lastUpdated
     isSaving.value = false
   }
 </script>

@@ -85,7 +85,9 @@
 
   try {
     await sheetStore.fetchSheetNames()
+    await sheetStore.fetchSheetsAsync(...sheetStore.sheetNames.map(s => s.id))
     await templateStore.fetchTemplateNames()
+    await templateStore.fetchTemplatesAsync(...templateStore.templateNames.map(t => t.id))
   } catch (err) {
     console.log(err)
     // TODO: give errormessage
