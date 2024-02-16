@@ -70,7 +70,7 @@ export const routes = [
 ] as const satisfies RouteRecordRaw[]
 
 const router = createRouter({
-  history: createWebHistory(process?.env?.BASE_URL),
+  history: createWebHistory(),
   routes,
 })
 router.beforeEach(async (to, from) => {
