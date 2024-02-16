@@ -70,7 +70,7 @@ export const routes = [
 ] as const satisfies RouteRecordRaw[]
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  history: createWebHistory(process?.env?.BASE_URL),
   routes,
 })
 router.beforeEach(async (to, from) => {
@@ -79,7 +79,6 @@ router.beforeEach(async (to, from) => {
   if (!isLoggedIn && to.name != LOGIN_ROUTE_NAME) {
     return { name: LOGIN_ROUTE_NAME }
   }
-  //! TODO cite example in report!!!
 })
 
 export default router
