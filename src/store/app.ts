@@ -20,7 +20,7 @@ export const useAppStore = defineStore('app', {
   actions: {
     async getIsLoggedIn(): Promise<boolean> {
       let isLoggedIn: boolean = this._isLoggedIn ?? false
-      isLoggedIn = await useBackend().get("/auth/isLoggedIn")
+      isLoggedIn = await useBackend().get<boolean>("/auth/isLoggedIn")
         .then(response => response.data)
         .catch(reason => {
           console.warn("AxiosError: Failed to get isLoggedIn status: ", reason)

@@ -1,11 +1,11 @@
 <template>
   <VSheet class="sheet-container" @click.self="onClickSheet">
     <Draggable
-      v-for="(component, componentId) in editorTemplate.state.value.template.components"
+      v-for="(component, componentId) in editorTemplate.state.template.value?.components"
       :key="componentId"
       :component="component"
       :component-id="componentId"
-      :is-selected="componentId == editorTemplate.state.value.selectedComponentId"
+      :is-selected="componentId == editorTemplate.state.selectedComponentId.value"
       class="draggable"
     >
       <SheetComponentWrapper :component="component" :patch-properties="getPatchProperties(componentId)" />

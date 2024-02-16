@@ -20,7 +20,7 @@
       </v-row>
     </v-container>
 
-    <template v-if="appStore._isLoggedIn" #append>
+    <template v-if="isLoggedIn" #append>
       <v-app-bar-nav-icon @click="model = !(model ?? true)" />
     </template>
   </v-app-bar>
@@ -41,4 +41,5 @@
   })
   const model = useModel(props, "modelValue");
   const appStore = useAppStore();
+  const isLoggedIn = computedAsync(appStore.getIsLoggedIn, undefined)
 </script>

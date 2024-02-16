@@ -7,7 +7,8 @@
     :density="isActive ? 'compact' : 'compact'"
     :variant="isActive ? 'outlined' : 'plain'"
     :model-value="templateName"
-    @update:model-value="editorTemplate.state.value.template.name = $event"
+    :disabled="editorTemplate.state.template.value == undefined"
+    @update:model-value="onUpdateModel"
     @update:focused="isActive = $event"
   />
 </template>
@@ -27,9 +28,15 @@
   const templateId = route.params["templateId"] as string
   const editorTemplate = useEditorTemplate(templateId)
 
-  const templateName = computed<string | undefined>(() => editorTemplate.state.value?.template?.name)
+  const templateName = computed(() => editorTemplate.state.template.value?.name)
 
   onKeyDown('Enter', () => target.value?.blur())
+
+  function onUpdateModel(event: string) {
+    if (editorTemplate.state.template.value != undefined) {
+      editorTemplate.state.template.value.name = event
+    }
+  }
 </script>
 
 <style>

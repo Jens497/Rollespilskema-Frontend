@@ -21,7 +21,7 @@ type Arguments = {
 
 
 export default function useResizeCorners(args: Arguments) {
-  const templateEditorStore = useEditorTemplate()
+  const templateEditor = useEditorTemplate()
   const initialValue = toValue(args.initialValue) ?? {
     x: args.component.properties.common.size.value.width.value,
     y: args.component.properties.common.size.value.height.value,
@@ -92,7 +92,7 @@ export default function useResizeCorners(args: Arguments) {
           ? oldPos.y + oldSize.height
           : position.y + scrollValue.y.value + offset.y,
     }
-    templateEditorStore.updateComponentById(
+    templateEditor.updateComponentById(
       args.componentId,
       {
         properties: {

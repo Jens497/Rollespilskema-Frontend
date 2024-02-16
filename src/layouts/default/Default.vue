@@ -27,12 +27,18 @@
   import DefaultBar from './AppBar.vue'
   import DefaultView from './View.vue'
   import { useAppStore } from '@/store/app';
+  import { computedAsync } from '@vueuse/core';
 
   const isDrawerOpen = ref(false)
   const appStore = useAppStore()
 
 
-  const isAdmin = computed(() => appStore._user?.roles.includes('Admin'))
+  const isAdmin = computedAsync(async () => {
+    if (appStore._user == undefined) {
+      await appStore.getUserAsync()
+    }
+    return appStore._user?.roles.includes('Admin')
+  })
 
 
 </script>

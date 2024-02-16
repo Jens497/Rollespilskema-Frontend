@@ -5,12 +5,14 @@ import { useI18n } from "vue-i18n";
 
 export type Template = { name: string, components: Record<string, SheetComponent> }
 interface State {
+  templateNames: { id: string, name: string }[]
   templates: { [key: string]: Template },
 }
 
 export const useTemplateStore = defineStore('template', {
   state: (): State => ({
     templates: {},
+    templateNames: []
   }),
   getters: {
     componentTypes: () => COMPONENT_TYPES
@@ -30,14 +32,14 @@ export const useTemplateStore = defineStore('template', {
 
       return this.templates[id]
     },
-    createTemplate(templateId: string) {
+    createTemplate(templateId: string, name: string) {
       if (this.templates[templateId] != undefined) {
         throw new Error("Cannot create template: Duplicate keys not allowed")
       }
-      const { t } = useI18n()
-      const template = { name: t("view.templateEditor.template.defaultName"), components: {} }
+      const template: Template = { name, components: {} }
 
       this.$patch({ templates: { [templateId]: template } })
+      this.templateNames.push({ id: templateId, name: template.name })
 
       const backend = useBackend()
 
@@ -47,8 +49,36 @@ export const useTemplateStore = defineStore('template', {
         .then(value => value.data, reason => reason)
         .then(value => console.log("createTemplate: Save in db: ", value))
     },
+    async fetchTemplateNames() {
+      const templateNamesResult = await useBackend()
+        .get<{ id: string, name: string }[]>("/template")
+        .catch(reason => { console.log("templateStore: fetchSheetNames: ", reason); return undefined })
+
+      if (templateNamesResult != undefined) {
+        const templateNames = templateNamesResult.data
+        this.$patch({ templateNames: templateNames })
+      }
+    },
+    async fetchTemplatesAsync(...ids: string[]) {
+      const response = await useBackend().get<TemplateDto[]>("template/templates", { params: { Ids: ids } })
+      const templatesObject: State["templates"] = response.data.reduce((acc, t) => {
+        acc[t.templateId] = {
+          name: t.name,
+          components: t.components.reduce((comps, v) =>
+          {
+            comps[v.componentId] = { name: v.name as SheetComponent["name"], properties: JSON.parse(v.properties) };
+            return comps
+          },
+            {} as State["templates"][string]["components"]
+          )
+        } satisfies Template;
+        return acc
+      }, {} as State["templates"])
+
+      this.$patch({ templates: templatesObject })
+    }
   },
   persist: {
-    storage: sessionStorage
+    storage: sessionStorage,
   }
 })

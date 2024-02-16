@@ -1,18 +1,18 @@
 <template>
   <div id="settings-container">
-    <VSheet v-if="editorTemplate.state.value.selectedComponentId != undefined && selectedComponent != undefined" class="settingsSheet">
+    <VSheet v-if="editorTemplate.state.selectedComponentId.value != undefined && selectedComponent != undefined" class="settingsSheet">
       <VLabel class="text-h4" :text="$t(`Properties.internal.${selectedComponent.name}`)" />
       <PropertiesSettings
         class="propertySettings"
         :properties="editorTemplate.selectedComponent.value?.properties.common"
         :property-path="commonKeyPrefix"
-        @update-property="onPropertyUpdate(editorTemplate.state.value.selectedComponentId, 'common', $event)"
+        @update-property="onPropertyUpdate(editorTemplate.state.selectedComponentId.value, 'common', $event)"
       />
       <PropertiesSettings
         class="propertySettings"
         :properties="editorTemplate.selectedComponent.value?.properties.internal"
         :property-path="internalKeyPrefix"
-        @update-property="onPropertyUpdate(editorTemplate.state.value.selectedComponentId, 'internal', $event)"
+        @update-property="onPropertyUpdate(editorTemplate.state.selectedComponentId.value, 'internal', $event)"
       />
     </VSheet>
   </div>

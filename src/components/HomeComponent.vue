@@ -24,22 +24,22 @@
           </template>
           <v-list>
             <v-list-item
-              v-for="( template, templateId ) of templateStore.templates"
+              v-for="( { id: templateId, name: templateName } ) of templates"
               :key="templateId"
-              :title="template.name"
+              :title="templateName"
               @click="sheetStore.addSheetFromTemplate(templateId as string, randomSheetId); $router.push({ name: 'SheetViewer', params: { sheetId: randomSheetId } })"
             />
-            <v-list-item v-if="Object.entries(templateStore.templates).length == 0" :subtitle="$t<LocalizationKey>('view.home.templates.emptyText')" />
+            <v-list-item v-if="templates.length == 0" :subtitle="$t<LocalizationKey>('view.home.templates.emptyText')" />
           </v-list>
         </v-menu>
         <v-list max-height="100%">
           <v-list-item
-            v-for="( sheet, sheetId ) of sheetStore.sheets "
+            v-for="( { name: sheetName, id: sheetId } ) of sheets "
             :key="sheetId"
-            :title="sheet.name"
+            :title="sheetName"
             :to="{ name: 'SheetViewer', params: { sheetId: sheetId } }"
           />
-          <v-list-item v-if="Object.entries(sheetStore.sheets).length == 0" :subtitle="$t<LocalizationKey>('view.home.sheets.emptyText')" />
+          <v-list-item v-if="sheets.length == 0" :subtitle="$t<LocalizationKey>('view.home.sheets.emptyText')" />
         </v-list>
       </v-col>
 
@@ -58,12 +58,12 @@
         </v-btn>
         <v-list max-height="100%">
           <v-list-item
-            v-for="(sheet, templateId) of templateStore.templates "
-            :key="templateId"
-            :title="sheet.name"
-            :to="{ name: 'TemplateEditor', params: { templateId: templateId } }"
+            v-for="({ id, name }) of templates "
+            :key="id"
+            :title="name"
+            :to="{ name: 'TemplateEditor', params: { templateId: id } }"
           />
-          <v-list-item v-if="Object.entries(templateStore.templates).length == 0" :subtitle="$t<LocalizationKey>('view.home.templates.emptyText')" />
+          <v-list-item v-if="templates.length == 0" :subtitle="$t<LocalizationKey>('view.home.templates.emptyText')" />
         </v-list>
       </v-col>
     </v-row>
@@ -71,6 +71,7 @@
 </template>
 
 <script lang="ts" setup>
+  import useBackend from '@/composables/useBackend';
   import { LocalizationKey } from '@/plugins/vue-i18n';
   import { useSheetStore } from '@/store/sheet';
   import { useTemplateStore } from '@/store/template';
@@ -79,8 +80,20 @@
   const randomTemplateId = crypto.randomUUID()
   const randomSheetId = crypto.randomUUID()
 
-  const templateStore = useTemplateStore()
   const sheetStore = useSheetStore()
+  const templateStore = useTemplateStore()
+
+  try {
+    await sheetStore.fetchSheetNames()
+    await sheetStore.fetchSheetsAsync(...sheetStore.sheetNames.map(s => s.id))
+    await templateStore.fetchTemplateNames()
+    await templateStore.fetchTemplatesAsync(...templateStore.templateNames.map(t => t.id))
+  } catch (err) {
+    console.log(err)
+    // TODO: give errormessage
+  }
+  const templates = templateStore.templateNames
+  const sheets = sheetStore.sheetNames
 </script>
 
 <style scoped lang="scss">
