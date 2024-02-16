@@ -1,16 +1,19 @@
 import { componentTypesToModels, COMPONENT_TYPES, SheetComponent } from "@/common/sheetComponentDefinitions";
+import { properties } from "@/common/sheetComponentProperties/Label";
 import useBackend, { TemplateDto } from "@/composables/useBackend";
-import { defineStore } from "pinia";
+import { PiniaPluginContext, Store, defineStore } from "pinia";
 import { useI18n } from "vue-i18n";
 
 export type Template = { name: string, components: Record<string, SheetComponent> }
 interface State {
+  templateNames: { [key: string]: string }
   templates: { [key: string]: Template },
 }
 
 export const useTemplateStore = defineStore('template', {
   state: (): State => ({
     templates: {},
+    templateNames: {}
   }),
   getters: {
     componentTypes: () => COMPONENT_TYPES
@@ -35,9 +38,9 @@ export const useTemplateStore = defineStore('template', {
         throw new Error("Cannot create template: Duplicate keys not allowed")
       }
       const { t } = useI18n()
-      const template = { name: t("view.templateEditor.template.defaultName"), components: {} }
+      const template: Template = { name: t("view.templateEditor.template.defaultName"), components: {} }
 
-      this.$patch({ templates: { [templateId]: template } })
+      this.$patch({ templates: { [templateId]: template }, templateNames: { [templateId]: template.name } })
 
       const backend = useBackend()
 
@@ -47,8 +50,22 @@ export const useTemplateStore = defineStore('template', {
         .then(value => value.data, reason => reason)
         .then(value => console.log("createTemplate: Save in db: ", value))
     },
+    async fetchTemplatesAsync(...ids: string[]) {
+      const response = await useBackend().get<TemplateDto[]>("template/templates", { params: { Ids: ids } })
+      const templatesObject = response.data.reduce((acc, t) => {
+        acc[t.templateId] = {
+          name: t.name,
+          components: t.components.reduce((comps, v) => {
+            comps[v.componentId] = { name: v.name as SheetComponent["name"], properties: JSON.parse(v.properties) };
+            return comps
+          }, {} as State["templates"][string]["components"])
+        }; return acc
+      }, {} as State["templates"])
+
+      this.$patch({ templates: templatesObject })
+    }
   },
   persist: {
-    storage: sessionStorage
+    storage: sessionStorage,
   }
 })

@@ -25,7 +25,7 @@
 
   const route = useRoute()
   const templateId = route.params["templateId"] as string
-  const editorTemplate = useEditorTemplate(templateId)
+  const editorTemplate = await useEditorTemplate(templateId)
 
   const templateName = computed<string | undefined>(() => editorTemplate.state.value?.template?.name)
 

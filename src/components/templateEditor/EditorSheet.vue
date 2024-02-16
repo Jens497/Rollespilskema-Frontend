@@ -20,7 +20,7 @@
   import { SheetComponent, SheetComponentPropertyTypeDefinition } from '@/common/sheetComponentDefinitions';
   import { _DeepPartial } from 'pinia';
 
-  const editorTemplate = useEditorTemplate()
+  const editorTemplate = await useEditorTemplate()
   const getPatchProperties = (id: string) =>
     (updates: _DeepPartial<SheetComponent<SheetComponentPropertyTypeDefinition>>["properties"]) => editorTemplate.updateComponentById(id, { properties: updates })
 

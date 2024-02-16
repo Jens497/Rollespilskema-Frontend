@@ -4,14 +4,14 @@ import { Template, useTemplateStore } from "@/store/template";
 import { createSharedComposable, isDef } from "@vueuse/core";
 import { _DeepPartial } from "pinia";
 import { computed, inject, ref } from "vue";
-import useBackend, { ComponentDto, TemplateDto } from "./useBackend";
+import useBackend, { ComponentDto, TemplateDescriptionDto, TemplateDto } from "./useBackend";
 
 export interface State {
   template: Template,
   selectedComponentId?: string,
 }
 
-function _useEditorTemplate(templateId?: string) {
+async function _useEditorTemplate(templateId?: string) {
   const templateStore = useTemplateStore()
   templateId ??= inject(templateIdKey)
 
@@ -20,9 +20,16 @@ function _useEditorTemplate(templateId?: string) {
   }
 
 
+  await templateStore.fetchTemplatesAsync(templateId);
+
   if (templateStore.templates[templateId] == undefined) {
-    templateStore.createTemplate(templateId);
+    await templateStore.fetchTemplatesAsync(templateId)
+
+    if (templateStore.templates[templateId] == undefined) { //now we know it didn't exist locally or in the backend
+      templateStore.createTemplate(templateId);
+    }
   }
+
 
   const state = ref<State>({
     template: templateStore.templates[templateId],
