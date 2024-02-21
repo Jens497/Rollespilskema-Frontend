@@ -16,8 +16,8 @@ steps:
     secureFile: '.env'
 
 - script: |
-    echo Installing $(caCertificate.secureFilePath) to the trusted CA directory...
-    sudo ls -a $(caCertificate.secureFilePath)
+    echo Installing $(secureEnvFile.secureFilePath) to the trusted CA directory...
+    sudo ls -a $(secureEnvFile.secureFilePath)
 - task: CopyFiles@2
   displayName: 'Copy .env file to source dir'
   inputs:
