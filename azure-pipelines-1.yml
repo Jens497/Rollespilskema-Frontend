@@ -11,13 +11,14 @@ pool:
 
 steps:
 - task: DownloadSecureFile@1
+  name: 'secureEnvFile'
   inputs:
     secureFile: '.env'
 
 - task: CopyFiles@2
   displayName: 'Copy .env file to source dir'
   inputs:
-    SourceFolder: '$(mySecureFile.secureFilePath)'
+    SourceFolder: '$(secureEnvFile.secureFilePath)'
     TargetFolder: '$(Build.SourcesDirectory)'
   condition: succeededOrFailed()
 - task: NodeTool@0
