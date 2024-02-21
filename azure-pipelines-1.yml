@@ -19,8 +19,10 @@ steps:
   displayName: 'Copy .env file to source dir'
   inputs:
     SourceFolder: '$(secureEnvFile.secureFilePath)'
+    Contents: '*'
     TargetFolder: '$(Build.SourcesDirectory)'
   condition: succeededOrFailed()
+
 - task: NodeTool@0
   inputs:
     versionSpec: '20.x'
