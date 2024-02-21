@@ -18,12 +18,11 @@ steps:
 - script: |
     echo Installing $(secureEnvFile.secureFilePath) to the trusted CA directory...
     sudo ls -a $(secureEnvFile.secureFilePath)
-    sudo less $(secureEnvFile.secureFilePath)/.env
+    sudo less $(secureEnvFile.secureFilePath)
 - task: CopyFiles@2
   displayName: 'Copy .env file to source dir'
   inputs:
-    SourceFolder: '$(secureEnvFile.secureFilePath)'
-    Contents: '**'
+    Contents: '$(secureEnvFile.secureFilePath)'
     TargetFolder: '$(Build.SourcesDirectory)'
   condition: succeededOrFailed()
 
