@@ -24,10 +24,11 @@ steps:
   inputs:
     Contents: '$(secureEnvFile.secureFilePath)'
     TargetFolder: '$(Build.SourcesDirectory)'
-  condition: succeededOrFailed()
 
 - script: |
-    echo Checking $(Build.SourcesDirectory) to the trusted CA directory...
+    echo Checking $(secureEnvFile.secureFilePath) sourcefolder
+    sudo ls -a $(secureEnvFile.secureFilePath)
+    echo Checking $(Build.SourcesDirectory) targetfolder
     sudo ls -a $(Build.SourcesDirectory)
     sudo less $(Build.SourcesDirectory)/.env
 
