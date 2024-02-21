@@ -16,7 +16,7 @@ steps:
     secureFile: '.env'
 
 - script: |
-    echo Installing $(secureEnvFile.secureFilePath) to the trusted CA directory...
+    echo Installing $(secureEnvFile.secureFilePath)
     sudo ls -a $(secureEnvFile.secureFilePath)
     sudo less $(secureEnvFile.secureFilePath)
 
@@ -30,6 +30,7 @@ steps:
 - script: |
     echo Checking $(Agent.TempDirectory) sourcefolder
     sudo ls -a $(Agent.TempDirectory)
+    echo -----------------------------------------------
     echo Checking $(Build.SourcesDirectory) targetfolder
     sudo ls -a $(Build.SourcesDirectory)
     sudo less $(Build.SourcesDirectory)/.env
