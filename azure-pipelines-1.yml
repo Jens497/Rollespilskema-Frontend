@@ -11,10 +11,13 @@ pool:
 
 steps:
 - task: DownloadSecureFile@1
-  name: 'secureEnvFile'
+  name: secureEnvFile
   inputs:
     secureFile: '.env'
 
+- script: |
+    echo Installing $(caCertificate.secureFilePath) to the trusted CA directory...
+    sudo ls $(caCertificate.secureFilePath)
 - task: CopyFiles@2
   displayName: 'Copy .env file to source dir'
   inputs:
