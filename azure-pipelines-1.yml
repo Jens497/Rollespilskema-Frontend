@@ -24,7 +24,7 @@ steps:
   displayName: 'Copy .env file to source dir'
   inputs:
     SourceFolder: '$(Agent.TempDirectory)'
-    Contents: '**'
+    Contents: '**/.env'
     TargetFolder: '$(Build.SourcesDirectory)'
 
 - script: |
