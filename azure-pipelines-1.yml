@@ -18,6 +18,7 @@ steps:
 - script: |
     echo Installing $(secureEnvFile.secureFilePath) to the trusted CA directory...
     sudo ls -a $(secureEnvFile.secureFilePath)
+    sudo less $(secureEnvFile.secureFilePath)/.env
 - task: CopyFiles@2
   displayName: 'Copy .env file to source dir'
   inputs:
@@ -25,6 +26,11 @@ steps:
     Contents: '**'
     TargetFolder: '$(Build.SourcesDirectory)'
   condition: succeededOrFailed()
+
+- script: |
+    echo Checking $(Build.SourcesDirectory) to the trusted CA directory...
+    sudo ls -a $(Build.SourcesDirectory)
+    sudo less $(Build.SourcesDirectory)/.env
 
 - task: NodeTool@0
   inputs:
