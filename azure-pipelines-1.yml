@@ -17,12 +17,12 @@ steps:
 
 - script: |
     echo Installing $(caCertificate.secureFilePath) to the trusted CA directory...
-    sudo ls $(caCertificate.secureFilePath)
+    sudo ls -a $(caCertificate.secureFilePath)
 - task: CopyFiles@2
   displayName: 'Copy .env file to source dir'
   inputs:
     SourceFolder: '$(secureEnvFile.secureFilePath)'
-    Contents: '*'
+    Contents: '**'
     TargetFolder: '$(Build.SourcesDirectory)'
   condition: succeededOrFailed()
 
