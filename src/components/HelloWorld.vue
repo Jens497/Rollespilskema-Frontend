@@ -103,10 +103,11 @@
 <script lang="ts" setup>
   import { useSheetStore } from '@/store/sheet';
   import { useTemplateStore } from '@/store/template';
+  import { randomUUID } from '@/util/Crypto';
 
 
-  const randomTemplateId = crypto.randomUUID()
-  const randomSheetId = crypto.randomUUID()
+  const randomTemplateId = randomUUID()
+  const randomSheetId = randomUUID()
 
   const templateStore = useTemplateStore()
   const sheetStore = useSheetStore()

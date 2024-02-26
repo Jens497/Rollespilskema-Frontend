@@ -3,6 +3,7 @@ import { defineStore } from "pinia";
 import { useTemplateStore } from "./template";
 import { deepClone } from "@/util/tsUtils";
 import useBackend, { SheetDto } from "@/composables/useBackend";
+import { randomUUID } from "@/util/Crypto";
 
 export type Sheet = { name: string, components: Record<string, SheetComponent> }
 
@@ -19,7 +20,7 @@ export const useSheetStore = defineStore('sheet', {
   actions: {
     addSheet(sheet: Sheet, id?: string): string {
       if (id == undefined) {
-        id = crypto.randomUUID()
+        id = randomUUID()
       }
 
       if (this.sheets[id] != undefined) throw new Error("Id already exists", { cause: { id } });

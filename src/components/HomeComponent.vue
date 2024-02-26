@@ -75,10 +75,11 @@
   import { LocalizationKey } from '@/plugins/vue-i18n';
   import { useSheetStore } from '@/store/sheet';
   import { useTemplateStore } from '@/store/template';
+  import { randomUUID } from '@/util/Crypto';
 
 
-  const randomTemplateId = crypto.randomUUID()
-  const randomSheetId = crypto.randomUUID()
+  const randomTemplateId = randomUUID()
+  const randomSheetId = randomUUID()
 
   const sheetStore = useSheetStore()
   const templateStore = useTemplateStore()

@@ -6,6 +6,7 @@ import { _DeepPartial } from "pinia";
 import { Ref, computed, inject, ref } from "vue";
 import useBackend, { ComponentDto, TemplateDto } from "./useBackend";
 import { ComposerTranslation } from "vue-i18n";
+import { randomUUID } from "@/util/Crypto";
 
 export interface State {
   template: Ref<Template | undefined>,
@@ -88,7 +89,7 @@ function _useEditorTemplate(templateId?: string, t?: ComposerTranslation) {
       })
     },
     addComponents(...components: SheetComponent[]) {
-      const entries = components.map(c => ({ id: crypto.randomUUID(), component: c }));
+      const entries = components.map(c => ({ id: randomUUID(), component: c }));
       templateStore.$patch((state) => {
         for (const { id, component } of entries) {
           state.templates[normalizedId as string].components[id] = component;

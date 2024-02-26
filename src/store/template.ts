@@ -1,5 +1,6 @@
 import { componentTypesToModels, COMPONENT_TYPES, SheetComponent } from "@/common/sheetComponentDefinitions";
 import useBackend, { TemplateDto } from "@/composables/useBackend";
+import { randomUUID } from "@/util/Crypto";
 import { defineStore } from "pinia";
 import { useI18n } from "vue-i18n";
 
@@ -23,7 +24,7 @@ export const useTemplateStore = defineStore('template', {
         const components = componentTypesToModels(this.componentTypes).reduce((acc, comp, i) => {
           comp.properties.common.pos.value.x.value += 100 * i;
           comp.properties.common.pos.value.y.value += 100 * i;
-          const id = crypto.randomUUID();
+          const id = randomUUID();
           return { ...acc, ...{ [id]: comp } };
         }, {})
 
@@ -64,8 +65,7 @@ export const useTemplateStore = defineStore('template', {
       const templatesObject: State["templates"] = response.data.reduce((acc, t) => {
         acc[t.templateId] = {
           name: t.name,
-          components: t.components.reduce((comps, v) =>
-          {
+          components: t.components.reduce((comps, v) => {
             comps[v.componentId] = { name: v.name as SheetComponent["name"], properties: JSON.parse(v.properties) };
             return comps
           },
